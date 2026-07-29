@@ -1,0 +1,144 @@
+'use client';
+
+/**
+ * Ein Beitrag im Feed.
+ *
+ * Jeder Beitrag trägt das Theme seiner Region — deshalb sieht ein Feed
+ * aus wie ein Stapel Postkarten aus verschiedenen Ländern und nicht wie
+ * eine Tabelle. Das ist der sichtbarste Unterschied zu Instagram.
+ *
+ * Motion hier ist schneller als im Log: motion-feed, 200 ms.
+ */
+
+import { useOptimistic, useTransition } from 'react';
+import { ArrowBigUp } from 'lucide-react';
+import type { Beitrag } from './queries';
+import { voten } from './actions';
+import { FotoBild } from '@/features/log/FotoBild';
+import { useT } from '@/i18n/Sprachraum';
+
+export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
+  const { t, locale } = useT();
+  const [zustand, setzeOptimistisch] = useOptimistic(
+    { votes: beitrag.votes, gesetzt: beitrag.selbstGevotet },
+    (jetzt) => ({
+      votes: jetzt.votes + (jetzt.gesetzt ? -1 : 1),
+      gesetzt: !jetzt.gesetzt,
+    }),
+  );
+  const [, starten] = useTransition();
+
+  return (
+    <article className="beitrag region-surface eintritt-feed" data-region={beitrag.region}>
+      <header>
+        <span className="wer">{beitrag.verfasser.name}</span>
+        <span className="wo">
+          {beitrag.tag.ort ?? t.feed.irgendwo} · {kurz(beitrag.tag.datum, locale)}
+        </span>
+      </header>
+
+      {beitrag.foto && (
+        <div className="bild">
+          <FotoBild foto={beitrag.foto} />
+        </div>
+      )}
+
+      {beitrag.tag.titel && <h2>{beitrag.tag.titel}</h2>}
+      {beitrag.text && <p>{beitrag.text}</p>}
+
+      <div className="ornament-divider" />
+
+      <footer>
+        <button
+          type="button"
+          data-gesetzt={zustand.gesetzt}
+          onClick={() =>
+            starten(() => {
+              setzeOptimistisch(null);
+              voten(beitrag.id, zustand.gesetzt);
+            })
+          }
+          aria-pressed={zustand.gesetzt}
+          aria-label={zustand.gesetzt ? t.feed.zustimmungZurueck : t.feed.zustimmen}
+        >
+          <ArrowBigUp size={20} strokeWidth={1.5} aria-hidden />
+          <span>{zustand.votes}</span>
+        </button>
+      </footer>
+
+      <style jsx>{`
+        .beitrag {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-12);
+          padding: var(--space-24);
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-14);
+          background: var(--raised-tint, var(--surface-raised));
+        }
+        header {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: var(--space-12);
+        }
+        .wer {
+          font-weight: var(--weight-medium);
+          color: var(--content-primary);
+        }
+        .wo,
+        footer span {
+          font-size: var(--size-14);
+          color: var(--content-muted);
+        }
+        .bild {
+          border-radius: var(--radius-8);
+          overflow: hidden;
+        }
+        h2 {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: var(--size-24);
+          line-height: var(--leading-snug);
+          letter-spacing: var(--tracking-tight);
+          font-weight: var(--weight-medium);
+        }
+        p {
+          margin: 0;
+          font-size: var(--size-16);
+          line-height: var(--leading-normal);
+          color: var(--content-secondary);
+          text-wrap: pretty;
+        }
+        footer button {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--space-8);
+          min-height: 44px;
+          padding: 0 var(--space-12) 0 var(--space-8);
+          border: 1px solid transparent;
+          border-radius: var(--radius-full);
+          background: transparent;
+          color: var(--content-muted);
+          font-family: var(--font-ui);
+          font-weight: var(--weight-medium);
+          cursor: pointer;
+          transition: background var(--motion-feed), color var(--motion-feed);
+        }
+        footer button:hover {
+          background: var(--surface-sunken);
+          color: var(--content-primary);
+        }
+        footer button[data-gesetzt='true'] {
+          background: var(--accent-soft);
+          color: var(--content-accent);
+        }
+      `}</style>
+    </article>
+  );
+}
+
+function kurz(iso: string, locale: string) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+}

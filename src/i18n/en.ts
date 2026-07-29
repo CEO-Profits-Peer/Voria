@@ -1,0 +1,271 @@
+/**
+ * English.
+ *
+ * Must mirror every key in `de.ts` — TypeScript enforces this via the
+ * `Woerterbuch` type. Same tone: calm, concrete, whole sentences.
+ * No exclamation marks, no "revolutionary", no "seamless".
+ */
+
+import type { Woerterbuch } from './de';
+
+export const en: Woerterbuch = {
+  marke: 'Voria',
+
+  nav: {
+    log: 'Journal',
+    karte: 'Map',
+    feed: 'Feed',
+    du: 'You',
+    suchen: 'Search',
+    mehr: 'More',
+    dasBistDu: 'That is you',
+    einstellungen: 'Settings',
+  },
+
+  auth: {
+    anmelden: 'Sign in',
+    registrieren: 'Create account',
+    willkommenZurueck: 'Welcome back',
+    tagebuchAnfangen: 'Start a journal',
+    wartetAufDich: 'Your journal is waiting.',
+    bleibtPrivat: 'Everything you write stays private — until you decide otherwise.',
+    email: 'Email',
+    passwort: 'Password',
+    benutzername: 'Username',
+    benutzernameHilfe: 'Lowercase letters, digits, underscores.',
+    passwortHilfe: 'At least ten characters.',
+    schonKonto: 'Already have an account?',
+    nochKeinKonto: 'No account yet?',
+    einesAnlegen: 'Create one',
+    abmelden: 'Sign out',
+    einenMoment: 'One moment',
+    fehlerAnmeldung: 'That combination of email and password does not match.',
+    fehlerBenutzername:
+      'Usernames are three to twenty-four characters, lowercase letters, digits and underscores only.',
+    fehlerBenutzernameBelegt: 'That username is already taken.',
+    fehlerPasswortKurz: 'The password needs at least ten characters.',
+    fehlerKonto: 'The account could not be created. Try again later.',
+    bestaetigeEmail: 'Almost there — confirm the email we sent you.',
+    passwortVergessen: 'Forgot password',
+    passwortVergessenZeile: 'Enter your email and we will send you a link to reset it.',
+    neuesPasswort: 'New password',
+    neuesPasswortZeile: 'Choose a new password. You will be signed in right afterwards.',
+    linkSchicken: 'Send link',
+    passwortSpeichern: 'Save password',
+    passwortVergessenLink: 'Forgot your password?',
+    fehlendeFelder: 'Please enter your email and password.',
+  },
+
+  log: {
+    deineReisen: 'Your journeys',
+    neueReise: 'New journey',
+    ersteReiseAnlegen: 'Start your first journey',
+    keineReise: 'No journey yet',
+    keineReiseZeile:
+      'Your journeys will live here, day by day. You can start the first one whenever you set off.',
+    ohneDatum: 'No date',
+    ohneTitel: 'Untitled',
+    ohneLand: 'No country yet',
+    tag: 'day',
+    tage: 'days',
+    land: 'country',
+    laender: 'countries',
+    heuteSchreiben: 'Write about today',
+    zurueckZurReise: 'Back to the journey',
+    zurueckZuAllen: 'Back to all journeys',
+    reiseBearbeiten: 'Edit journey',
+    wohinGehtEs: 'Where are you going?',
+    allesAenderbar: 'You can change all of this later. None of it is binding.',
+    nameDerReise: 'Name of the journey',
+    ersterTag: 'First day',
+    letzterTag: 'Last day',
+    landHilfe: 'Two letters. Decides how the journey looks.',
+    reiseAnlegen: 'Create journey',
+    uebernehmen: 'Save',
+    aussehen: 'Appearance',
+    ausLaendernAbleiten: 'Derive from countries',
+    modusRuhig: 'Quiet',
+    modusFrei: 'Free',
+    zurFreienFlaeche: 'Switch to the open space',
+    zurRuhigenSeite: 'Switch to the quiet page',
+    titelDesTages: 'Title of the day',
+    wasHeutePassiertIst: 'What happened today',
+    fotoWeg: 'Or start with a photo',
+    fotoGross: 'View photo large',
+    anstoss: [
+      'What happened today?',
+      'What do you want to remember in ten years?',
+      'What did you see for the first time today?',
+      'How did the day feel?',
+    ],
+  },
+
+  teilen: {
+    titel: 'Who should see this?',
+    teilen: 'Share',
+    aendern: 'Change',
+    privat: 'Only you',
+    privatErklaerung: 'Nobody else sees this day. Not in search either.',
+    folgende: 'People who follow you',
+    folgendeErklaerung: 'Visible to your followers. Not in the open feed.',
+    oeffentlich: 'In the feed',
+    oeffentlichErklaerung: 'Appears in the feed and can receive upvotes. Reversible at any time.',
+    einSatzDazu: 'A sentence about it, if you like',
+    optional: 'Optional.',
+  },
+
+  fotos: {
+    hinzufuegen: 'Add photos',
+    auswaehlen: 'Choose images',
+    warten: 'Pick some images. I will read the date and place myself.',
+    lesen: 'Checking when and where this was taken.',
+    verkleinern: 'Making the images lighter, without anyone noticing.',
+    fertig: 'Done.',
+    fehler: 'Something went wrong.',
+    originaleBleiben: 'Your originals stay on the device. Only a light version is uploaded.',
+    vorheriges: 'Previous photo',
+    naechstes: 'Next photo',
+  },
+
+  karte: {
+    deineWelt: 'Your world',
+    leerZeile:
+      'Twelve regions are waiting. As soon as a journey knows a country, its region gets material, light and colour here.',
+    nochNicht: 'not yet',
+    seit: 'since',
+  },
+
+  feed: {
+    titel: 'Feed',
+    stillHier: 'Quiet in here',
+    stillZeile:
+      'What others have shared will appear here. You do not have to leave anything — your journal stays yours.',
+    zustimmen: 'Upvote',
+    zustimmungZurueck: 'Remove upvote',
+    irgendwo: 'somewhere',
+    jemand: 'Someone',
+    geschriebenVon: 'Written by',
+    nichtsGeteilt: 'Nothing has been shared here yet.',
+  },
+
+  profil: {
+    du: 'You',
+    reisen: 'Journeys',
+    folgenDir: 'Followers',
+    duFolgst: 'Following',
+    geteilt: 'Shared',
+    folgen: 'Followers',
+    folgt: 'Following',
+    duFolgstIhm: 'Following',
+    folgenAktion: 'Follow',
+    bearbeiten: 'Edit profile',
+    anzeigename: 'Display name',
+    beschreibung: 'About you',
+    beschreibungHilfe: 'A sentence or two. Shown on your profile.',
+    privatesProfil: 'Keep profile private',
+    privatesProfilHilfe: 'Your profile will not appear in search. Shared posts stay visible.',
+    gesichert: 'Saved.',
+  },
+
+  einstellungen: {
+    titel: 'Settings',
+    erscheinungsbild: 'Appearance',
+    hell: 'Light',
+    dunkel: 'Dark',
+    wieGeraet: 'Match device',
+    sprache: 'Language',
+    spracheZeile: 'The interface switches right away. Your entries stay exactly as you wrote them.',
+    zwoelfWelten: 'The twelve worlds',
+    weltenZeile:
+      'Every region brings its own material, light and craft. Your journeys receive them automatically, depending on where you were — here you can look at them beforehand.',
+  },
+
+  suche: {
+    titel: 'Search',
+    zeile: 'Across everything you have written.',
+    platzhalter: 'A word, a place, a name',
+    nichts: 'Nothing in your journal matches that yet.',
+    leeren: 'Clear',
+  },
+
+  rueckblick: {
+    titel: 'Year in review',
+    zeile: 'One year, on a single page.',
+    keinJahr: 'Nothing for this year yet.',
+    keinJahrZeile: 'Once you have written a few days, a review will appear here.',
+    inDiesemJahr: 'This year',
+    laengsteReise: 'Longest journey',
+    meisteWorte: 'The longest day',
+    ersterTag: 'It started',
+    fotos: 'photos',
+    worte: 'words',
+  },
+
+  zustand: {
+    nichtGefunden: 'This page does not exist',
+    nichtGefundenZeile: 'Maybe it moved, maybe the link was just a typo.',
+    zurueckInDenLog: 'Back to the journal',
+    zumLog: 'To the journal',
+    fehler: 'Something went wrong',
+    fehlerZeile: 'Your entries are safe — only this view broke. Give it another try.',
+    nochEinmal: 'Try again',
+    laden: 'One moment.',
+    keinNetz: 'No connection',
+    keinNetzZeile:
+      'You can keep reading whatever you already opened. New things arrive once you are back online — nothing gets lost.',
+    offlineStreifen:
+      'No connection. Reading continues, new things are saved once you are back online.',
+    schliessen: 'Close',
+    zurueck: 'Back',
+  },
+
+  start: {
+    anfangen: 'Get started',
+    hero: 'The place where, in ten years, you read back what your life felt like.',
+    heroZeile:
+      'A travel journal that looks like the places you have been. You write, you throw in your photos — the date, place and country are already there.',
+    tagebuchAnfangen: 'Start a journal',
+    kostenlos: 'Free. Everything stays private until you decide otherwise.',
+    zweiArten: 'Two ways to write',
+    zweiArtenZeile:
+      'A quiet page in the evening, when you have words. An open surface for pasting and arranging, when you only have images. Both show the same day — switching loses nothing.',
+    fotosWissen: 'Your photos already know',
+    fotosWissenZeile:
+      'Every image carries its date and coordinates. Voria reads them and lays out the days. You never type what your phone already knows.',
+    zwoelfWelten: 'Twelve worlds',
+    zwoelfWeltenZeile:
+      'Morocco looks like sandstone and indigo, Japan like washi and vermilion. No flags, no national colours — material, light and craft.',
+    sozialesFreiwillig: 'The social part is optional',
+    sozialesZeile1:
+      'Voria works completely without anyone seeing a thing. No pressure to fill in a profile, no streak to break, no reminder with an exclamation mark. If you write nothing for three weeks, nobody says anything.',
+    sozialesZeile2: 'And if you do want to share, you decide per day — not per account.',
+    beispielOrt1: 'Naoshima, Japan',
+    beispielText1:
+      'The rain did not stop all day. I walked to the harbour anyway, because there was nothing else to do.',
+    beispielOrt2: 'Chefchaouen, Morocco',
+    beispielText2:
+      'The bus never came, so we stayed. After an hour the woman from the kiosk brought us tea, without asking.',
+    beispielOrt3: 'Reine, Norway',
+    beispielText3:
+      'At two in the morning it was still bright enough to read. We tried it, just to be sure.',
+    beispielOrt4: 'Uyuni, Bolivia',
+    beispielText4:
+      'The ground was so flat that the sky began at the bottom. You lose your sense of distance.',
+  },
+
+  regionen: {
+    nordeuropa: 'Northern Europe & Scandinavia',
+    alpen: 'Alps & Central Europe',
+    mittelmeer: 'Mediterranean',
+    maghreb: 'North Africa & Maghreb',
+    ostafrika: 'East Africa',
+    naherOsten: 'Middle East',
+    suedasien: 'South Asia',
+    suedostasien: 'Southeast Asia',
+    ostasien: 'East Asia',
+    ozeanien: 'Oceania',
+    anden: 'Andes & South America',
+    nordamerikaWest: 'North America West & Polar',
+    neutral: 'No region',
+  },
+};

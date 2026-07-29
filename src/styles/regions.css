@@ -1,0 +1,468 @@
+/* ============================================================
+   Voria — Regionen-Themes (Schicht 3)
+   ------------------------------------------------------------
+   Ein Theme darf GENAU diese elf Slots setzen:
+
+     accent-primary · accent-soft · canvas-tint · raised-tint
+     texture-base · texture-opacity · texture-scale · texture-blend
+     ornament-divider · ornament-corner · ornament-tint
+     (+ font-display, gesetzt in globals.css wegen next/font)
+
+   Alles andere ist global. Wer hier einen Abstand, eine Größe oder
+   einen Radius setzt, bricht die Regel — siehe docs/THEMES.md.
+
+   Angewendet über [data-region] am Wurzelelement der Reise oder des
+   Eintrags, NICHT global. Ein Feed zeigt Beiträge aus mehreren
+   Regionen nebeneinander.
+
+   Texturen und Ornamente sind eingebettete SVG — keine Binärdateien,
+   beliebig skalierbar, kein zusätzlicher Netzabruf.
+   ============================================================ */
+
+/* ---------- Grundstimmung, wenn keine Region gesetzt ist -----
+   Wichtig: Ohne das sah die App an allen Stellen ohne Reise wie
+   nacktes HTML aus — Log-Übersicht, Feed, Profil, Einstellungen.
+   Die ganze Atmosphäre hing an [data-region], und das steht nur
+   an Reisen und Einträgen.
+
+   Deshalb hat auch der Grundzustand ein Material: feines Papier,
+   eine Haarlinie als Trenner, eine zurückhaltende Ecke. Das ist
+   kein dreizehntes Theme, sondern der Boden, auf dem die zwölf
+   anderen stehen.
+   ------------------------------------------------------------ */
+
+:root {
+  --canvas-tint: transparent;
+  --raised-tint: transparent;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.03;
+  --texture-scale: 260px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='3'%3E%3Crect width='32' height='1' y='1' fill='%23000'/%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='28' height='1'/%3E%3Crect x='0' y='0' width='1' height='28'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: var(--border-strong);
+}
+
+[data-theme='dark'] {
+  --texture-opacity: 0.045;
+  --texture-blend: screen;
+}
+
+/* Die frühere bildschirmfüllende Texturauflage ist entfernt.
+   `position: fixed` plus `mix-blend-mode` zwang den Browser bei jedem
+   Scrollen zu einem neuen Kompositionsdurchlauf — das war die Ursache
+   für die spürbare Zähigkeit. Texturen liegen jetzt nur noch auf
+   .region-surface, also auf begrenzten Flächen. */
+
+/* ---------- Grundmechanik ---------------------------------- */
+
+.region-surface {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--canvas-tint, var(--surface-canvas));
+}
+
+.region-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--texture-base);
+  background-size: var(--texture-scale);
+  opacity: var(--texture-opacity);
+  /* Ohne mix-blend-mode: kostet viel, sieht man bei dieser Deckkraft nicht. */
+}
+
+/* Der Open Space trägt dieselbe Textur deutlich stärker —
+   dort ist der Untergrund Gestaltung, nicht Andeutung. */
+.region-surface[data-flaeche='offen']::before {
+  opacity: calc(var(--texture-opacity) * 2.4);
+}
+
+/* Ornamente sind Masken plus eine Farbe. */
+
+.ornament-divider {
+  height: 3px;
+  background-color: var(--ornament-tint);
+  mask-image: var(--ornament-divider);
+  -webkit-mask-image: var(--ornament-divider);
+  mask-repeat: repeat-x;
+  -webkit-mask-repeat: repeat-x;
+  mask-size: auto 100%;
+  -webkit-mask-size: auto 100%;
+  opacity: 0.7;
+}
+
+/* Ausdrücklich regionslose Bereiche bekommen eine schlichte Haarlinie. */
+[data-region='neutral'] .ornament-divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  mask-image: none;
+  opacity: 1;
+}
+
+.ornament-corner {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  background-color: var(--ornament-tint);
+  mask-image: var(--ornament-corner);
+  -webkit-mask-image: var(--ornament-corner);
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   1 · NORDEUROPA & SKANDINAVIEN
+   Birkenholz, feines Faserpapier. Kühl, diffus, sehr hell.
+   ============================================================ */
+
+[data-region='nordeuropa'] {
+  --accent-primary: #3d6b6e;
+  --accent-soft: #e6eeed;
+  --canvas-tint: #f9f9f7;
+  --raised-tint: #fdfdfc;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015 0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.032;
+  --texture-scale: 300px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='3'%3E%3Crect width='48' height='1' y='1' fill='%23000'/%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='6' width='44' height='1'/%3E%3Crect x='8' y='14' width='36' height='1'/%3E%3Crect x='16' y='22' width='28' height='1'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #9aa8a6;
+}
+
+[data-theme='dark'] [data-region='nordeuropa'] {
+  --accent-primary: #7fb0b2;
+  --accent-soft: #1f2b2c;
+  --canvas-tint: #14161a;
+  --raised-tint: #1d2024;
+  --texture-opacity: 0.05;
+  --texture-blend: screen;
+  --ornament-tint: #4f5c5b;
+}
+
+/* ============================================================
+   2 · ALPEN & MITTELEUROPA
+   Granit, Fichtenholz, raues Papier. Klar, Nebel am Rand.
+   ============================================================ */
+
+[data-region='alpen'] {
+  --accent-primary: #4a5d3a;
+  --accent-soft: #e9ede3;
+  --canvas-tint: #f7f6f2;
+  --raised-tint: #fcfbf8;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.055;
+  --texture-scale: 200px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='3'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='1' height='3'/%3E%3Crect x='5' y='1' width='1' height='2'/%3E%3Crect x='10' y='0' width='1' height='3'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='4' y='4' width='1' height='36' transform='rotate(20 4 4)'/%3E%3Crect x='14' y='4' width='1' height='36' transform='rotate(20 14 4)'/%3E%3Crect x='24' y='4' width='1' height='36' transform='rotate(20 24 4)'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #93998a;
+}
+
+[data-theme='dark'] [data-region='alpen'] {
+  --accent-primary: #8fa87c;
+  --accent-soft: #232a1e;
+  --canvas-tint: #161713;
+  --raised-tint: #1f201b;
+  --texture-opacity: 0.07;
+  --texture-blend: screen;
+  --ornament-tint: #565b4e;
+}
+
+/* ============================================================
+   3 · MITTELMEER
+   Kalkputz, gebleichtes Holz. Hart, klare Schatten.
+   ============================================================ */
+
+[data-region='mittelmeer'] {
+  --accent-primary: #2a4d8f;
+  --accent-soft: #e4eaf3;
+  --canvas-tint: #fbfaf7;
+  --raised-tint: #ffffff;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.34' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.045;
+  --texture-scale: 220px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='3'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='10' height='2'/%3E%3Crect x='14' y='0' width='10' height='2'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='2' y='2' width='18' height='18'/%3E%3Crect x='24' y='24' width='18' height='18'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #8fa3bd;
+}
+
+[data-theme='dark'] [data-region='mittelmeer'] {
+  --accent-primary: #7f9fd6;
+  --accent-soft: #1d2534;
+  --canvas-tint: #14151a;
+  --raised-tint: #1d1f25;
+  --texture-opacity: 0.06;
+  --texture-blend: screen;
+  --ornament-tint: #4d5a6e;
+}
+
+/* ============================================================
+   4 · NORDAFRIKA & MAGHREB
+   Sandstein, körniges Papier. Warm, staubig, tief.
+   Indigo auf Terrakotta, Zellij.
+   ============================================================ */
+
+[data-region='maghreb'] {
+  --accent-primary: #2c3c78;
+  --accent-soft: #e9ddd1;
+  --canvas-tint: #f6efe3;
+  --raised-tint: #fcf7ee;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.07;
+  --texture-scale: 180px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='6'%3E%3Cg fill='%23000'%3E%3Crect x='2' y='1' width='4' height='4' transform='rotate(45 4 3)'/%3E%3Crect x='11' y='1' width='4' height='4' transform='rotate(45 13 3)'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='14' y='0' width='14' height='14' transform='rotate(45 21 7)'/%3E%3Crect x='0' y='14' width='14' height='14' transform='rotate(45 7 21)'/%3E%3Crect x='28' y='14' width='14' height='14' transform='rotate(45 35 21)'/%3E%3Crect x='14' y='28' width='14' height='14' transform='rotate(45 21 35)'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #a8846a;
+}
+
+[data-theme='dark'] [data-region='maghreb'] {
+  --accent-primary: #8b97d6;
+  --accent-soft: #262940;
+  --canvas-tint: #1c1712;
+  --raised-tint: #251e17;
+  --texture-opacity: 0.06;
+  --texture-blend: screen;
+  --ornament-tint: #8c6d52;
+}
+
+/* ============================================================
+   5 · OSTAFRIKA
+   Akazienholz, Staub, grobes Leinen. Hoch stehend, gleißend.
+   ============================================================ */
+
+[data-region='ostafrika'] {
+  --accent-primary: #9a3b1f;
+  --accent-soft: #f2e3d8;
+  --canvas-tint: #f8f1e6;
+  --raised-tint: #fdf9f2;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.45 0.5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.065;
+  --texture-scale: 160px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='4'%3E%3Cg fill='%23000'%3E%3Ccircle cx='3' cy='2' r='1.6'/%3E%3Ccircle cx='10' cy='2' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='6' r='4'/%3E%3Ccircle cx='18' cy='6' r='4'/%3E%3Ccircle cx='30' cy='6' r='4'/%3E%3Ccircle cx='6' cy='18' r='4'/%3E%3Ccircle cx='18' cy='18' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #b58a63;
+}
+
+[data-theme='dark'] [data-region='ostafrika'] {
+  --accent-primary: #e08160;
+  --accent-soft: #33201a;
+  --canvas-tint: #1b1611;
+  --raised-tint: #241d16;
+  --texture-opacity: 0.06;
+  --texture-blend: screen;
+  --ornament-tint: #8a6647;
+}
+
+/* ============================================================
+   6 · NAHER OSTEN
+   Sandstein, Messing, glattes Papier. Golden, spät.
+   ============================================================ */
+
+[data-region='naherOsten'] {
+  --accent-primary: #16706e;
+  --accent-soft: #e0eeed;
+  --canvas-tint: #faf5ea;
+  --raised-tint: #fefbf5;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.05;
+  --texture-scale: 200px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='5'%3E%3Cpath d='M0 5 Q5 0 10 5 Q15 0 20 5' stroke='%23000' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M2 42 Q2 2 42 2' stroke='%23000' stroke-width='1.6' fill='none'/%3E%3Cpath d='M12 42 Q12 12 42 12' stroke='%23000' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+  --ornament-tint: #b09a6a;
+}
+
+[data-theme='dark'] [data-region='naherOsten'] {
+  --accent-primary: #5cb5b2;
+  --accent-soft: #16302f;
+  --canvas-tint: #191510;
+  --raised-tint: #221d16;
+  --texture-opacity: 0.055;
+  --texture-blend: screen;
+  --ornament-tint: #8a7850;
+}
+
+/* ============================================================
+   7 · SÜDASIEN
+   Handgeschöpftes Papier, Baumwolle. Weich, dunstig.
+   Safran auf Tinte.
+   ============================================================ */
+
+[data-region='suedasien'] {
+  --accent-primary: #a85a10;
+  --accent-soft: #f6e8d5;
+  --canvas-tint: #faf6ee;
+  --raised-tint: #fefcf7;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55 0.55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.06;
+  --texture-scale: 140px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cg fill='%23000'%3E%3Cpath d='M8 0 L11 3 L8 6 L5 3 Z'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Cpath d='M11 0 L17 6 L11 12 L5 6 Z'/%3E%3Cpath d='M29 0 L35 6 L29 12 L23 6 Z'/%3E%3Cpath d='M11 18 L17 24 L11 30 L5 24 Z'/%3E%3Cpath d='M29 18 L35 24 L29 30 L23 24 Z'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #c09250;
+}
+
+[data-theme='dark'] [data-region='suedasien'] {
+  --accent-primary: #e5a252;
+  --accent-soft: #32261a;
+  --canvas-tint: #1a1611;
+  --raised-tint: #231e17;
+  --texture-opacity: 0.06;
+  --texture-blend: screen;
+  --ornament-tint: #907043;
+}
+
+/* ============================================================
+   8 · SÜDOSTASIEN
+   Teakholz, feuchtes Grün, Faserpapier. Diffus, Regenschleier.
+   ============================================================ */
+
+[data-region='suedostasien'] {
+  --accent-primary: #8a6a1f;
+  --accent-soft: #eae4d2;
+  --canvas-tint: #f7f5ec;
+  --raised-tint: #fcfbf5;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.058;
+  --texture-scale: 260px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='2' width='12' height='1'/%3E%3Crect x='3' y='0' width='1' height='6'/%3E%3Crect x='9' y='0' width='1' height='6'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg stroke='%23000' stroke-width='1.4' fill='none'%3E%3Cpath d='M2 2 Q22 12 42 2'/%3E%3Cpath d='M2 14 Q22 24 42 14'/%3E%3Cpath d='M2 26 Q22 36 42 26'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #a08f5e;
+}
+
+[data-theme='dark'] [data-region='suedostasien'] {
+  --accent-primary: #d4b365;
+  --accent-soft: #2b2718;
+  --canvas-tint: #16170f;
+  --raised-tint: #1f2017;
+  --texture-opacity: 0.06;
+  --texture-blend: screen;
+  --ornament-tint: #7d7048;
+}
+
+/* ============================================================
+   9 · OSTASIEN
+   Washi-Papier, Indigo-Stoff. Sehr hell, sehr leer.
+   Zinnober extrem sparsam.
+   ============================================================ */
+
+[data-region='ostasien'] {
+  --accent-primary: #c8402a;
+  --accent-soft: #f7ede9;
+  --canvas-tint: #fbfaf7;
+  --raised-tint: #fefefc;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008 0.72' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.035;
+  --texture-scale: 320px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='3'%3E%3Crect x='0' y='0' width='1' height='3' fill='%23000'/%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='14' y='0' width='1' height='40'/%3E%3Crect x='22' y='0' width='1' height='28'/%3E%3Crect x='30' y='0' width='1' height='34'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #b4aa9a;
+}
+
+[data-theme='dark'] [data-region='ostasien'] {
+  --accent-primary: #e8705c;
+  --accent-soft: #33211d;
+  --canvas-tint: #17150f;
+  --raised-tint: #201d16;
+  --texture-opacity: 0.05;
+  --texture-blend: screen;
+  --ornament-tint: #6b6154;
+}
+
+/* ============================================================
+   10 · OZEANIEN
+   Korallenweiß, Muschelkalk. Sehr hell, aquamarin gefiltert.
+   ============================================================ */
+
+[data-region='ozeanien'] {
+  --accent-primary: #10707a;
+  --accent-soft: #dceef0;
+  --canvas-tint: #f7fafa;
+  --raised-tint: #fdfefe;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.04;
+  --texture-scale: 180px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='5'%3E%3Cpath d='M0 3 Q6 0 12 3 Q18 6 24 3' stroke='%23000' stroke-width='1.3' fill='none'/%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg stroke='%23000' stroke-width='1.4' fill='none'%3E%3Cpath d='M0 8 Q11 2 22 8 Q33 14 44 8'/%3E%3Cpath d='M0 20 Q11 14 22 20 Q33 26 44 20'/%3E%3Cpath d='M0 32 Q11 26 22 32 Q33 38 44 32'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #7fadb2;
+}
+
+[data-theme='dark'] [data-region='ozeanien'] {
+  --accent-primary: #55b8c2;
+  --accent-soft: #14302f;
+  --canvas-tint: #101718;
+  --raised-tint: #18201f;
+  --texture-opacity: 0.055;
+  --texture-blend: screen;
+  --ornament-tint: #456265;
+}
+
+/* ============================================================
+   11 · ANDEN & SÜDAMERIKA
+   Gewebte Textilstruktur, Alpakawolle. Klar, dünne Höhenluft.
+   ============================================================ */
+
+[data-region='anden'] {
+  --accent-primary: #a4471c;
+  --accent-soft: #f3e5d6;
+  --canvas-tint: #faf4ea;
+  --raised-tint: #fefaf3;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.3 0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.062;
+  --texture-scale: 120px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6'%3E%3Cg fill='%23000'%3E%3Cpath d='M0 6 L3 0 L6 6 Z'/%3E%3Cpath d='M6 6 L9 0 L12 6 Z'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Cpath d='M0 12 L6 0 L12 12 Z'/%3E%3Cpath d='M12 12 L18 0 L24 12 Z'/%3E%3Cpath d='M24 12 L30 0 L36 12 Z'/%3E%3Crect x='0' y='16' width='36' height='2'/%3E%3Crect x='0' y='22' width='36' height='2'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #bb8b5e;
+}
+
+[data-theme='dark'] [data-region='anden'] {
+  --accent-primary: #e08050;
+  --accent-soft: #33231a;
+  --canvas-tint: #1a1511;
+  --raised-tint: #231d16;
+  --texture-opacity: 0.06;
+  --texture-blend: screen;
+  --ornament-tint: #8d6844;
+}
+
+/* ============================================================
+   12 · NORDAMERIKA WEST & POLAR
+   Wüstensandstein oder Eis, verwittertes Holz. Weit.
+   ============================================================ */
+
+[data-region='nordamerikaWest'] {
+  --accent-primary: #5a7358;
+  --accent-soft: #e8ede6;
+  --canvas-tint: #f9f8f5;
+  --raised-tint: #fdfdfb;
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.05;
+  --texture-scale: 280px;
+  --texture-blend: multiply;
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='4'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='40' height='1'/%3E%3Crect x='0' y='3' width='24' height='1'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='4' width='44' height='1'/%3E%3Crect x='0' y='12' width='34' height='1'/%3E%3Crect x='0' y='20' width='24' height='1'/%3E%3Crect x='0' y='28' width='14' height='1'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #9aa396;
+}
+
+[data-theme='dark'] [data-region='nordamerikaWest'] {
+  --accent-primary: #93b08f;
+  --accent-soft: #232a22;
+  --canvas-tint: #151613;
+  --raised-tint: #1e1f1b;
+  --texture-opacity: 0.06;
+  --texture-blend: screen;
+  --ornament-tint: #565c52;
+}

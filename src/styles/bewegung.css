@@ -1,0 +1,104 @@
+/* ============================================================
+   Voria — Bewegung
+   ------------------------------------------------------------
+   Bestandsaufnahme und Regelwerk. Vorher gab es fast nur
+   Zustandsübergänge (hover, focus) und zwei Einzelfälle.
+   Hier stehen die wiederverwendbaren Bewegungen.
+
+   Zwei Geschwindigkeiten, wie im Design-System festgelegt:
+     Log   400 ms — atmet
+     Feed  200 ms — reagiert
+
+   Nie Bounce, nie Feder, nie Wackeln. Bewegung soll wirken wie
+   eine umgeblätterte Seite, nicht wie eine Benachrichtigung.
+
+   Alles hier respektiert `prefers-reduced-motion` am Ende der Datei.
+   ============================================================ */
+
+/* ---------- Auftauchen -------------------------------------- */
+
+@keyframes v-auf {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes v-auf-unten {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes v-auf-klein {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Blatt von unten — Dialoge auf dem Handy. */
+@keyframes v-blatt {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+/* ---------- Anwendung --------------------------------------- */
+
+/* Eine Liste tritt gestaffelt ein. Der Versatz kommt aus --i,
+   das die Komponente pro Element setzt. Maximal acht Stufen —
+   danach wartet niemand mehr gern. */
+.eintritt {
+  animation: v-auf-unten var(--duration-400) var(--ease-out) backwards;
+  animation-delay: calc(min(var(--i, 0), 8) * 45ms);
+}
+
+/* Im Feed schneller und ohne Staffelung — dort wird gescrollt,
+   nicht betrachtet. */
+.eintritt-feed {
+  animation: v-auf-klein var(--duration-200) var(--ease-out) backwards;
+}
+
+/* Dialoggrund und Dialogblatt. */
+.dialog-grund {
+  animation: v-auf var(--duration-250) var(--ease-out);
+}
+
+.dialog-blatt {
+  animation: v-blatt var(--duration-250) var(--ease-in-out);
+}
+
+@media (min-width: 900px) {
+  .dialog-blatt {
+    animation: v-auf-klein var(--duration-250) var(--ease-out);
+  }
+}
+
+/* Ein Foto blendet sich ein, sobald es geladen ist — im Log
+   langsam, damit es nicht aufblitzt. */
+.foto-auf {
+  animation: v-auf var(--duration-400) var(--ease-out);
+}
+
+/* ---------- Zustandswechsel --------------------------------- */
+
+/* Umschalter zwischen ruhigem Modus und Open Space: Der Inhalt
+   wechselt, das Gerüst bleibt stehen. Deshalb nur ein Auftauchen,
+   kein Schieben — sonst wirkt es wie ein Seitenwechsel. */
+.modus-wechsel {
+  animation: v-auf var(--duration-400) var(--ease-out);
+}
+
+/* ---------- Rücksicht --------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .eintritt,
+  .eintritt-feed,
+  .dialog-grund,
+  .dialog-blatt,
+  .foto-auf,
+  .modus-wechsel {
+    animation: none;
+  }
+}

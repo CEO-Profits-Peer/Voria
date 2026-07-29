@@ -1,0 +1,172 @@
+/* Einstiegspunkt für alle Stile. Reihenfolge ist wichtig:
+   erst Tokens, dann Regionen, dann Seiten, dann Bewegung. */
+
+@import './tokens.css';
+@import './regions.css';
+@import './seiten.css';
+@import './huelle.css';
+@import './verweise.css';
+@import './bewegung.css';
+
+/* ============================================================
+   Schriften an die Tokens binden
+   ------------------------------------------------------------
+   Drei Rollen, streng getrennt (siehe src/app/fonts.ts):
+
+     --font-ui       Bedienung — Navigation, Knöpfe, Felder, Meta
+     --font-text     Tagebuchtext — überall dieselbe
+     --font-display  Titel — wechselt pro Region
+
+   Serifen in der Bedienung lesen sich altmodisch statt ruhig.
+   Die Wärme gehört dorthin, wo gelesen wird, nicht dorthin,
+   wo geklickt wird.
+   ============================================================ */
+
+/*
+ * ACHTUNG bei den Rückfallwerten INNERHALB von var().
+ *
+ * `var(--font-inter), sans-serif` ist NICHT sicher: Ist --font-inter
+ * nicht definiert, wird die ganze Deklaration ungültig und die Schrift
+ * fällt auf den geerbten Wert zurück — also auf Serife. Genau das ist
+ * passiert und hat die ganze Oberfläche altmodisch aussehen lassen.
+ *
+ * Richtig ist der Rückfall im var() selbst: `var(--font-inter, ui-sans-serif)`.
+ */
+:root {
+  --font-ui: var(--font-inter, ui-sans-serif), -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    system-ui, sans-serif;
+  --font-text: var(--font-literata, Georgia), Georgia, 'Times New Roman', serif;
+  --font-display: var(--font-newsreader, Georgia), Georgia, serif;
+
+  /* Der weiße Rand eines Sofortbilds im Open Space.
+     Bewusst KEIN Regionen-Slot — er gehört zum Elementtyp Foto,
+     nicht zur Region. Bleibt in hell und dunkel gleich. */
+  --sofortbild-rand: #fdfcfa;
+  --sofortbild-schatten: rgb(21 19 17 / 0.14);
+
+  /* Maße der Bedienoberfläche. Enger als der Inhalt — deshalb
+     eigene Werte statt der Inhalts-Skala. */
+  --ui-zeile: 36px;
+  --ui-zeile-gross: 40px;
+  --ui-radius: 8px;
+}
+
+/* Regionen-Anzeigeschriften. Steht hier statt in regions.css,
+   weil die Variablennamen von next/font kommen — eine Quelle. */
+
+[data-region='alpen'],
+[data-region='nordeuropa'],
+[data-region='nordamerikaWest'] {
+  --font-display: var(--font-newsreader, Georgia), Georgia, serif;
+}
+
+[data-region='maghreb'],
+[data-region='ostafrika'],
+[data-region='anden'],
+[data-region='suedasien'],
+[data-region='suedostasien'] {
+  --font-display: var(--font-alegreya, Georgia), Georgia, serif;
+}
+
+[data-region='mittelmeer'],
+[data-region='naherOsten'],
+[data-region='ozeanien'] {
+  --font-display: var(--font-cormorant, Georgia), Georgia, serif;
+}
+
+[data-region='ostasien'] {
+  --font-display: var(--font-mincho, Georgia), Georgia, serif;
+}
+
+/* ---------- Grundlagen -------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-canvas);
+  color: var(--content-primary);
+  /* Die Grundschrift ist die Bedienschrift. Inhalt setzt sie
+     ausdrücklich auf --font-text zurück. */
+  font-family: var(--font-ui);
+  font-size: var(--size-14);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Links unterstreichen nur im Fließtext — nicht in Navigation,
+   Knöpfen oder Karten. */
+nav a:hover,
+a.anlegen:hover,
+a.rund:hover,
+a.karte:hover,
+a.zurueck-zeile:hover,
+a.rueckblick-band:hover {
+  text-decoration: none;
+}
+
+/* Sichtbarer Fokus, überall, immer. */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-4);
+}
+
+/* Nur für Screenreader. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Typografie-Rollen als Klassen ------------------- */
+
+/* Alles, was gelesen wird — nicht bedient. */
+.inhaltstext {
+  font-family: var(--font-text);
+  font-size: var(--size-18);
+  line-height: var(--leading-relaxed);
+  color: var(--content-primary);
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+/* Kleine Beschriftung über Feldern und Gruppen. */
+.ui-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}

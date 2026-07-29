@@ -1,0 +1,22 @@
+{
+  "name": "Voria — dein Reisetagebuch",
+  "short_name": "Voria",
+  "description": "Ein Reisetagebuch, das aussieht wie die Orte, an denen du warst.",
+  "lang": "de",
+  "dir": "ltr",
+  "start_url": "/log",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#FAF7F2",
+  "categories": ["travel", "lifestyle", "productivity"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Heute schreiben", "url": "/log", "description": "Direkt in den Log" },
+    { "name": "Neue Reise", "url": "/log/neu", "description": "Eine Reise anlegen" }
+  ]
+}

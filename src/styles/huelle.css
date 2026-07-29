@@ -1,0 +1,257 @@
+/* ============================================================
+   Die Hülle — Seitenleiste, Inhaltsbereich, Leiste unten.
+   ------------------------------------------------------------
+   WARUM DIESE DATEI EXISTIERT (bitte lesen, bevor du sie auflöst):
+
+   Diese Stile standen vorher in einem `<style jsx>`-Block in
+   AppShell.tsx. Sie haben nie gegriffen — und zwar unsichtbar,
+   ohne Fehlermeldung, ohne Build-Warnung.
+
+   Grund: styled-jsx hängt seine Scope-Klasse (`jsx-<hash>`) nur an
+   JSX-Elemente mit KLEINEM Anfangsbuchstaben, also an echte
+   DOM-Elemente wie <nav> oder <span>. Importierte Komponenten mit
+   GROSSEM Anfangsbuchstaben — <Link> aus next/link, die Icons aus
+   lucide-react — bekommen sie NICHT.
+
+   Ergebnis im Browser:
+
+       <nav class="jsx-b2772584 leiste">   ← Regel .leiste greift
+       <a   class="ziel">                  ← Regel .ziel greift NICHT
+
+   Die CSS-Regel im Bundle lautet `.ziel.jsx-b2772584`. Der zweite
+   Teil fehlt am Element, also passt der Selektor nie. Genau deshalb
+   sah die Navigation ungestaltet aus, während die Karten daneben
+   normal aussahen: die bestehen aus <div> und <p>.
+
+   Konsequenz: Alles, was einen <Link> gestaltet, gehört in eine
+   echte CSS-Datei. Präfix `vo-`, damit nichts kollidiert — `.karte`
+   und `.neu` gibt es im Projekt mehrfach.
+   ============================================================ */
+
+.vo-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.vo-inhalt {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---------- Seitenleiste ------------------------------------
+   Gestaltung bewusst AUSSERHALB der Media Query. Innerhalb wird
+   nur umgeschaltet, was sichtbar ist. */
+
+.vo-leiste {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  width: 240px;
+  flex: none;
+  padding: 16px 10px 10px;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--surface-raised);
+  font-family: var(--font-ui);
+}
+
+.vo-wortmarke {
+  display: block;
+  padding: 4px 8px 18px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--content-primary);
+}
+
+/* ---------- „Neue Reise" ------------------------------------ */
+
+.vo-neu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px;
+  margin-bottom: 16px;
+  border-radius: 7px;
+  border: 1px solid var(--border-default);
+  background: var(--surface-canvas);
+  color: var(--content-secondary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 200ms, color 200ms, background 200ms;
+}
+
+.vo-neu:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+}
+
+/* ---------- Gruppen ----------------------------------------- */
+
+.vo-gruppe {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.vo-gruppe + .vo-gruppe {
+  margin-top: 20px;
+}
+
+.vo-gruppen-titel {
+  padding: 0 10px;
+  margin-bottom: 6px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+  opacity: 0.7;
+}
+
+/* ---------- Navigationsziele -------------------------------- */
+
+.vo-ziel {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 7px;
+  text-decoration: none;
+  color: var(--content-secondary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 200ms, color 200ms;
+}
+
+.vo-ziel:hover {
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+}
+
+.vo-ziel[data-aktiv='true'] {
+  background: var(--accent-soft);
+  color: var(--content-accent);
+  font-weight: 600;
+}
+
+/* Icons dürfen nicht schrumpfen, sonst rutscht der Text auf sie. */
+.vo-neu > svg,
+.vo-ziel > svg,
+.vo-unten-ziel > svg {
+  flex: none;
+}
+
+/* ---------- Nutzer unten in der Leiste ---------------------- */
+
+.vo-chip {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 8px 6px;
+  border-top: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: var(--content-secondary);
+  transition: color 200ms;
+}
+
+.vo-chip:hover {
+  color: var(--content-primary);
+}
+
+.vo-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--content-accent);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.vo-chip-worte {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.vo-chip-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--content-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vo-chip-zeile {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--content-muted);
+}
+
+/* ---------- Leiste unten (Handy) ---------------------------- */
+
+.vo-unten {
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--surface-raised);
+  border-top: 1px solid var(--border-subtle);
+  padding: 6px 6px max(10px, env(safe-area-inset-bottom));
+}
+
+.vo-unten-ziel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--content-muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 200ms;
+}
+
+.vo-unten-ziel[data-aktiv='true'] {
+  color: var(--accent-primary);
+}
+
+/* ---------- Umschaltung ------------------------------------- */
+
+@media (min-width: 900px) {
+  .vo-shell {
+    flex-direction: row;
+  }
+  .vo-unten {
+    display: none;
+  }
+  .vo-leiste {
+    display: flex;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+}

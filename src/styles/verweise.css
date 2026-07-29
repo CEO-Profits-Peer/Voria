@@ -1,0 +1,27 @@
+/* ============================================================
+   Verweise, die selbst das Wurzelelement einer Komponente sind.
+   ------------------------------------------------------------
+   styled-jsx hängt seine Scope-Klasse nur an DOM-Elemente, nicht an
+   importierte Komponenten wie <Link>. Steht der <Link> ganz oben in
+   einer Komponente, gibt es auch kein natives Elternelement, über das
+   man mit `:global()` scopen könnte. Solche Stile gehören hierher.
+
+   Präfix `vo-`, weil kurze Namen wie `.karte` im Projekt mehrfach
+   vorkommen und ein globaler Selektor sonst fremde Elemente trifft.
+   ============================================================ */
+
+/* Die Reise-/Beitragskarte aus src/ui/Bausteine.tsx */
+.vo-eintragskarte {
+  display: block;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--raised-tint, var(--surface-raised));
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--motion-log), background var(--motion-log);
+}
+
+.vo-eintragskarte:hover {
+  border-color: var(--border-strong);
+}

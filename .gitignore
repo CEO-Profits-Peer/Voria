@@ -1,0 +1,19 @@
+# Zugangsdaten — niemals ins Repo
+.env
+.env.local
+.env*.local
+
+# Abhängigkeiten & Build
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# Betrieb
+.vercel/
+.supabase/
+
+# System
+.DS_Store
+Thumbs.db

@@ -1,0 +1,445 @@
+/* Seitenlayouts.
+   Nur Klassen, die von Server Components gebraucht werden — Client-
+   Komponenten bringen ihre Stile selbst mit. Ausschließlich semantische
+   Tokens, keine Hex-Werte, keine Primitiven. */
+
+/* ---------- Gemeinsame Seitenbreite ------------------------- */
+
+.seite {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.formular {
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formular h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: var(--weight-regular);
+}
+
+.formular p {
+  margin: -8px 0 8px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: var(--leading-normal);
+  color: var(--content-muted);
+}
+
+/* ---------- Reisenraster ------------------------------------ */
+
+.raster {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .raster {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .raster {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---------- Anlegen-Knopf ----------------------------------- */
+
+.anlegen {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 7px;
+  border: 1px solid var(--accent-primary);
+  background: var(--accent-primary);
+  color: var(--accent-contrast);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--motion-feed), border-color var(--motion-feed);
+}
+
+.anlegen:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  text-decoration: none;
+}
+
+/* ---------- Zustände: nicht gefunden, Fehler, offline ------- */
+
+.mittig {
+  min-height: 70dvh;
+  max-width: 48ch;
+  margin: 0 auto;
+  padding: var(--space-80) var(--space-24);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-16);
+}
+
+.mittig h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-regular);
+  color: var(--content-primary);
+}
+
+.mittig p {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--content-muted);
+  text-wrap: pretty;
+}
+
+.mittig a {
+  align-self: flex-start;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent-primary);
+  font-weight: var(--weight-medium);
+}
+
+.mittig-knoepfe {
+  display: flex;
+  align-items: center;
+  gap: var(--space-20);
+}
+
+.mittig-knoepfe button {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  color: var(--content-primary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.mittig-knoepfe button:hover {
+  border-color: var(--border-strong);
+}
+
+.laden-zeile {
+  color: var(--content-muted) !important;
+  animation: atmen 1.8s ease-in-out infinite;
+}
+
+@keyframes atmen {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.still {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--content-muted);
+}
+
+/* ---------- Feed -------------------------------------------- */
+
+.strom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* ---------- Profil ------------------------------------------ */
+
+.zahlen {
+  display: flex;
+  gap: 40px;
+  margin: 0 0 32px;
+  padding: 18px 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.zahlen dt {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}
+
+.zahlen dd {
+  margin: 5px 0 0;
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  color: var(--content-primary);
+}
+
+.abmelden button {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--content-secondary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color var(--motion-feed), color var(--motion-feed);
+}
+
+.abmelden button:hover {
+  border-color: var(--border-strong);
+  color: var(--content-primary);
+}
+
+/* ---------- Einstellungen ----------------------------------- */
+
+.zurueck-zeile {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 34px;
+  margin-left: -4px;
+  color: var(--content-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.zurueck-zeile:hover {
+  color: var(--content-primary);
+  text-decoration: none;
+}
+
+h1.gross {
+  margin: 6px 0 32px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: var(--weight-regular);
+  color: var(--content-primary);
+}
+
+@media (min-width: 900px) {
+  h1.gross {
+    font-size: 32px;
+  }
+}
+
+/* ---------- Kopfaktionen ------------------------------------ */
+
+.kopf-aktionen {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.rund {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  border: 1px solid var(--border-default);
+  color: var(--content-secondary);
+  text-decoration: none;
+  transition: border-color var(--motion-feed), color var(--motion-feed);
+}
+
+.rund:hover {
+  border-color: var(--border-strong);
+  color: var(--content-primary);
+}
+
+.kopf-rechts-reise {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/* ---------- Reise-Detailseite ------------------------------- */
+
+.reise {
+  min-height: 100%;
+}
+
+.reise > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 var(--space-12) 0 var(--space-8);
+}
+
+.reise > header a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-8);
+  color: var(--content-secondary);
+}
+
+.reise .inhalt {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-24) var(--space-64);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+
+.reise .meta {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}
+
+.reise h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--size-38);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-regular);
+  color: var(--content-primary);
+}
+
+.reise ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.reise ol a {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-16);
+  min-height: 52px;
+  padding: var(--space-12) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--motion-feed);
+}
+
+.reise ol a:hover {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.reise .tag-datum {
+  flex: none;
+  width: 7ch;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}
+
+.reise .tag-titel {
+  font-family: var(--font-display);
+  font-size: var(--size-20);
+  line-height: var(--leading-snug);
+  color: var(--content-primary);
+}
+
+.reise .neu {
+  color: var(--accent-primary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  border-bottom: none;
+}
+
+@media (min-width: 900px) {
+  .reise h1 {
+    font-size: var(--size-48);
+  }
+}
+
+/* ---------- Rückblick-Band im Profil ------------------------ */
+
+.rueckblick-band {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-14);
+  background: var(--surface-raised);
+  color: var(--content-secondary);
+  text-decoration: none;
+  transition: border-color var(--motion-log);
+}
+
+.rueckblick-band:hover {
+  border-color: var(--border-strong);
+  text-decoration: none;
+}
+
+.rueckblick-band span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: var(--leading-snug);
+}
+
+.rueckblick-band strong {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-primary);
+}
