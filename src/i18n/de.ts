@@ -92,6 +92,18 @@ export const de = {
     wasHeutePassiertIst: 'Was heute passiert ist',
     fotoWeg: 'Oder fang mit einem Foto an',
     fotoGross: 'Foto groß ansehen',
+
+    // Freie Fläche
+    etwasHinzufuegen: 'Etwas hinzufügen',
+    textDazu: 'Text',
+    fotoDazu: 'Foto',
+    notizSchreiben: 'Notiz schreiben',
+    schreibenBeenden: 'Schreiben beenden',
+    notizLeer: 'Tippe hier.',
+    drehen: 'Drehen',
+    groesseAendern: 'Größe ändern',
+    entfernen: 'Entfernen',
+    ablegenHinweis: 'Tippen zum Ablegen — die Fläche lässt sich weiterschieben',
     anstoss: [
       'Was ist heute passiert?',
       'Woran willst du dich in zehn Jahren erinnern?',

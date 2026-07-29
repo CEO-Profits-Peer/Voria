@@ -97,24 +97,38 @@ erkennen.
 
 ---
 
-## 3. Free-Modus: mehrere Textfelder — das größte Stück
+## 3. Free-Modus: mehrere Textfelder — GEBAUT, ungetestet
 
-Im Free-Modus lässt sich derzeit **gar kein** Text anlegen. Der
-Plus-Knopf in `OpenSpace.tsx` ruft `aufHinzufuegen`, und in
-`Tagesansicht.tsx` steht dahinter `() => setFotoOffen(true)` — er
-öffnet also nur den Fotowähler. `OpenSpace` ruft `textSpeichern` nie
-auf; vorhandene Textblöcke sind dort verschiebbar, aber nicht
-bearbeitbar.
+Der Plus-Knopf öffnete nur den Fotowähler; Text ließ sich auf der
+freien Fläche überhaupt nicht anlegen. Jetzt fragt er zuerst: Text oder
+Foto.
 
-Das Datenmodell kann es schon: `blocks` trägt `kind = 'text'` samt
-`x, y, w, h, rotation, z`. Es fehlt die Bedienung.
+Gebaut:
 
-Zu bauen:
+* `textBlockAnlegen(eintragId, lage)` in `actions.ts` — eigene Action,
+  weil `textSpeichern(…, null, '')` keine Lage kennt und der Block
+  sonst beim nächsten Laden auf den Standardplatz zurückspringt
+* Geschrieben wird im Block selbst, verzögert gesichert nach 700 ms.
+  Eine Uhr **pro Block**, sonst verschluckt das Tippen im zweiten das
+  Sichern des ersten
+* Beliebig viele Textblöcke, jeder mit eigener Position und Drehung
+* Stiftgriff schaltet den Schreibmodus um. Solange geschrieben wird,
+  sind Ziehen, Drehen und Aufheben abgeschaltet — sonst rutscht die
+  Notiz weg, wenn man den Cursor setzt
+* Alle Beschriftungen über i18n, in `de.ts` und `en.ts`
 
-* Text hinzufügen (Plus-Knopf mit Auswahl Text/Foto statt direkt Foto)
-* Im Block schreiben, verzögert speichern wie im ruhigen Modus
-* Mehrere Textblöcke gleichzeitig, jeder mit eigener Position
-* Löschen — die Knöpfe dafür stehen schon in `OpenSpace.tsx`
+**Dabei ein latenter Absturz gefunden und behoben.** `lagen` wurde nur
+beim ersten Rendern gefüllt. Kam danach ein Block hinzu — bisher durch
+ein Foto aus dem Wähler —, stand unter seiner ID nichts, und
+`lagen[b.id].x` lief in einen TypeError. Die freie Fläche stürzte also
+ab, sobald man dort ein Foto einfügte. Jetzt werden neue Blöcke
+nachgetragen und gelöschte entfernt, plus ein Rückfall direkt im
+Rendern.
+
+**Noch nicht getestet.** Ich kann auf diesem Rechner nicht bauen, und
+das Verhalten hängt an Zeigergesten, die ich nur eingeschränkt
+nachstellen kann. Nach dem Deploy prüfe ich im Browser:
+Text anlegen, tippen, neu laden, verschieben, zweiter Block, löschen.
 
 ---
 
@@ -141,6 +155,96 @@ Offene Entscheidungen, bevor ich anfange:
 
 `votes` und `vote_count` gibt es für Beiträge schon samt Trigger
 `bump_vote_count` — das Muster lässt sich übernehmen.
+
+---
+
+## 4b. Leute finden und Profile sehen
+
+**Gute Nachricht: die Hälfte steht schon.** `/u/[benutzername]` zeigt
+bereits Name, Bio, Anzahl Follower, Anzahl Gefolgte, den Folgen-Knopf
+und alle Beiträge der Person. `FolgenKnopf` und die `follows`-Tabelle
+sind fertig.
+
+Es fehlt:
+
+* **Leute suchen.** `/suche` durchsucht ausschließlich `entries` über
+  `textSearch('suche', …)`. Profile kommen dort nicht vor. Nötig ist
+  eine zweite Abfrage auf `profiles` über `username` und
+  `display_name`, plus eine Umschaltung im Suchergebnis
+  („Tage" / „Leute").
+* **Bereiste Orte auf dem Profil.** Die Zahlen sind da, die Landkarte
+  nicht. Ließe sich aus `trip_countries` der öffentlichen Reisen
+  ableiten — aber Achtung: `trips_read` gibt fremde Reisen nur bei
+  `visibility = 'public'` heraus, und das steht bei niemandem. Ohne
+  eine Entscheidung dazu bleibt die Liste leer.
+* **Berühmte Leute** gibt es nicht von selbst. Das ist kein
+  Suchproblem, sondern ein Kaltstartproblem: ohne Nutzer keine
+  Profile. Denkbar wäre eine kleine redaktionelle Liste zum Start.
+
+---
+
+## 4c. Nach Orten im Feed suchen
+
+`entries.place_name` ist ein freies Textfeld — jeder schreibt „Marrakesch",
+„marrakech", „Marrakesh". Suche darauf findet dann wenig.
+
+Zwei Wege, und das ist eine Entscheidung, keine Fleißarbeit:
+
+1. **Freitext beibehalten**, Suche unscharf über `ilike`. Schnell
+   gebaut, bleibt ungenau.
+2. **Orte normalisieren** — eigene Tabelle `places`, beim Eintippen
+   Vorschläge, `entries.place_id` als Verweis. Dann funktioniert Suche,
+   Gruppierung und später eine echte Karte. Mehr Arbeit, aber das
+   Fundament für „wer war auch dort".
+
+Für die Suche im Feed hängt beides an `posts` → `entries` → Ort. Die
+Länder liegen ohnehin schon strukturiert in `trip_countries`.
+
+---
+
+## 4d. Beitrag direkt erstellen — Architekturfrage, nicht nur Arbeit
+
+Hier muss eine Entscheidung vor die Umsetzung, weil sie an Vorias Kern
+rührt.
+
+Derzeit gilt: **ein Beitrag IST ein geteilter Tag.** `posts.entry_id`
+ist `not null unique` — kein Beitrag ohne Tagebucheintrag. Genau daraus
+zieht Voria seinen Charakter: der Feed ist ein Nebenprodukt des
+Tagebuchs, keine eigene Bühne. Deshalb gibt es keinen „Posten"-Knopf.
+
+Ein direkter Beitragseditor mit Kategoriewahl kehrt das um. Dann gibt
+es zwei Sorten Inhalt, zwei Wege sie zu schreiben, und die Frage
+„warum steht das nicht in meinem Log" bei jedem Beitrag.
+
+Drei Möglichkeiten:
+
+1. **Nicht bauen.** Wer etwas teilen will, schreibt einen Tag und
+   stellt ihn öffentlich. Ein Satz Begleittext geht im Teilen-Dialog
+   schon heute.
+2. **Beitrag legt still einen Tag an.** Nach außen ein Post-Editor,
+   innen entsteht ein Eintrag mit heutigem Datum. Das Modell bleibt
+   heil, die Bedienung fühlt sich wie Instagram an.
+3. **Zweite Inhaltsart** mit `posts.entry_id` nullable. Ehrlichste
+   Umsetzung deines Wunsches, aber der größte Eingriff — und Voria
+   wäre danach eine andere App.
+
+Mein Vorschlag ist 2. Kategorien lassen sich unabhängig davon
+ergänzen (`posts.category`), das ist kleine Arbeit.
+
+---
+
+## 4e. Leute mit @ erwähnen
+
+Baut auf den Kommentaren auf, geht aber auch in Beitragstexten. Nötig:
+
+* Beim Tippen von `@` Vorschläge aus `profiles` — braucht die
+  Personensuche aus 4b
+* Erwähnungen beim Speichern auflösen und als IDs ablegen, nicht als
+  Text. Sonst zeigt eine Erwähnung ins Leere, wenn jemand seinen
+  Benutzernamen ändert
+* Anzeige als Verweis auf `/u/[benutzername]`
+* Offene Frage: Benachrichtigungen? Die gibt es in Voria noch gar
+  nicht — das wäre ein eigenes Stück samt Tabelle und Ungelesen-Zähler
 
 ---
 

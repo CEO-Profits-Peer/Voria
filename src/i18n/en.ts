@@ -92,6 +92,18 @@ export const en: Woerterbuch = {
     wasHeutePassiertIst: 'What happened today',
     fotoWeg: 'Or start with a photo',
     fotoGross: 'View photo large',
+
+    // Free canvas
+    etwasHinzufuegen: 'Add something',
+    textDazu: 'Text',
+    fotoDazu: 'Photo',
+    notizSchreiben: 'Write a note',
+    schreibenBeenden: 'Finish writing',
+    notizLeer: 'Type here.',
+    drehen: 'Rotate',
+    groesseAendern: 'Resize',
+    entfernen: 'Remove',
+    ablegenHinweis: 'Tap to put it down — the canvas still scrolls',
     anstoss: [
       'What happened today?',
       'What do you want to remember in ten years?',

@@ -18,13 +18,22 @@
  *
  * Die Fläche zoomt nicht, sie scrollt nur — sonst kollidiert Zwei-Finger-
  * Drehen am Objekt mit Zwei-Finger-Zoomen der Fläche.
+ *
+ * TEXT: Der Plus-Knopf bot vorher nur Fotos an — auf der freien Fläche
+ * ließ sich überhaupt kein Text anlegen, obwohl `blocks` das seit dem
+ * ersten Entwurf kann. Jetzt fragt er zuerst: Text oder Foto.
+ *
+ * Geschrieben wird im Block selbst. Solange getippt wird, sind Ziehen,
+ * Drehen und Aufheben abgeschaltet — sonst rutscht die Notiz beim
+ * Setzen des Cursors weg. Der Stiftgriff schaltet um.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { RotateCw, Maximize2, Trash2, Hand, Plus } from 'lucide-react';
+import { RotateCw, Maximize2, Trash2, Hand, Plus, Pencil, Check, Type, ImagePlus } from 'lucide-react';
 import type { Block } from './queries';
-import { layoutSpeichern, blockLoeschen } from './actions';
+import { layoutSpeichern, blockLoeschen, textBlockAnlegen, textSpeichern } from './actions';
 import { FotoBild } from './FotoBild';
+import { useT } from '@/i18n/Sprachraum';
 
 interface Lage {
   x: number;
@@ -37,37 +46,116 @@ interface Lage {
 
 const STANDARD: Lage = { x: 40, y: 80, w: 220, h: 160, drehung: -2, z: 0 };
 
+/** Lage eines Blocks aus den gespeicherten Werten, mit Rückfall. */
+function lageVon(b: Block): Lage {
+  return {
+    x: b.x ?? STANDARD.x + (b.position % 3) * 24,
+    y: b.y ?? STANDARD.y + b.position * 150,
+    w: b.w ?? (b.art === 'text' ? 240 : 220),
+    h: b.h ?? (b.art === 'text' ? 90 : 160),
+    drehung: b.drehung ?? 0,
+    z: b.z ?? b.position,
+  };
+}
+
 export function OpenSpace({
+  eintragId,
   bloecke,
-  aufHinzufuegen,
+  aufFotoWaehlen,
 }: {
+  eintragId: string;
   bloecke: Block[];
-  aufHinzufuegen: () => void;
+  aufFotoWaehlen: () => void;
 }) {
+  const { t } = useT();
   const flaeche = useRef<HTMLDivElement>(null);
   const [lagen, setLagen] = useState<Record<string, Lage>>(() =>
-    Object.fromEntries(
-      bloecke.map((b) => [
-        b.id,
-        {
-          x: b.x ?? STANDARD.x + (b.position % 3) * 24,
-          y: b.y ?? STANDARD.y + b.position * 150,
-          w: b.w ?? (b.art === 'text' ? 240 : 220),
-          h: b.h ?? (b.art === 'text' ? 90 : 160),
-          drehung: b.drehung ?? 0,
-          z: b.z ?? b.position,
-        },
-      ]),
-    ),
+    Object.fromEntries(bloecke.map((b) => [b.id, lageVon(b)])),
   );
+
+  /*
+   * Neue Blöcke in die Lagen aufnehmen.
+   *
+   * `lagen` wurde nur beim ersten Rendern gefüllt. Kam danach ein Block
+   * hinzu — durch ein Foto aus dem Wähler oder jetzt durch Text — stand
+   * unter seiner ID nichts, und `lagen[b.id].x` lief in einen
+   * TypeError. Die Fläche stürzte ab, sobald man ein Foto einfügte.
+   */
+  useEffect(() => {
+    setLagen((v) => {
+      let geaendert = false;
+      const naechste = { ...v };
+      for (const b of bloecke) {
+        if (!naechste[b.id]) {
+          naechste[b.id] = lageVon(b);
+          geaendert = true;
+        }
+      }
+      // Gelöschte wieder loswerden, sonst wächst das Objekt endlos.
+      for (const id of Object.keys(naechste)) {
+        if (!bloecke.some((b) => b.id === id)) {
+          delete naechste[id];
+          geaendert = true;
+        }
+      }
+      return geaendert ? naechste : v;
+    });
+  }, [bloecke]);
   const [gewaehlt, setGewaehlt] = useState<string | null>(null);
   const [aufgehoben, setAufgehoben] = useState<string | null>(null);
+  /** Block, in dem gerade geschrieben wird. Sperrt Ziehen und Drehen. */
+  const [schreibt, setSchreibt] = useState<string | null>(null);
+  const [menueOffen, setMenueOffen] = useState(false);
+  /** Texte im Zugriff, damit das Tippen nicht auf den Server wartet. */
+  const [texte, setTexte] = useState<Record<string, string>>({});
+  const uhren = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const zieh = useRef<{ id: string; dx: number; dy: number; art: 'move' | 'size' | 'rot' } | null>(null);
   const halten = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const sichern = useCallback((id: string, l: Lage) => {
     layoutSpeichern(id, { x: l.x, y: l.y, w: l.w, h: l.h, rotation: l.drehung, z: l.z });
   }, []);
+
+  /*
+   * Kein Speichern-Knopf, wie im ruhigen Modus. 700 ms nach dem letzten
+   * Anschlag geht der Text weg. Pro Block eine eigene Uhr, sonst
+   * verschluckt das Tippen im zweiten Block das Sichern des ersten.
+   */
+  const textTippen = useCallback(
+    (blockId: string, wert: string) => {
+      setTexte((v) => ({ ...v, [blockId]: wert }));
+      clearTimeout(uhren.current[blockId]);
+      uhren.current[blockId] = setTimeout(() => {
+        textSpeichern(eintragId, blockId, wert);
+      }, 700);
+    },
+    [eintragId],
+  );
+
+  // Beim Verlassen nichts liegen lassen.
+  useEffect(() => {
+    const offen = uhren.current;
+    return () => Object.values(offen).forEach(clearTimeout);
+  }, []);
+
+  const textDazu = async () => {
+    setMenueOffen(false);
+    const kasten = flaeche.current?.getBoundingClientRect();
+    const rollen = flaeche.current?.scrollTop ?? 0;
+    // Etwas oberhalb der Mitte, damit die Tastatur nicht darüber liegt.
+    const lage = {
+      x: Math.max(16, Math.round(((kasten?.width ?? 360) - 240) / 2)),
+      y: Math.round(rollen + 120),
+      w: 240,
+      h: 90,
+    };
+    const id = await textBlockAnlegen(eintragId, lage);
+    if (!id) return;
+    setLagen((v) => ({ ...v, [id]: { ...lage, drehung: 0, z: 50 } }));
+    setTexte((v) => ({ ...v, [id]: '' }));
+    setGewaehlt(id);
+    setSchreibt(id);
+  };
 
   /* ---- Aufheben und Ablegen ------------------------------- */
 
@@ -151,7 +239,7 @@ export function OpenSpace({
   }, [lagen, sichern]);
 
   const starten = (e: React.PointerEvent, id: string, art: 'move' | 'size' | 'rot') => {
-    if (aufgehoben) return;
+    if (aufgehoben || schreibt === id) return;
     e.stopPropagation();
     const kasten = flaeche.current?.getBoundingClientRect();
     if (!kasten) return;
@@ -166,14 +254,22 @@ export function OpenSpace({
       className="flaeche region-surface"
       data-flaeche="offen"
       onPointerDown={() => {
-        if (aufgehoben) ablegen();
-        else setGewaehlt(null);
+        if (aufgehoben) {
+          ablegen();
+          return;
+        }
+        setMenueOffen(false);
+        setSchreibt(null);
+        setGewaehlt(null);
       }}
     >
       {bloecke.map((b) => {
-        const l = lagen[b.id];
+        // Rückfall, falls der Block gerade erst dazugekommen ist und
+        // der Effekt oben noch nicht gelaufen ist.
+        const l = lagen[b.id] ?? lageVon(b);
         const aktiv = gewaehlt === b.id;
         const schwebt = aufgehoben === b.id;
+        const imText = schreibt === b.id;
 
         return (
           <div
@@ -181,6 +277,7 @@ export function OpenSpace({
             className="element"
             data-aktiv={aktiv}
             data-schwebt={schwebt}
+            data-schreibt={imText}
             style={{
               left: l.x,
               top: l.y,
@@ -194,6 +291,9 @@ export function OpenSpace({
                 ablegen();
                 return;
               }
+              // Im Schreibmodus darf der Block nicht wegrutschen,
+              // wenn man den Cursor setzt.
+              if (imText) return;
               setGewaehlt(b.id);
               starten(e, b.id, 'move');
               halten.current = setTimeout(() => aufheben(b.id), 480);
@@ -203,35 +303,74 @@ export function OpenSpace({
           >
             {b.art === 'photo' && b.foto ? (
               <FotoBild foto={b.foto} polaroid />
+            ) : imText ? (
+              <textarea
+                className="notiz notiz-feld"
+                value={texte[b.id] ?? b.text ?? ''}
+                onChange={(e) => textTippen(b.id, e.target.value)}
+                placeholder={t.log.notizLeer}
+                aria-label={t.log.notizSchreiben}
+                autoFocus
+                style={{ height: l.h }}
+                onPointerDown={(e) => e.stopPropagation()}
+              />
             ) : (
-              <p className="notiz">{b.text}</p>
+              <p className="notiz">{texte[b.id] ?? b.text}</p>
             )}
 
             {aktiv && !schwebt && (
               <>
                 <span className="rahmen" aria-hidden />
-                <button
-                  type="button"
-                  className="griff dreh"
-                  aria-label="Drehen"
-                  onPointerDown={(e) => starten(e, b.id, 'rot')}
-                >
-                  <RotateCw size={14} strokeWidth={1.75} aria-hidden />
-                </button>
-                <button
-                  type="button"
-                  className="griff groesse"
-                  aria-label="Größe ändern"
-                  onPointerDown={(e) => starten(e, b.id, 'size')}
-                >
-                  <Maximize2 size={14} strokeWidth={1.75} aria-hidden />
-                </button>
+
+                {b.art === 'text' && (
+                  <button
+                    type="button"
+                    className="griff stift"
+                    aria-label={imText ? t.log.schreibenBeenden : t.log.notizSchreiben}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSchreibt(imText ? null : b.id);
+                    }}
+                  >
+                    {imText ? (
+                      <Check size={14} strokeWidth={2} aria-hidden />
+                    ) : (
+                      <Pencil size={14} strokeWidth={1.75} aria-hidden />
+                    )}
+                  </button>
+                )}
+
+                {!imText && (
+                  <>
+                    <button
+                      type="button"
+                      className="griff dreh"
+                      aria-label={t.log.drehen}
+                      onPointerDown={(e) => starten(e, b.id, 'rot')}
+                    >
+                      <RotateCw size={14} strokeWidth={1.75} aria-hidden />
+                    </button>
+                    <button
+                      type="button"
+                      className="griff groesse"
+                      aria-label={t.log.groesseAendern}
+                      onPointerDown={(e) => starten(e, b.id, 'size')}
+                    >
+                      <Maximize2 size={14} strokeWidth={1.75} aria-hidden />
+                    </button>
+                  </>
+                )}
+
                 <button
                   type="button"
                   className="griff weg"
-                  aria-label="Entfernen"
-                  onPointerDown={(e) => {
+                  aria-label={t.log.entfernen}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
                     e.stopPropagation();
+                    setSchreibt(null);
+                    setGewaehlt(null);
                     blockLoeschen(b.id);
                   }}
                 >
@@ -246,21 +385,45 @@ export function OpenSpace({
       {aufgehoben && (
         <div className="hinweis" role="status">
           <Hand size={16} strokeWidth={1.5} aria-hidden />
-          Tippen zum Ablegen — die Fläche lässt sich weiterschieben
+          {t.log.ablegenHinweis}
         </div>
       )}
 
-      {/* Ein Knopf im Daumenbereich, drei Angebote — keine Werkzeugleiste. */}
-      {!aufgehoben && (
-        <button
-          type="button"
-          className="dazu"
-          aria-label="Etwas hinzufügen"
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={aufHinzufuegen}
-        >
-          <Plus size={24} strokeWidth={1.5} aria-hidden />
-        </button>
+      {/* Ein Knopf im Daumenbereich, zwei Angebote — keine Werkzeugleiste. */}
+      {!aufgehoben && !schreibt && (
+        <div className="dazu-bereich">
+          {menueOffen && (
+            <div className="dazu-menue" role="menu">
+              <button type="button" role="menuitem" onPointerDown={(e) => e.stopPropagation()} onClick={textDazu}>
+                <Type size={17} strokeWidth={1.75} aria-hidden />
+                {t.log.textDazu}
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={() => {
+                  setMenueOffen(false);
+                  aufFotoWaehlen();
+                }}
+              >
+                <ImagePlus size={17} strokeWidth={1.75} aria-hidden />
+                {t.log.fotoDazu}
+              </button>
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="dazu"
+            aria-label={t.log.etwasHinzufuegen}
+            aria-expanded={menueOffen}
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => setMenueOffen((v) => !v)}
+          >
+            <Plus size={24} strokeWidth={1.5} aria-hidden />
+          </button>
+        </div>
       )}
 
       <style jsx>{`
@@ -292,6 +455,30 @@ export function OpenSpace({
           line-height: var(--leading-normal);
           color: var(--content-primary);
           box-shadow: 0 1px 6px rgb(21 19 17 / 0.1);
+          /* Zeilenumbrüche und Leerzeilen so zeigen, wie getippt. */
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+        }
+        /* Das Textfeld sieht aus wie die Notiz — nur eben beschreibbar.
+           Gleiche Schrift und gleicher Innenabstand, sonst springt der
+           Text beim Umschalten. */
+        .notiz-feld {
+          display: block;
+          width: 100%;
+          min-height: 60px;
+          border: none;
+          outline: none;
+          resize: none;
+          font-family: var(--font-text);
+          touch-action: auto;
+          cursor: text;
+        }
+        .notiz-feld::placeholder {
+          color: var(--content-muted);
+        }
+        .element[data-schreibt='true'] {
+          cursor: text;
+          z-index: 800;
         }
         .rahmen {
           position: absolute;
@@ -332,10 +519,52 @@ export function OpenSpace({
           right: -19px;
           top: -19px;
         }
-        .dazu {
+        .stift {
+          left: -19px;
+          top: -19px;
+        }
+        .dazu-bereich {
           position: fixed;
           bottom: calc(88px + env(safe-area-inset-bottom));
           right: var(--space-20);
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: var(--space-8);
+          z-index: 900;
+        }
+        .dazu-menue {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          padding: 6px;
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-8);
+          background: var(--surface-raised);
+          box-shadow: 0 8px 24px rgb(21 19 17 / 0.22);
+        }
+        .dazu-menue button {
+          display: flex;
+          align-items: center;
+          gap: var(--space-8);
+          /* 44 px hoch — Fingergröße, nicht Mausgröße. */
+          height: 44px;
+          padding: 0 var(--space-16) 0 var(--space-12);
+          border: none;
+          border-radius: 6px;
+          background: transparent;
+          color: var(--content-primary);
+          font-family: var(--font-ui);
+          font-size: 14px;
+          font-weight: var(--weight-medium);
+          white-space: nowrap;
+          cursor: pointer;
+        }
+        .dazu-menue button:hover {
+          background: var(--surface-sunken);
+        }
+        .dazu {
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -346,7 +575,6 @@ export function OpenSpace({
           background: var(--accent-primary);
           color: var(--accent-contrast);
           cursor: pointer;
-          z-index: 900;
           transition: background var(--motion-feed);
         }
         .dazu:hover {

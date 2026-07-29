@@ -84,7 +84,11 @@ export function Tagesansicht({
           aufFotoOeffnen={(i) => setVollansicht(i)}
         />
       ) : (
-        <OpenSpace bloecke={tag.bloecke} aufHinzufuegen={() => setFotoOffen(true)} />
+        <OpenSpace
+          eintragId={tag.id}
+          bloecke={tag.bloecke}
+          aufFotoWaehlen={() => setFotoOffen(true)}
+        />
       )}
       </div>
 

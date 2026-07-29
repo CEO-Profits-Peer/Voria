@@ -175,6 +175,57 @@ export async function textSpeichern(eintragId: string, blockId: string | null, t
   return data?.id ?? null;
 }
 
+/**
+ * Leeren Textblock auf der freien Fläche anlegen.
+ *
+ * Eigene Action statt `textSpeichern(…, null, '')`, weil dort die Lage
+ * fehlt: ein Block ohne x/y landet beim nächsten Laden wieder auf dem
+ * Standardplatz und springt unter dem Finger weg. Die Fläche übergibt
+ * deshalb, wo der Block entstehen soll.
+ *
+ * Gibt die neue ID zurück, damit die Fläche sofort in den
+ * Schreibmodus gehen kann.
+ */
+export async function textBlockAnlegen(
+  eintragId: string,
+  lage: { x: number; y: number; w: number; h: number },
+): Promise<string | null> {
+  const supabase = await createServerClient();
+
+  const { data: letzte } = await supabase
+    .from('blocks')
+    .select('position')
+    .eq('entry_id', eintragId)
+    .order('position', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const { data, error } = await supabase
+    .from('blocks')
+    .insert({
+      entry_id: eintragId,
+      kind: 'text',
+      text: '',
+      position: (letzte?.position ?? -1) + 1,
+      x: lage.x,
+      y: lage.y,
+      w: lage.w,
+      h: lage.h,
+      rotation: 0,
+      z: (letzte?.position ?? -1) + 1,
+    })
+    .select('id')
+    .single();
+
+  if (error || !data) {
+    console.error('[textBlockAnlegen]', error);
+    return null;
+  }
+
+  revalidatePath('/log', 'layout');
+  return data.id;
+}
+
 export async function modusWechseln(eintragId: string, modus: 'quiet' | 'free') {
   const supabase = await createServerClient();
   await supabase.from('entries').update({ mode: modus }).eq('id', eintragId);
