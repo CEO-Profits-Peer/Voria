@@ -9,8 +9,32 @@ import { createServerClient } from '@/lib/supabase-server';
 import { regionForCountry, type RegionOrNeutral } from '@/themes/regions';
 import type { Beitrag } from './queries';
 
+/*
+ * WARUM HIER DER FREMDSCHLÜSSEL AUSDRÜCKLICH DASTEHT
+ *
+ * `profiles(...)` allein genügt nicht. Es gibt zwei Wege von `posts`
+ * nach `profiles`:
+ *
+ *   1. posts_user_id_fkey  — posts.user_id → profiles.id   (gewollt)
+ *   2. über `votes`        — votes.post_id → posts und
+ *                            votes.user_id → profiles      (Zufall)
+ *
+ * PostgREST kann nicht wählen und antwortet mit HTTP 300:
+ *
+ *   PGRST201: Could not embed because more than one relationship
+ *             was found for 'posts' and 'profiles'
+ *
+ * Die alte Fassung prüfte nur `if (!data) return []`. Ergebnis: Feed,
+ * Profilseiten und Einzelbeitrag waren dauerhaft leer, ohne Fehler in
+ * Konsole oder Terminal. Es sah aus, als hätte niemand etwas geteilt —
+ * dabei standen die Beiträge längst in der Datenbank.
+ *
+ * Merke: Sobald eine Tabelle über eine Zwischentabelle wie `votes`
+ * oder `follows` ein zweites Mal auf `profiles` zeigt, muss der
+ * Fremdschlüssel benannt werden.
+ */
 const AUSWAHL = `id, entry_id, caption, vote_count, published_at,
-  profiles(username, display_name),
+  profiles!posts_user_id_fkey(username, display_name),
   entries(entry_date, title, place_name,
           trips(region_override, trip_countries(country_code, days)),
           blocks(kind, position, photos(r2_key, width, height, blurhash)))`;
@@ -21,12 +45,14 @@ export async function ladeProfilBeitraege(profilId: string): Promise<Beitrag[]> 
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('posts')
     .select(AUSWAHL)
     .eq('user_id', profilId)
     .order('published_at', { ascending: false })
     .limit(50);
+
+  if (error) console.error('[ladeProfilBeitraege]', error);
 
   return formen(data ?? [], await eigeneVotes(user?.id));
 }

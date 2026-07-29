@@ -40,10 +40,22 @@ export function TeilenDialog({
   ];
   const [text, setText] = useState('');
   const [laeuft, starten] = useTransition();
+  const [fehler, setFehler] = useState<string | null>(null);
 
+  /*
+   * Der Dialog schloss sich früher immer — auch wenn das Veröffentlichen
+   * fehlschlug. Der Tag sah danach geteilt aus, im Feed stand aber
+   * nichts, und niemand konnte sehen warum. Jetzt bleibt der Dialog im
+   * Fehlerfall offen und sagt, was los ist.
+   */
   const sichern = () =>
     starten(async () => {
-      await sichtbarkeitSetzen(eintragId, stufe, stufe === 'public' ? text : '');
+      setFehler(null);
+      const ergebnis = await sichtbarkeitSetzen(eintragId, stufe, stufe === 'public' ? text : '');
+      if (ergebnis?.fehler) {
+        setFehler(ergebnis.fehler);
+        return;
+      }
       aufSchliessen();
     });
 
@@ -87,12 +99,28 @@ export function TeilenDialog({
           </label>
         )}
 
+        {fehler && (
+          <p className="teilen-fehler" role="alert">
+            {fehler}
+          </p>
+        )}
+
         <Knopf art="primaer" groesse="gross" breit onClick={sichern} disabled={laeuft}>
           {laeuft ? t.auth.einenMoment : t.log.uebernehmen}
         </Knopf>
       </div>
 
       <style jsx>{`
+        .teilen-fehler {
+          margin: 0;
+          padding: var(--space-12) var(--space-16);
+          border-left: 2px solid var(--state-danger);
+          background: var(--surface-sunken);
+          font-family: var(--font-ui);
+          font-size: var(--size-14);
+          line-height: var(--leading-normal);
+          color: var(--content-primary);
+        }
         .grund {
           position: fixed;
           inset: 0;

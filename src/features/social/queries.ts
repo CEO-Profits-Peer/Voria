@@ -33,11 +33,35 @@ export async function ladeFeed(): Promise<Beitrag[]> {
   const { count } = await supabase.from('posts').select('id', { count: 'exact', head: true });
   const chronologisch = (count ?? 0) < SCHWELLE_FUER_ALGORITHMUS;
 
-  const { data } = await supabase
+/*
+ * WARUM HIER DER FREMDSCHLÜSSEL AUSDRÜCKLICH DASTEHT
+ *
+ * `profiles(...)` allein genügt nicht. Es gibt zwei Wege von `posts`
+ * nach `profiles`:
+ *
+ *   1. posts_user_id_fkey  — posts.user_id → profiles.id   (gewollt)
+ *   2. über `votes`        — votes.post_id → posts und
+ *                            votes.user_id → profiles      (Zufall)
+ *
+ * PostgREST kann nicht wählen und antwortet mit HTTP 300:
+ *
+ *   PGRST201: Could not embed because more than one relationship
+ *             was found for 'posts' and 'profiles'
+ *
+ * Die alte Fassung prüfte nur `if (!data) return []`. Ergebnis: Feed,
+ * Profilseiten und Einzelbeitrag waren dauerhaft leer, ohne Fehler in
+ * Konsole oder Terminal. Es sah aus, als hätte niemand etwas geteilt —
+ * dabei standen die Beiträge längst in der Datenbank.
+ *
+ * Merke: Sobald eine Tabelle über eine Zwischentabelle wie `votes`
+ * oder `follows` ein zweites Mal auf `profiles` zeigt, muss der
+ * Fremdschlüssel benannt werden.
+ */
+  const { data, error } = await supabase
     .from('posts')
     .select(
       `id, entry_id, caption, vote_count, published_at,
-       profiles(username, display_name),
+       profiles!posts_user_id_fkey(username, display_name),
        entries(entry_date, title, place_name,
                trips(region_override, trip_countries(country_code, days)),
                blocks(kind, position, photos(r2_key, width, height, blurhash)))`,
@@ -45,6 +69,10 @@ export async function ladeFeed(): Promise<Beitrag[]> {
     .order(chronologisch ? 'published_at' : 'vote_count', { ascending: false })
     .limit(50);
 
+  if (error) {
+    console.error('[ladeFeed] Feed-Abfrage fehlgeschlagen:', error);
+    return [];
+  }
   if (!data) return [];
 
   let eigene = new Set<string>();

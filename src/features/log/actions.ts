@@ -241,27 +241,56 @@ export async function blockLoeschen(blockId: string) {
  * verschwindet der Beitrag wieder — der Eintrag selbst bleibt unberührt.
  * Teilen ist eine Entscheidung pro Tag, nicht pro Konto.
  */
+export type TeilenErgebnis = { fehler?: string };
+
 export async function sichtbarkeitSetzen(
   eintragId: string,
   stufe: 'private' | 'followers' | 'public',
   text: string,
-) {
+): Promise<TeilenErgebnis> {
   const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return;
+  if (!user) return { fehler: 'Du bist nicht angemeldet.' };
 
-  await supabase.from('entries').update({ visibility: stufe }).eq('id', eintragId);
+  const { error: sichtFehler } = await supabase
+    .from('entries')
+    .update({ visibility: stufe })
+    .eq('id', eintragId);
+
+  if (sichtFehler) {
+    console.error('[sichtbarkeitSetzen] Sichtbarkeit nicht gesetzt:', sichtFehler);
+    return { fehler: 'Die Sichtbarkeit konnte nicht geändert werden.' };
+  }
 
   if (stufe === 'public') {
-    await supabase
+    const { error } = await supabase
       .from('posts')
       .upsert({ entry_id: eintragId, user_id: user.id, caption: text }, { onConflict: 'entry_id' });
+
+    if (error) {
+      /*
+       * Wichtig, dass das sichtbar wird: Ohne diese Zeile im posts-
+       * Tabelle sieht der Nutzer seinen Tag als „öffentlich", im Feed
+       * erscheint aber nichts. Der Eintrag stand dann auf public, ohne
+       * dass es je einen Beitrag gab — von außen nicht erklärbar.
+       *
+       * Also zurückdrehen, damit Anzeige und Wirklichkeit übereinstimmen.
+       */
+      console.error('[sichtbarkeitSetzen] Beitrag nicht angelegt:', error);
+      await supabase.from('entries').update({ visibility: 'private' }).eq('id', eintragId);
+      return { fehler: 'Der Beitrag konnte nicht veröffentlicht werden. Der Tag bleibt privat.' };
+    }
   } else {
-    await supabase.from('posts').delete().eq('entry_id', eintragId);
+    const { error } = await supabase.from('posts').delete().eq('entry_id', eintragId);
+    if (error) {
+      console.error('[sichtbarkeitSetzen] Beitrag nicht entfernt:', error);
+      return { fehler: 'Der Beitrag konnte nicht zurückgezogen werden.' };
+    }
   }
 
   revalidatePath('/feed');
   revalidatePath('/log', 'layout');
+  return {};
 }

@@ -1,0 +1,23 @@
+# Zeilenenden festnageln.
+#
+# Ohne diese Datei warnt Git bei jedem `git add` „LF will be replaced by
+# CRLF". Schlimmer als die Warnung ist die Folge: du arbeitest unter
+# Windows mit CRLF, Vercel baut unter Linux mit LF. Dann zeigt Git
+# irgendwann Änderungen an Dateien an, die niemand angefasst hat, und
+# echte Änderungen gehen darin unter.
+#
+# Regel: im Repo immer LF. Was im Arbeitsverzeichnis passiert, ist
+# Sache des Editors — VS Code kommt mit LF problemlos zurecht.
+
+* text=auto eol=lf
+
+# Binärdateien nie anfassen.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.avif  binary
+*.woff  binary
+*.woff2 binary
+*.ico   binary
+*.pdf   binary
