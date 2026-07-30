@@ -292,10 +292,305 @@ Kompakte Zeilen, Gruppen mit stiller Beschriftung, Hauptaktion oben, Nutzer-Chip
 
 Am Handy bekommt die untere Leiste jetzt eine leicht durchscheinende Fläche mit Weichzeichner, damit Inhalt darunter sichtbar bleibt.
 
+---
+
+### 2026-07-30 · Die Modi heißen „Seite" und „Fläche", nicht „Ruhig" und „Frei"
+
+Der Umschalter zeigt den **aktuellen** Modus, las sich aber wie ein
+Befehl. Englisch war „Quiet" — das klingt nach „sei still", nicht nach
+„du bist auf der ruhigen Seite".
+
+Neu: **Seite / Fläche**, englisch **Page / Canvas**. Beide beschreiben,
+was man sieht, nicht wie man sich fühlen soll.
+
+Intern heißen die Werte weiter `quiet` und `free` — das steht in der
+Datenbank als Enum `entry_mode` und ist nicht die Nutzersprache.
+
+---
+
+### 2026-07-30 · Foto und Sichtbarkeit gehören dem Tag, nicht einem Modus
+
+Beides stand in `RuhigerModus.tsx`. Auf der freien Fläche ließ sich die
+Sichtbarkeit deshalb gar nicht ändern, und der Foto-Knopf hing zusätzlich
+an `istLeer` — er verschwand nach dem ersten geschriebenen Satz.
+
+Jetzt in `TagLeiste.tsx`, gerendert von der Tagesansicht außerhalb des
+Moduswechsels.
+
+**Die Regel dahinter:** Was eine Eigenschaft des Tages ist, gehört auf
+die Tagesebene. Sonst laufen die beiden Darstellungen auseinander.
+
+---
+
+### 2026-07-30 · Preismodell: Frei mit Werbung, Pro ohne — Pro noch abgeschaltet
+
+Das Gerüst steht in `src/lib/plan.ts`. `istPro()` gibt heute immer
+`false` zurück; es gibt keine Bezahlung, keine Tabelle, keinen Webhook.
+
+**Warum trotzdem jetzt:** Sobald an fünf Stellen `if (irgendwas)` steht,
+um Werbung oder Grenzen zu schalten, wird der Umbau teuer. Eine
+Funktion umzustellen ist billig.
+
+Werbung ausschließlich im Feed, niemals im Log — das war schon vorher
+gesetzt und bleibt.
+
+---
+
+### 2026-07-30 · Werbedichte: jede sechste Karte, mit vier Sperren
+
+Instagram zeigt etwa jede vierte Karte als Anzeige, TikTok jede fünfte.
+Voria nimmt jede sechste, plus vier Sperren:
+
+* nie die erste Karte — die Antwort auf „was haben andere geteilt" darf
+  keine Reklame sein
+* nie die letzte — der Feed endet nicht mit Werbung
+* nie zwei hintereinander
+* gar keine, solange der Feed kürzer als sechs Beiträge ist
+
+Anzeigen tragen **kein** Regionen-Theme, keinen Avatar, keinen
+Stimmen-Knopf. Eine Anzeige, die sich wie ein Beitrag einfärbt, gibt
+sich als einer aus.
+
+---
+
+### 2026-07-30 · Kein Scroll-Snap im Feed, stattdessen Doppelklick
+
+Snap braucht gleich hohe Karten. Voria hat Beiträge mit Foto, ohne
+Foto, mit zwei Zeilen und mit langem Absatz. Auf variablen Höhen lässt
+Snap kurze Karten mit Leerraum stehen und schneidet lange ab.
+
+Wichtiger noch: Snap nimmt dem Leser die Kontrolle. Überfliegen geht
+dann nicht mehr. Das ist die Mechanik von TikTok, auf Verweildauer
+gebaut — bei einem Feed, der Nebenprodukt eines Tagebuchs ist, ein
+Widerspruch.
+
+**Stattdessen:** Doppelklick ins Leere springt weich zum nächsten
+Beitrag. Wer springen will, fordert es an. Nur auf die Fläche, nie auf
+Text — ein Doppelklick auf Text markiert dort ein Wort.
+
+---
+
+### 2026-07-30 · Geteilte Beiträge bekommen eine eigene öffentliche Route
+
+`/feed/[id]` steht in `GESCHUETZT` der Middleware. Ein dorthin geteilter
+Link hätte Fremde auf die Anmeldeseite geschickt — Teilen, das nur für
+Angemeldete funktioniert, ist kein Teilen.
+
+Neu: `/b/[beitragId]`, außerhalb von `(app)`, ohne Seitenleiste, mit
+Open-Graph-Karte für WhatsApp, Signal und Co.
+
+**Sicher ist die Route nicht durch die Seite, sondern durch die
+Datenbank.** `entries_read` gibt fremde Tage nur bei
+`visibility = 'public'` heraus.
+
+---
+
+### 2026-07-30 · Kommentare: verschachtelt, nach Stimmen, bearbeitbar statt löschbar
+
+Vier Festlegungen:
+
+| Frage | Entscheidung |
+|---|---|
+| **Verschachtelung** | Antworten auf Antworten, aber **ausklappbar**. Ein Kommentar zeigt seine Antworten erst auf Anforderung |
+| **Wo** | Im Fuß der Beitragskarte, neben Zustimmen. Der Fuß bekommt vier Knöpfe: **Zustimmen · Teilen · Repost · Kommentare** |
+| **Sortierung** | Nach Stimmen |
+| **Löschen** | Gar nicht. Nur **eigene bearbeiten**, und der Kommentar trägt danach sichtbar „bearbeitet" |
+
+**Zur Sortierung, offen benannt:** Nach Stimmen widerspricht der
+Feed-Entscheidung vom 28.07., die unter 200 Beiträgen bewusst
+chronologisch sortiert. Bei Kommentaren ist das vertretbar — es sind
+wenige pro Beitrag, und der beste steht oben statt der schnellste.
+Sollte sich zeigen, dass die ersten Kommentare dauerhaft gewinnen, ist
+eine Schwelle wie beim Feed der Ausweg.
+
+**Zum Nicht-Löschen:** Das ist eine bewusste Härte. Wer etwas schreibt,
+kann es korrigieren, aber nicht spurlos zurücknehmen — eine Antwort
+darunter würde sonst ins Leere zeigen. Für Missbrauch braucht es später
+Melden und Verbergen; das ersetzt Löschen nicht, sondern ist eine
+andere Funktion.
+
+**Eine Falle, vorab notiert:** `comment_votes` erzeugt zwischen
+`comments` und `profiles` genau dieselbe Doppeldeutigkeit, die am
+29.07. den Feed lahmgelegt hat. Der Fremdschlüssel muss von Anfang an
+benannt werden: `profiles!comments_user_id_fkey(…)`.
+
+---
+
+### 2026-07-30 · Beiträge bleiben an Tage gebunden
+
+Ein direkter Beitragseditor mit Kategoriewahl wurde vorgeschlagen und
+**vorerst zurückgestellt**, nicht abgelehnt.
+
+Heute gilt `posts.entry_id not null unique` — ein Beitrag *ist* ein
+geteilter Tag. Daraus zieht Voria seinen Charakter: der Feed ist
+Nebenprodukt des Tagebuchs, keine eigene Bühne. Ein eigener Editor
+kehrt das um; danach gibt es zwei Sorten Inhalt und bei jedem Beitrag
+die Frage, warum er nicht im Log steht.
+
+**Empfohlener Weg, wenn es kommt:** Der Editor sieht aus wie Instagram,
+legt innen aber still einen Tag mit heutigem Datum an. Das Modell
+bleibt heil, die Bedienung fühlt sich richtig an. Kategorien gehen
+unabhängig davon über `posts.category`.
+
+---
+
+### 2026-07-30 · Der Feed soll Geld verdienen — „optional" heißt nicht „nebensächlich"
+
+Richtigstellung einer Fehldeutung, die sich in mehrere Dokumente
+geschlichen hatte. Aus „Voria funktioniert vollständig ohne den Feed"
+war stillschweigend „der Feed ist Beiwerk und wird zurückgestellt"
+geworden. Das ist falsch.
+
+**Beides gilt gleichzeitig:**
+
+* Wer den Feed nie öffnet, hat ein vollständiges Tagebuch. Kein
+  Nachfragen, kein halbleeres Profil, keine Funktion, die fehlt.
+* Der Feed ist trotzdem die Stelle, an der Voria Geld verdient — über
+  Werbung und über das, was Leute zum Wiederkommen bringt.
+
+Daraus folgt für die Reihenfolge: Kommentare, Reposts und alles, was
+den Feed lebendig macht, sind **keine Ablenkung vom Kern**. Man muss
+sie nicht nutzen — aber sie müssen gut sein.
+
+Unverändert bleibt die eiserne Regel: **niemals Werbung im Log.**
+
+---
+
+### 2026-07-30 · Rote Punkte sind erlaubt, aber abschaltbar — und „Stiller Modus" schaltet alles auf einmal
+
+Die frühere Regel „keine roten Punkte, keine Gamification" war zu weit
+gefasst. Ein Hinweis, dass jemand geantwortet hat, ist keine
+Gamification — eine Serie, die reißt, wäre eine.
+
+**Neue Regel:** Zähler und Punkte für *Ereignisse* (Antwort, neue
+Folger, Upload von jemandem, dem man folgt) sind erlaubt. Zähler für
+*Verhalten* (Serien, Abzeichen, Fortschritt, „mehr als letztes Jahr")
+bleiben verboten.
+
+Alles davon ist in den Einstellungen einzeln abschaltbar. Dazu ein
+**Stiller Modus** als ein Schalter, der die ruhige Nutzung in einem
+Zug herstellt: keine Hinweise, kein Feed-Anstoß, nichts Soziales im
+Blick. Wird er ausgeschaltet, steht alles wieder so, wie es vorher
+war — der Schalter überschreibt die Einzeleinstellungen, er löscht sie
+nicht. Das ist der Unterschied zwischen einem Modus und einem
+Rundumschlag.
+
+---
+
+### 2026-07-30 · Der Feed bekommt zwei Reiter: „Für dich" und „Folge ich"
+
+Aus der Idee eines eigenen Bereichs „Mein Voria" wurden zwei Reiter
+über dem Feed, nach dem Muster, das `/suche` schon benutzt.
+
+Gründe: Ein eigener Hauptbereich für „Leute, denen ich folge" wäre ein
+fünfter Punkt in einer Navigation, die bewusst vier hat. Und ein
+verstecktes Menü — etwa drei Punkte im Feed — findet niemand.
+
+„Für dich" ist der bestehende Feed samt Kaltstart-Regel. „Folge ich"
+zeigt ausschließlich Beiträge von Gefolgten, chronologisch. Beides
+braucht keine neue Tabelle: `follows` liegt vor.
+
+---
+
+### 2026-07-30 · Karte v2 — vorgemerkt, nicht begonnen
+
+Die Entscheidung vom 28.07. („Die Karte ist keine Karte") bleibt für
+Version 1 bestehen. Der Wunsch nach einer echten zweiten Fassung ist
+festgehalten und wird zu gegebener Zeit eigens entschieden.
+
+Hängt an der Normalisierung der Orte — solange `place_name` Freitext
+ist, gibt es nichts, was sich sinnvoll verorten ließe.
+
+---
+
+### 2026-07-30 · Pro: was drin ist, und die Regel darüber
+
+**Die Regel steht über allem: Pro begrenzt, was man ANLEGT — niemals,
+was man LIEST.** Läuft ein Abo aus, bleibt jeder Tag lesbar und
+exportierbar. Ein Tagebuch, das sich selbst einsperrt, zerstört das
+Versprechen, auf dem Voria steht. Diese Regel gilt vor jedem
+Merkmal und vor jeder Zahl.
+
+Enthalten, in dieser Reihenfolge:
+
+1. **Keine Werbung** — der Einstieg
+2. **PDF-Satz des Jahres**, später das gedruckte Fotobuch
+3. **Originale sichern** — heute liegt nur die Anzeigefassung in der
+   Cloud; volle Auflösung ist ein echter Kostenblock und deshalb ein
+   ehrliches Pro-Merkmal
+4. **Unbegrenzte Fotos** je Tag
+
+**Ausdrücklich nicht hinter Pro:** gemeinsame Reisen (bestraft den
+nicht zahlenden Mitreisenden), der Jahresrückblick (er ist das
+Marketing und muss teilbar bleiben), und alles am Schreiben selbst.
+
+### 2026-07-30 · Abwicklung über einen Merchant of Record, nicht über Stripe direkt
+
+Paddle oder Lemon Squeezy statt Stripe. Bei Stripe verkauft der
+Betreiber selbst und schuldet in jedem EU-Land die dortige
+Umsatzsteuer. Ein Merchant of Record verkauft an seiner Stelle und
+zahlt aus. Das kostet ein paar Prozent und spart die gesamte
+Steuerabwicklung — bei den erwarteten Beträgen der Unterschied
+zwischen „läuft nebenbei" und „lohnt sich nicht".
+
+Technisch klein, weil die Naht steht: `istPro()` in `src/lib/plan.ts`
+gibt heute immer `false`. Es braucht eine Tabelle `subscriptions` und
+einen Webhook. Kein Code außerhalb von `plan.ts` muss wissen, dass es
+Geld gibt.
+
+**Sommerpreise ja, Countdown nein.** Rabattcodes kann der Anbieter.
+„Die App drängt nicht" gilt beim Verkaufen genauso — sonst ist es
+keine Regel.
+
+**Offen und vor dem App-Bau zu entscheiden:** Apple und Google
+verlangen für digitale Abos ihre eigene Kaufabwicklung, 15–30 %. Wer im
+Web kauft und sich in der App nur anmeldet, ist der übliche Weg. Das
+muss geklärt sein, bevor die App gebaut wird, nicht danach.
+
+### 2026-07-30 · Pro-Aussehen: Materialschicht plus eigenes Theme, abschaltbar
+
+Zwei Ebenen, und beide lassen die Struktur unberührt:
+
+1. **Materialschicht** — dieselben elf Slots, dasselbe Ornament,
+   dieselben Abstände, nur edler ausgeführt: Goldfolie statt Linie am
+   `.ornament-divider`, feineres Papier, Prägung am Titel. Sie nimmt
+   die Farbe der jeweiligen Region auf, statt sie zu ersetzen, und
+   funktioniert dadurch in allen zwölf Regionen von selbst.
+2. **Ein dreizehntes Theme**, nur für Pro wählbar. Es ist ein Theme wie
+   die anderen zwölf und hält sich an dieselben elf Slots.
+
+**Beides ist abschaltbar.** Wer Pro hat und es schlicht mag, schaltet
+es aus. Das ist die Voraussetzung dafür, dass die Materialschicht
+überhaupt vertretbar ist: Sie darf niemandem aufgezwungen werden, der
+für etwas anderes bezahlt hat.
+
+Die Regel „Ein Theme ändert Atmosphäre, niemals Struktur" bleibt
+unangetastet. Gold in Navigation, Knöpfen oder Rändern wurde
+ausdrücklich verworfen — Bedienelemente bleiben global gleich.
+
+---
+
 ## Noch offen
 
-- **Preismodell.** Werbung nur im Feed denkbar, nie im Log. Durch niedrige Speicherkosten ist ein Free-Start realistisch
-- **Bleibt „Karte" ein eigener Hauptbereich?** Wurde von Claude Design vorgeschlagen, nicht bewusst entschieden
-- **Offline-Konflikte.** Was passiert, wenn zwei Geräte denselben Tag offline ändern
-- **Kaltstart des Feeds.** Ein Feed ohne Inhalt ist tot; es braucht etwa 1000 aktive Poster
+- **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.
+  Offen bleiben die zwei Fragen: zählt ein Repost als eigener Beitrag
+  im Feed, oder wird der Ursprung mit einer Zeile „geteilt von …"
+  gezeigt? Und wer bekommt die Stimmen, Ursprung oder Reposter?
+- **Benachrichtigungen.** Jetzt gesetzt, weil rote Punkte erlaubt sind:
+  eigene Tabelle, Ungelesen-Zähler, abschaltbar je Art. Trägt
+  Erwähnungen, Antworten und Uploads von Gefolgten.
+- **Karte v2.** Vorgemerkt, siehe oben. Setzt normalisierte Orte voraus.
+- **Erwähnungen mit `@`.** Setzt Benachrichtigungen voraus, die es in
+  Voria noch gar nicht gibt — eigene Tabelle, Ungelesen-Zähler,
+  Glockensymbol
+- **Orte normalisieren.** `place_name` ist Freitext. Entweder unscharfe
+  Suche per `ilike` oder eine `places`-Tabelle mit Vorschlägen. Letzteres
+  ist das Fundament für „wer war auch dort" und eine echte Karte
+- **Gemeinsame Reisen.** Entschieden, nicht begonnen. Der Eingriff mit
+  der größten Reichweite: alle Zugriffsregeln hängen an `user_id = auth.uid()`
+- **Bleibt „Karte" ein eigener Hauptbereich?**
+- **Offline-Konflikte.** Was passiert, wenn zwei Geräte denselben Tag
+  offline ändern
+- **Kaltstart des Feeds.** Ein Feed ohne Inhalt ist tot; es braucht etwa
+  1000 aktive Poster
 - **Domain**

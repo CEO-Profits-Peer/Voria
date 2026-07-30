@@ -57,6 +57,20 @@
   }
 }
 
+/* ---------- Jahresgruppen im Log ---------------------------- */
+
+.jahr {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Luft zwischen den Jahren, aber nicht vor dem ersten — dort sitzt
+   schon der Seitenkopf. */
+.jahr + .jahr {
+  margin-top: 36px;
+}
+
 /* ---------- Anlegen-Knopf ----------------------------------- */
 
 .anlegen {
@@ -570,4 +584,18 @@ h1.gross {
 
 .strom-flaeche {
   min-height: 60dvh;
+}
+
+/* ---------- Feed ohne Scrollleiste --------------------------
+   Gesetzt von OhneScrollleiste.tsx, nur solange der Feed offen ist.
+   `scrollbar-gutter: stable` steht global in globals.css: ohne das
+   würde die Seite beim Betreten des Feeds um die Breite der Leiste
+   springen, weil der Inhalt plötzlich breiter darf. */
+
+.ohne-scrollleiste {
+  scrollbar-width: none;
+}
+
+.ohne-scrollleiste::-webkit-scrollbar {
+  display: none;
 }

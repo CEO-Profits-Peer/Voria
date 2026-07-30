@@ -1,8 +1,7 @@
 import { ladeFeed } from '@/features/social/queries';
-import { BeitragKarte } from '@/features/social/BeitragKarte';
-import { AnzeigeKarte } from '@/features/social/AnzeigeKarte';
 import { FeedFlaeche } from '@/features/social/FeedFlaeche';
-import { mitAnzeigen } from '@/features/social/werbung';
+import { FeedStrom } from '@/features/social/FeedStrom';
+import { OhneScrollleiste } from '@/features/social/OhneScrollleiste';
 import { LeererBereich } from '@/ui/LeererBereich';
 import { Seitenkopf } from '@/ui/Bausteine';
 import { texte } from '@/i18n/server';
@@ -18,31 +17,22 @@ export default async function FeedSeite() {
   }
 
   /*
-   * Anzeigen werden HIER eingemischt, nicht in der Darstellung.
-   *
    * `zeigtWerbung()` fragt src/lib/plan.ts — heute immer `true`, weil
    * es PRO noch nicht gibt. Sobald es das gibt, verschwindet die
    * Werbung für zahlende Nutzer, ohne dass diese Datei sich ändert.
    *
-   * Die Regeln der Dichte stehen in werbung.ts: jede sechste Karte,
-   * nie die erste, nie die letzte, nie zwei hintereinander, und gar
-   * keine, solange der Feed kürzer als der Abstand ist.
+   * Gemischt wird die Werbung in `FeedStrom`, nicht hier: der Feed lädt
+   * nach, und die Regeln „nie die erste, nie die letzte Karte" gelten
+   * für die ganze Liste, nicht für einen Stapel. Die Entscheidung, OB
+   * Werbung kommt, bleibt aber serverseitig — der Browser soll den Plan
+   * des Nutzers nicht bestimmen können.
    */
-  const karten = werbung
-    ? mitAnzeigen(beitraege)
-    : beitraege.map((b) => ({ art: 'beitrag' as const, wert: b }));
-
   return (
     <div className="seite">
+      <OhneScrollleiste />
       <Seitenkopf titel={t.feed.titel} />
       <FeedFlaeche>
-        {karten.map((k) =>
-          k.art === 'beitrag' ? (
-            <BeitragKarte key={k.wert.id} beitrag={k.wert} />
-          ) : (
-            <AnzeigeKarte key={k.wert.id} anzeige={k.wert} kennzeichen={t.feed.anzeige} />
-          ),
-        )}
+        <FeedStrom start={beitraege} werbung={werbung} kennzeichen={t.feed.anzeige} />
       </FeedFlaeche>
     </div>
   );

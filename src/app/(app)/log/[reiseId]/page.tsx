@@ -4,6 +4,7 @@ import { ChevronLeft, Pencil } from 'lucide-react';
 import { ladeReise } from '@/features/log/queries';
 import { Trenner } from '@/ui/Bausteine';
 import { heuteAlsDatum } from '@/features/log/datum';
+import { TagWaehlen } from '@/features/log/TagWaehlen';
 import { texte } from '@/i18n/server';
 
 export default async function ReiseSeite({ params }: { params: Promise<{ reiseId: string }> }) {
@@ -58,6 +59,9 @@ export default async function ReiseSeite({ params }: { params: Promise<{ reiseId
               </Link>
             </li>
           )}
+          <li>
+            <TagWaehlen reiseId={reise.id} von={reise.von} bis={reise.bis} />
+          </li>
         </ol>
       </div>
     </div>

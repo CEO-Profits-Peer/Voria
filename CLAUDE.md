@@ -51,8 +51,14 @@ Tabelle bekommt Row Level Security. `createServiceClient()` umgeht sie —
 nur für Aufgaben ohne Nutzerbezug, nie in einer Route, die Nutzerdaten
 ausliefert.
 
-**Keine Gamification.** Keine Streaks, Abzeichen, Fortschrittsanzeigen, roten
-Punkte. Wer drei Wochen nichts schreibt, wird nicht ermahnt.
+**Keine Gamification — aber Hinweise sind erlaubt.** Die Trennlinie läuft
+zwischen Ereignis und Verhalten. Ein roter Punkt für „jemand hat geantwortet"
+ist in Ordnung; Streaks, Abzeichen, Fortschrittsanzeigen und „mehr als letztes
+Jahr" bleiben verboten. Wer drei Wochen nichts schreibt, wird nicht ermahnt.
+
+Alles Hinweisende ist einzeln abschaltbar, dazu ein **Stiller Modus** als
+Sammelschalter. Er überschreibt die Einzeleinstellungen und löscht sie nicht —
+beim Ausschalten steht alles wieder wie vorher.
 
 **Kein Speichern-Knopf.** Der Entwurf bleibt liegen und wird verzögert
 gesichert. Kein Zeichenzähler, keine Wortzahl.
@@ -88,6 +94,14 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 1. `0001_init.sql` — neun Tabellen, Zugriffsregeln, Trigger
 2. `0002_storage.sql` — Foto-Bucket samt Schreibregeln
 3. `0003_suche.sql` — deutscher Volltextindex über Einträge
+4. `0004_profil_trigger.sql` — Profil entsteht beim Registrieren
+5. `0005_leute_suchen.sql` — Trigramm-Indizes für die Personensuche
+6. `0006_kommentare.sql` — Kommentare und ihre Stimmen
+
+**`0006` muss vor dem nächsten Deploy laufen.** Der Feed fragt
+`comments(count)` mit ab; fehlt die Tabelle, schlägt die ganze
+Feed-Abfrage fehl und der Feed ist leer. Der Fehler wird geloggt, aber
+sichtbar ist nur die leere Seite.
 
 ## Sprache
 
@@ -137,7 +151,7 @@ Komponenten dürfen keine Klasse so nennen wie eine globale in `seiten.css`
 
 Phase 0 und Phase 1 gebaut, dazu ein Teil von Phase 2 und 3.
 
-**Offene Aktionen:** vollständig in `docs/OFFENE_AKTIONEN.md`.
+**Offene Aktionen:** vollständig in `ANSTEHEND.md`.
 
 **Steht:** Tokens · alle zwölf Regionen hell und dunkel · Anmeldung ·
 Reisen anlegen und bearbeiten · Länder verwalten · Tage · ruhiger Modus ·

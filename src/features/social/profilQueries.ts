@@ -33,7 +33,7 @@ import type { Beitrag } from './queries';
  * oder `follows` ein zweites Mal auf `profiles` zeigt, muss der
  * Fremdschlüssel benannt werden.
  */
-const AUSWAHL = `id, entry_id, caption, vote_count, published_at,
+const AUSWAHL = `id, entry_id, caption, vote_count, published_at, comments(count),
   profiles!posts_user_id_fkey(username, display_name, avatar_url),
   entries(entry_date, title, place_name,
           trips(region_override, trip_countries(country_code, days)),
@@ -63,7 +63,14 @@ export async function ladeBeitrag(beitragId: string): Promise<Beitrag | null> {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data } = await supabase.from('posts').select(AUSWAHL).eq('id', beitragId).maybeSingle();
+  const { data, error } = await supabase
+    .from('posts')
+    .select(AUSWAHL)
+    .eq('id', beitragId)
+    .maybeSingle();
+
+  // Ohne diese Zeile sähe ein Abfragefehler aus wie „Beitrag gibt es nicht".
+  if (error) console.error('[ladeBeitrag]', error);
   if (!data) return null;
 
   return formen([data], await eigeneVotes(user?.id))[0] ?? null;
@@ -91,6 +98,7 @@ function formen(roh: any[], gevotet: Set<string>): Beitrag[] {
       text: p.caption ?? '',
       votes: p.vote_count ?? 0,
       selbstGevotet: gevotet.has(p.id),
+      kommentare: p.comments?.[0]?.count ?? 0,
       verfasser: {
         name: p.profiles?.display_name || p.profiles?.username || 'Jemand',
         benutzername: p.profiles?.username ?? '',

@@ -1,193 +1,273 @@
 # VORIA — Gesamtbeschreibung
 
-Stand: 28. Juli 2026. Dies ist das Leitdokument. Wenn eine andere Datei ihm widerspricht, gilt dieses hier.
+Stand: 30. Juli 2026 · Live: https://voria-travel.vercel.app
+
+**Dies ist das Leitdokument.** Widerspricht eine andere Datei diesem
+hier, gilt dieses. Die Begründung zu jeder einzelnen Festlegung steht
+chronologisch in `ENTSCHEIDUNGEN.md`.
+
+Wo welche Information steht:
+
+| Datei | Inhalt |
+|---|---|
+| `docs/GESAMTBESCHREIBUNG.md` | Produkt, Geschäftsmodell, Aufbau — dieses hier |
+| `docs/ENTSCHEIDUNGEN.md` | Warum etwas so ist. Chronologisch, wird nicht neu verhandelt |
+| `ANSTEHEND.md` | Was zu tun ist, mit Begründung bei jedem Punkt |
+| `FORTSCHRITT.md` | Was fertig ist und was davon geprüft wurde |
+| `START.md` | Lokal starten, plus die Fehlerklassen dieses Projekts |
+| `DEPLOY.md` | Vercel und Supabase einrichten |
+
+Sechs Dateien, und jede beantwortet genau eine Frage. Es waren
+zeitweise neun — `QUEUE.md`, `docs/OFFENE_AKTIONEN.md` und
+`docs/STAND_UND_PLAN.md` sind am 30.07. in die übrigen aufgegangen.
+Doppelt geführte Listen laufen auseinander, und dann traut man keiner
+mehr.
 
 ---
 
 ## 1. Das Produkt
 
-Voria ist ein Reisetagebuch für Browser und App. Menschen schreiben auf, wo sie waren und wie es sich angefühlt hat, legen ihre Fotos dazu und können Einträge freiwillig öffentlich teilen.
+Voria ist ein Reisetagebuch für Browser und Handy. Menschen schreiben
+auf, wo sie waren und wie es sich angefühlt hat, legen ihre Fotos dazu
+und können einzelne Tage freiwillig öffentlich teilen.
 
-> Voria ist der Ort, an dem jemand in zehn Jahren sitzt und nachliest, wie sich sein Leben angefühlt hat.
+> Voria ist der Ort, an dem jemand in zehn Jahren sitzt und nachliest,
+> wie sich sein Leben angefühlt hat.
 
-An diesem Satz wird jede Entscheidung gemessen. Voria ist kein Werkzeug zur Reiseverwaltung und kein soziales Netzwerk mit Reise-Thema.
+An diesem Satz wird jede Entscheidung gemessen. Voria ist kein Werkzeug
+zur Reiseverwaltung und kein soziales Netzwerk mit Reise-Thema.
 
-**Das Unterscheidungsmerkmal:** Jede Weltregion hat ihre eigene Atmosphäre in der Oberfläche — Material, Licht und Handwerk statt Flaggen und Landesfarben. Man blättert durch das Tagebuch und erkennt an der Stimmung, wo man war, bevor man ein Wort gelesen hat.
+**Das Unterscheidungsmerkmal:** Jede Weltregion hat ihre eigene
+Atmosphäre in der Oberfläche — Material, Licht und Handwerk statt
+Flaggen und Landesfarben. Man blättert durch das Tagebuch und erkennt
+an der Stimmung, wo man war, bevor man ein Wort gelesen hat.
 
-**Der Wettbewerb:** Polarsteps kann Karten und Tracking, ist gestalterisch aber flach. Day One ist schön und still, aber ohne Reisebezug und ohne Soziales. Instagram hat Reichweite, vernichtet aber Kontext. Voria will die Sorgfalt von Day One, den Reisebezug von Polarsteps und ein soziales Element, das man vollständig ignorieren kann.
+**Der Wettbewerb:** Polarsteps kann Karten und Tracking, ist
+gestalterisch aber flach. Day One ist schön und still, aber ohne
+Reisebezug und ohne Soziales. Instagram hat Reichweite, vernichtet aber
+Kontext. Voria will die Sorgfalt von Day One, den Reisebezug von
+Polarsteps und ein soziales Element, das man vollständig ignorieren
+kann.
 
 ---
 
-## 2. Getroffene Entscheidungen
+## 2. Das angenehme Erlebnis — woraus es sich zusammensetzt
 
-| Thema | Entscheidung | Begründung |
+Nicht als Wunschliste, sondern als das, was im Code steckt und woran
+man es messen kann.
+
+### Die App drängt nicht
+
+Es gibt keinen Speichern-Knopf. Der Entwurf bleibt liegen, Änderungen
+gehen 700 Millisekunden nach dem letzten Anschlag von selbst weg. Es
+gibt keine Bestenliste, keinen Fortschrittsbalken, kein „12 von 195
+Ländern freigeschaltet", kein „mehr als letztes Jahr". Der Jahresrückblick
+zeigt, was war — und bewertet es nicht.
+
+Der Feed hat kein Scroll-Snap. Wer überfliegen will, überfliegt. Wer
+springen will, doppelklickt.
+
+### Der erste Bildschirm ist keine leere Fläche
+
+Ein neuer Tag stellt eine einzige leise Frage und bietet den Weg zum
+Foto an. Abends fängt man mit einem Bild an, nicht mit einem Satz. Ab
+Tag zwei verschwindet die Frage — dann ist die Stille Wohltat statt
+Hürde.
+
+### Zwei Arten, denselben Tag zu sehen
+
+**Seite** — eine Buchseite. Eine Textspalte, Fotos als ruhige Blöcke im
+Fluss, großzügig gesetzt, kaum Bedienelemente. Zum Schreiben am Abend.
+
+**Fläche** — ein Schuhkarton. Texte und Fotos frei platzierbar, leicht
+gedreht, überlappend, auf einer texturierten Fläche. Zum Sammeln und
+Anordnen.
+
+Beide zeigen **dieselben Daten**. Der Wechsel verliert nichts.
+
+### Es funktioniert ohne Netz
+
+Ein Reisetagebuch wird genau dann benutzt, wenn kein Netz da ist —
+abends im Hostel, im Zug, auf einer Fähre. Eine App, die dann eine
+Fehlerseite zeigt, hat versagt.
+
+### Privat ist die Voreinstellung
+
+Jeder Tag ist privat, bis man ihn ausdrücklich teilt. Teilen ist eine
+Entscheidung **pro Tag**, nicht pro Konto, und jederzeit zurücknehmbar.
+Das ist nicht durch die Oberfläche gesichert, sondern durch Postgres:
+ein privater Eintrag ist privat, weil die Datenbank ihn nicht
+herausgibt.
+
+### Es ist schnell auf schlechten Verbindungen
+
+Fotos werden auf dem Gerät komprimiert, bevor sie hochgeladen werden —
+aus 4 MB werden rund 300 KB, aus einem Profilbild rund 20 KB. Der
+EXIF-Parser ist selbst geschrieben und wiegt 3 KB statt 90. Das zählt
+genau dort, wo die App benutzt wird.
+
+---
+
+## 3. Geschäftsmodell und Profit-Vision
+
+> Nüchtern vorweg: Die Zahlen unten sind **Annahmen**, keine Prognose.
+> Voria hat noch keine Nutzer, kein Preisexperiment und keinen einzigen
+> Werbekunden. Ich bin kein Finanzberater — das hier ist
+> Produktstrategie, keine Anlageberatung.
+
+### Die Struktur
+
+**Zwei Ebenen, Werbung nur im Feed.**
+
+| | Frei | Pro |
 |---|---|---|
-| **Name** | Voria | Zwei bis drei Silben, offener Klang. Bestehende Marken liegen in Beratung und Animation, nicht in Consumer-Apps. Sicherer als Vora, das mit einer YC-finanzierten Gesundheits-App in beiden App Stores kollidiert |
-| **Plattform** | Web zuerst | Next.js als installierbare Web-App. Später native Hülle über Capacitor — dieselbe Oberfläche, aber echter Offline-Speicher, Fotobibliothek und Store-Präsenz, ohne die UI neu zu bauen |
-| **Reihenfolge** | Struktur und Aussehen vor Inhalt | Leere Bereiche sind in Ordnung, aber die App muss überall begehbar sein und gut aussehen |
-| **Themes** | Regionen-Engine, 12 Regionen | Länder erben von ihrer Region. Skaliert auf 195 Länder ohne 195 × Designarbeit |
-| **Speicher** | Anzeigeversion in der Cloud, Original lokal | AVIF bei 2560 px Kantenlänge ist Faktor 10–15 kleiner und auf jedem Bildschirm identisch |
-| **Speicheranbieter** | Cloudflare R2 | Keine Egress-Gebühren — bei einer bildlastigen App der Posten, der andere Anbieter tötet. 10 GB dauerhaft gratis |
-| **Geschäftsmodell** | Noch offen | Werbung nur im Social-Feed denkbar, nie im Log. Durch die niedrigen Speicherkosten ist ein Free-Start realistisch |
+| Tagebuch, Fotos, Karte, Rückblick | vollständig | vollständig |
+| Werbung im Feed | ja | nein |
+| Fotos je Tag | 20 | 200 |
+| Preis | 0 € | offen |
 
-**Offen und bewusst vertagt:** Preismodell, ob „Karte" ein eigener Hauptbereich bleibt, Domainwahl, Zeitpunkt der nativen App.
+**Die eiserne Regel: niemals Werbung im Log.** Das Tagebuch ist der
+Ort, an dem jemand über einen gestorbenen Großvater schreibt. Dort
+gehört keine Reklame hin, unter keinen Umständen, auch nicht wenn die
+Zahlen es nahelegen. Werbung existiert ausschließlich im Feed — dem
+Teil, den man vollständig ignorieren kann.
+
+**Kein Verkauf von Nutzerdaten, keine Weitergabe an Werbetreibende.**
+Anzeigen werden kontextfrei ausgespielt. Das ist auch praktisch: Voria
+hat gar nicht die Datenmenge, aus der sich Zielgruppen bilden ließen,
+und der Versuch würde das Versprechen zerstören, auf dem das Produkt
+steht.
+
+### Warum das tragen kann
+
+Der übliche Killer bildlastiger Apps ist **Egress** — die Kosten für
+ausgehenden Datenverkehr. Zwei Entscheidungen entschärfen das:
+
+1. **Nur die Anzeigefassung liegt in der Cloud.** Bei 100.000 Nutzern
+   sind das rund 20 TB statt 250 TB.
+2. **Cloudflare R2 hat keine Egress-Gebühren.** Der Umstieg ist
+   vorbereitet: der Speicher liegt hinter `src/lib/storage.ts`,
+   umgestellt wird über eine Umgebungsvariable.
+
+Heute läuft alles auf Supabase Storage, weil R2 eine Kreditkarte
+verlangt. **Was zuerst knapp wird, ist nicht der Speicherplatz, sondern
+die 5 GB Egress im Supabase-Free-Tarif.** Das ist der Auslöser für den
+Wechsel.
+
+### Die drei Einnahmequellen, nach Nähe zum Produkt sortiert
+
+**1. Pro-Abonnement.** Die ehrlichste Quelle: der Nutzer zahlt, der
+Nutzer ist der Kunde. Day One verlangt rund 35 € im Jahr, Polarsteps
+rund 15 €. Voria liegt dazwischen — das wäre zu testen, nicht zu
+raten.
+
+**2. Werbung im Feed.** Trägt die Freinutzer. Bei der gewählten Dichte
+(jede sechste Karte) und ohne Zielgruppendaten sind die Erlöse je
+Sichtkontakt niedrig. Das ist der Preis der Entscheidung und bewusst
+akzeptiert.
+
+**3. Partnerprogramme mit Reisebezug.** Bahnticket, Rucksack, eSIM,
+Versicherung — die Testanzeigen zeigen genau diese Kategorien. Passt
+zum Kontext, ohne Nutzerdaten zu brauchen. Muss als Werbung
+gekennzeichnet bleiben, auch wenn es sich als Empfehlung tarnen ließe.
+
+### Der Engpass ist nicht Geld, sondern der Kaltstart
+
+**Ein Feed ohne Inhalt ist tot.** Es braucht grob tausend aktive
+Schreiber, bevor der soziale Teil sich selbst trägt. Solange muss Voria
+als reines Tagebuch überzeugen.
+
+Das heißt aber **nicht**, dass der Feed nebensächlich wäre — die
+Unterscheidung ist am 30.07. ausdrücklich richtiggestellt worden. Wer
+den Feed nie öffnet, hat ein vollständiges Tagebuch; trotzdem ist der
+Feed die Stelle, an der Voria Geld verdient. Beides gilt gleichzeitig.
+Kommentare, Reposts und alles, was den Feed lebendig macht, sind also
+keine Ablenkung vom Kern — man muss sie nicht nutzen, aber sie müssen
+gut sein.
+
+Der geplante Anstoß ist der **Jahresrückblick**: etwas, das man
+herzeigen will, entstanden aus dem, was ohnehin da ist. Spotify und
+Polarsteps machen damit ihr bestes Marketing, und es verlangt vom
+Nutzer keine Verhaltensänderung.
+
+### Was ansteht, bevor Geld fließt
+
+* Bezahlung anbinden — heute gibt `istPro()` immer `false` zurück
+* Datenschutzerklärung und Impressum
+* Konto vollständig löschen (technisch räumt die Kaskade schon alles
+  weg, es fehlt der Knopf)
+* Echte Anzeigen statt der Platzhalter in `features/social/werbung.ts`
+* `picsum.photos` aus `next.config.ts` entfernen
 
 ---
 
-## 3. Aufbau der App
+## 4. Aufbau der App
 
-Vier Hauptbereiche, feste Reihenfolge, unten am Handy und seitlich am Desktop identisch.
+Vier Hauptbereiche, feste Reihenfolge, unten am Handy und seitlich am
+Desktop identisch.
 
 **Log** — der Kern. Reisen, Tage, Einträge, Fotos.
 
-**Karte** — Reiserouten und besuchte Länder. Vorläufig, siehe offene Punkte.
+**Karte** — „Deine Welt": die zwölf Regionen als Raster. Besuchte
+tragen ihr volles Theme, unbesuchte bleiben blass. Bewusst keine
+Kachelkarte.
 
-**Feed** — das freiwillige Soziale. Beiträge, Upvotes, Folgen.
+**Feed** — das freiwillige Soziale. Beiträge, Zustimmung, Folgen,
+Werbung.
 
-**Du** — Profil, eigene Reisen, Follower, Einstellungen.
+**Du** — Profil, Bild, Zahlen, Einstellungen.
 
-### Die zwei Schreibmodi
-
-Ein Tag kann auf zwei Arten dargestellt werden, und das ist die zentrale Produktidee:
-
-**Ruhig** — eine Buchseite. Eine Textspalte, Fotos als ruhige Blöcke im Fluss, großzügig gesetzt, kaum Bedienelemente. Zum Schreiben am Abend.
-
-**Frei (Open Space)** — ein Schuhkarton. Texte und Fotos frei platzierbar, leicht gedreht, überlappend, auf einer texturierten Fläche. Zum Sammeln und Anordnen.
-
-**Beide zeigen dieselben Daten.** Der Wechsel verliert nichts. Wie das technisch gelöst ist, steht in Abschnitt 5.
+Dazu außerhalb: `/suche` (Tage und Leute), `/rueckblick`,
+`/u/[name]` (fremde Profile) und `/b/[id]` (geteilter Beitrag,
+öffentlich).
 
 ---
 
-## 4. Technischer Aufbau
+## 5. Technischer Aufbau
 
 | Schicht | Wahl | Warum |
 |---|---|---|
-| Oberfläche | Next.js 15, App Router, TypeScript | Eine Codebasis für Handy und Desktop, gute Bildbehandlung, später per Capacitor nativ einpackbar |
-| Datenbank & Konten | Supabase (Postgres, Auth, Row Level Security) | Zugriffsrechte liegen in der Datenbank, nicht in der Anwendung — entscheidend für „Full Privacy" |
-| Bilder | Cloudflare R2 | Kein Egress, günstig, S3-kompatibel |
-| Betrieb | Vercel | Vorschau-Deployments pro Änderung, nichts läuft auf deinem Rechner |
-| KI | Gemini API | Später: aus Stichworten Tagestext, Auto-Verschlagwortung, Ortserkennung |
-| Später nativ | Capacitor | Bestehende Oberfläche in nativer Hülle |
+| Oberfläche | Next.js 15, App Router, TypeScript | Eine Codebasis für Handy und Desktop, später per Capacitor nativ einpackbar |
+| Datenbank & Konten | Supabase (Postgres, Auth, RLS) | Zugriffsrechte in der Datenbank, nicht in der Anwendung |
+| Bilder | Supabase Storage, R2 vorbereitet | Hinter `src/lib/storage.ts`, umschaltbar über `STORAGE_DRIVER` |
+| Betrieb | Vercel | Vorschau je Änderung, nichts läuft lokal |
+| Offline | Service Worker | Netz zuerst für Skripte und Seiten, Cache für Fotos und Schriften |
+| KI | Gemini API | Später: Tagestext aus Stichworten, Verschlagwortung |
 
-**Alles beginnt im kostenlosen Tarif.** Supabase, R2 und Vercel haben dauerhafte Gratis-Kontingente, die für Entwicklung und die ersten hundert Nutzer reichen.
+### Das Datenmodell in einem Satz
 
----
+`trips` → `entries` (ein Tag) → `blocks` (Text oder Foto).
+`blocks` trägt **gleichzeitig** `position` für die Seite und
+`x, y, w, h, rotation, z` für die Fläche — deshalb verliert der
+Moduswechsel nichts.
 
-## 5. Datenmodell
+`posts` hängt an `entries` mit `not null unique`: **ein Beitrag ist ein
+geteilter Tag.**
 
-Neun Tabellen. Die wichtigste Entscheidung steht bei `blocks`.
+### Drei Regeln, die nicht verhandelbar sind
 
-**profiles** — Anzeigename, Benutzername, Beschreibung, Avatar, ob privat.
-
-**trips** — eine Reise. Titel, Zeitraum, Titelbild, Sichtbarkeit, optionale Regionen-Überschreibung.
-
-**trip_countries** — welche Länder eine Reise berührt, mit Datum. Daraus wird die Region abgeleitet.
-
-**entries** — ein Tag. Datum, optionaler Titel, Ort mit Koordinaten, Darstellungsmodus, Sichtbarkeit.
-
-**blocks** — der Inhalt eines Tages. Typ (Text, Foto, Objekt), Reihenfolge, Inhalt oder Foto-Verweis — **und** Position, Größe, Drehung, Ebene.
-
-> **Ein Inhaltsmodell, zwei Darstellungen.** Der ruhige Modus ignoriert die Layout-Felder und rendert die Blöcke der Reihe nach. Der Open Space nutzt sie. Deshalb geht beim Wechsel nie etwas verloren, und deshalb gibt es keine doppelte Datenhaltung. Wer im Open Space etwas verschiebt und in den ruhigen Modus wechselt, sieht denselben Text an derselben Stelle in der Reihenfolge.
-
-**photos** — Verweise auf R2, Maße, Aufnahmezeit, Koordinaten, Blurhash für den Ladezustand, Dateigröße.
-
-**posts** — ein geteilter Eintrag. Ohne Eintrag kein Beitrag.
-
-**votes** und **follows** — das Soziale.
-
-**Zugriffsrechte liegen in Postgres.** Jede Tabelle bekommt Row Level Security. Ein privater Eintrag ist nicht deshalb privat, weil die Oberfläche ihn nicht zeigt, sondern weil die Datenbank ihn nicht herausgibt.
+1. **Jede neue Tabelle bekommt Row Level Security.** Ohne Ausnahme.
+2. **Ein Theme ändert Atmosphäre, niemals Struktur.** Sonst wirken
+   zwölf Themes wie zwölf Apps.
+3. **Kein Code außerhalb von `storage.ts` importiert einen
+   Storage-Client.**
 
 ---
 
-## 6. Die Foto-Strecke
+## 6. Was in diesem Projekt lautlos scheitert
 
-Der kostenkritische Teil des Produkts.
+Der wichtigste Abschnitt für jeden, der hier weiterarbeitet. Zwölf
+Fehler wurden bisher gefunden — **sieben davon meldeten weder Build
+noch Konsole noch Terminal.**
 
-1. Nutzer wählt Fotos aus
-2. **EXIF wird gelesen** — Datum und Koordinaten. Daraus werden Tag, Ort und Land automatisch vorbelegt. Das ist der eigentliche „smarte" Teil und der größte Wow-Moment
-3. Im Browser verkleinern auf 2560 px Kantenlänge und als AVIF kodieren — aus 4 MB werden etwa 300 KB
-4. Zusätzlich ein 320-px-Vorschaubild und ein Blurhash
-5. Beides über eine signierte URL direkt nach R2, ohne Umweg über den Server
-6. **Das Original bleibt auf dem Gerät.** Später optional für zahlende Nutzer mit hochladbar
+| Falle | Symptom | Prüfung |
+|---|---|---|
+| styled-jsx scopet `<Link>` nicht | Regel greift nie, Element sieht ungestaltet aus | `npm run pruefe:stile` |
+| Verschluckte Datenbankfehler | Formular kommt mit 200 zurück und sagt nichts | `error` immer prüfen und loggen |
+| Doppeldeutige Einbettung in PostgREST | `HTTP 300`, Liste bleibt leer | Fremdschlüssel benennen |
+| Service Worker mit altem JavaScript | Seite sieht normal aus, kein Klick tut etwas | React-Schlüssel am DOM prüfen |
+| Fehlendes `revalidatePath` | Gespeichert, aber nirgends sichtbar | Nach jedem Schreiben mitdenken |
+| RLS erlaubt mehr als gemeint | Fremde Daten in „deinen" Listen | `.eq('user_id', …)` trotz RLS |
 
-**Was das kostet:** Rund 200 MB pro aktivem Nutzer und Jahr. Bei 100.000 Nutzern etwa 20 TB, also grob 300 € im Monat. Mit unkomprimierten Originalen wären es mehrere Tausend.
-
----
-
-## 7. Die Theme-Engine
-
-**Drei Schichten.** Primitive Rohwerte, semantische Tokens, Regionen-Slots. Komponenten dürfen ausschließlich semantische Tokens lesen — kein Hex-Wert und keine Primitive direkt im Komponentencode. Das wird per Lint-Regel erzwungen.
-
-**Elf Slots** darf eine Region setzen:
-
-`accent-primary` · `accent-soft` · `canvas-tint` · `raised-tint` · `texture-base` · `texture-opacity` · `texture-scale` · `texture-blend` · `ornament-divider` · `ornament-corner` · `ornament-tint` · `font-display`
-
-Alles andere ist global: Abstände, Anordnung, Komponentengrößen, Navigationsposition, Radien, Zeilenhöhen, Motion.
-
-> **Ein Theme ändert Atmosphäre, niemals Struktur.** Wer in Marokko sucht, findet alles dort, wo es in Norwegen stand.
-
-**Zwölf Regionen:** Nordeuropa & Skandinavien · Alpen & Mitteleuropa · Mittelmeer · Nordafrika & Maghreb · Ostafrika · Naher Osten · Südasien · Südostasien · Ostasien · Ozeanien · Anden & Südamerika · Nordamerika West & Polar.
-
-Jedes Land wird per statischer Tabelle einer Region zugeordnet. Das Theme hängt am Wurzelelement der Reise oder des Eintrags, nicht global — dadurch kann ein Feed Beiträge aus verschiedenen Regionen nebeneinander zeigen.
-
-**Fertig belegt:** Ostasien und Nordafrika & Maghreb, jeweils hell und dunkel. Die restlichen zehn folgen nach demselben Rezept.
-
----
-
-## 8. Repo-Struktur
-
-Bewusst so gebaut, dass sich auch in einem großen Projekt schnell orientieren lässt und Änderungen wenig Kontext brauchen.
-
-```
-voria/
-├─ CLAUDE.md                  Karte des Projekts — immer zuerst lesen
-├─ docs/
-│   ├─ ARCHITEKTUR.md
-│   ├─ DATENMODELL.md
-│   ├─ THEMES.md
-│   └─ ENTSCHEIDUNGEN.md      jede Entscheidung mit Datum und Begründung
-├─ src/
-│   ├─ app/                   nur Routen, absichtlich dünn
-│   ├─ features/              die eigentliche Logik, nach Fachbereich
-│   │   ├─ log/               Reisen, Tage, Blöcke, beide Modi
-│   │   ├─ social/            Feed, Beiträge, Votes, Folgen
-│   │   ├─ profile/
-│   │   └─ auth/
-│   ├─ ui/                    Design-System-Komponenten
-│   ├─ themes/                zwölf Regionen, je eine Datei
-│   ├─ lib/                   supabase, r2, exif, bildverarbeitung
-│   └─ styles/tokens.css
-└─ supabase/migrations/
-```
-
-**Vier Regeln, die den Überblick sichern:**
-
-Jeder Ordner unter `features/` hat eine eigene kurze `CLAUDE.md`, die in fünf Zeilen sagt, was dort liegt und was nicht. Wer an einer Stelle arbeitet, liest nur diese eine Datei statt den halben Baum.
-
-Dateien bleiben unter etwa 200 Zeilen. Wird eine länger, wird sie geteilt.
-
-`ui/` kennt keine Fachlogik und `features/` schreibt kein eigenes CSS. Diese Trennung hält die Theme-Engine zusammen.
-
-`docs/ENTSCHEIDUNGEN.md` hält fest, was warum entschieden wurde. Damit werden geklärte Fragen nicht ein zweites Mal diskutiert — das spart bei jeder späteren Sitzung mehr, als es beim Schreiben kostet.
-
----
-
-## 9. Phasen
-
-**Phase 0 — Gerüst.** Repo, Tokens, Theme-Engine, Konten, Datenmodell, Deployment. Die App ist überall begehbar, aber leer. *Läuft gerade.*
-
-**Phase 1 — Der Log.** Reisen anlegen, Tage schreiben, Fotos hochladen mit EXIF-Auslesung, beide Modi, die sechzehn wichtigsten Bildschirme.
-
-**Phase 2 — Das Soziale.** Beiträge, Feed, Votes, Folgen, Profile.
-
-**Phase 3 — Breite.** Restliche zehn Regionen, Website, Preismodell, native Hülle.
-
----
-
-## 10. Was noch fehlt
-
-**Produktentscheidungen:** Preismodell. Ob „Karte" ein eigener Hauptbereich bleibt oder in den Log wandert. Wie Reisen mit mehreren Personen funktionieren.
-
-**Technisch ungeklärt:** Offline-Verhalten im Detail — was passiert, wenn zwei Geräte denselben Tag offline ändern. Der Kaltstart des Feeds. Wie Nutzer gemeldete Inhalte gemeldet und geprüft werden.
-
-**Ideen, die noch nicht eingeplant sind:** Fotobuch-Druck als Umsatzquelle. Jahresrückblick als viraler Anstoß. Gemeinsame Reisen.
+**Daraus die Arbeitsregel: im Browser nachsehen, nicht dem grünen Build
+glauben.**

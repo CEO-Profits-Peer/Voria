@@ -6,6 +6,9 @@ Ich führe hier mit, was tatsächlich behoben oder gebaut ist, und was
 davon ich selbst geprüft habe. Zahlen darin sind echt gezählt, nicht
 gerundet.
 
+Was als Nächstes ansteht, steht in `ANSTEHEND.md` — hier steht nur,
+was hinter uns liegt.
+
 ---
 
 ## Wie es angefangen hat
@@ -21,7 +24,7 @@ sichtbar wurde.
 
 ---
 
-## Behoben — 12 Fehler
+## Behoben — 13 Fehler
 
 | # | Fehler | Woran er sichtbar wurde |
 |---|---|---|
@@ -37,15 +40,24 @@ sichtbar wurde.
 | 10 | Freie Fläche stürzte ab, sobald man ein Foto einfügte | Code-Prüfung: `lagen[b.id]` konnte `undefined` sein |
 | 11 | Sichtbarkeit nur im ruhigen Modus änderbar | Deine Meldung |
 | 12 | Foto-Knopf verschwand nach dem ersten Satz (`istLeer`) | Deine Meldung |
+| 13 | Doppelklick im Feed markierte die Bilder blau | Deine Meldung |
 
 Der teuerste war Nummer 4. Er hat mehrere andere Fehler vorgetäuscht:
 weil React nicht hydrierte, tat kein Klick etwas, und es sah aus, als
 sei „Übernehmen" kaputt. Funktionierte nur, was ohne JavaScript geht —
 also das nackte `<form action={…}>`.
 
+Nummer 13 ist lehrreich, weil die Ursache eine Ebene früher lag als der
+Fehler: Der Browser beginnt die Auswahl beim zweiten `mousedown`, also
+bevor `dblclick` überhaupt feuert. Im Doppelklick-Handler war es dafür
+schon zu spät — dort ließ sich die Markierung nur noch wegräumen,
+nachdem sie zu sehen war. `user-select: none` wäre der falsche Ausweg
+gewesen: dann ließe sich auch der Text eines Beitrags nicht mehr
+markieren.
+
 ---
 
-## Gebaut — 8 Funktionen
+## Gebaut — 12 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -62,8 +74,25 @@ also das nackte `<form action={…}>`.
 8. **Deployment** auf Vercel, Adresse aus `VERCEL_URL` statt
    festverdrahtetem localhost.
 
-Dazu 5 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes) und drei
-Dokumente: `START.md`, `DEPLOY.md`, `QUEUE.md`.
+9. **Kommentare mit Stimmen** — verschachtelt und ausklappbar, nach
+   Stimmen sortiert, bearbeitbar statt löschbar. Migration `0006`.
+   Zwei Dinge kamen beim Bauen dazu, die in der Spezifikation fehlten:
+   **Spaltenrechte** (Row Level Security kennt keine Spalten — ohne
+   `revoke update` / `grant update (text)` ließe sich beim Bearbeiten
+   des eigenen Kommentars in derselben Anweisung `vote_count = 9999`
+   setzen) und die **Textprüfung im Bearbeitungs-Trigger** (sonst
+   feuert er auch beim UPDATE des Zählers, und jeder Kommentar bekäme
+   bei der ersten Zustimmung ein „bearbeitet" verpasst).
+10. **Vergangene Tage schreiben** — natives Datumsfeld unter der
+    Tagesliste, Grenzen aus der Reise.
+11. **Jahres-Gruppierung im Log** — dazu `entries(count)` statt aller
+    Eintrags-IDs, und ein Fehler wird geloggt statt als „Noch keine
+    Reise" auszusehen.
+12. **Suchtreffer hervorheben** — Auszug zerlegt und als React-Knoten
+    zusammengesetzt, ausdrücklich kein HTML eingesetzt.
+
+Dazu 6 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+`0006` Kommentare) und die Dokumente `START.md` und `DEPLOY.md`.
 
 ---
 
@@ -91,16 +120,18 @@ Das ist die wichtigste Spalte in diesem Dokument.
 * Profilbild-Upload
 * Teilen nach außen und die Route `/b/<id>`
 * Tagesleiste
+* Kommentare, in jeder Hinsicht — Schreiben, Antworten, Bearbeiten,
+  Stimmen, und ob der aufgeklappte Bereich ein `revalidatePath`
+  übersteht
+* Datumswähler, Jahresgruppen, Hervorhebung der Suchtreffer
+* Ob der Doppelklick jetzt wirklich nichts mehr markiert
 
-Der Grund ist derselbe wie immer: `next build` läuft in meiner
-Umgebung nicht — die SWC-Binary in `node_modules` ist Windows-spezifisch —
-und `tsc --noEmit` braucht über dem gemounteten Laufwerk Minuten statt
-Sekunden. Geprüft habe ich stattdessen Klammernbilanz aller berührten
-Dateien, beidseitige Vollständigkeit jedes neuen i18n-Schlüssels und
-das Wächterskript.
+**Was am 30.07. dazukam:** `npm run pruefen` und `npm run build` laufen
+inzwischen in meiner Umgebung durch und sind für alles oben grün. Das
+beweist Typen und Syntax — **kein einziges Verhalten.** Die Fehler
+dieses Projekts sind fast alle an einem grünen Build vorbeigekommen.
 
-**Vor dem nächsten Deploy also:** `npm run pruefen` und
-`npm run build`. Wenn dabei etwas hochkommt, ist es meins.
+Die Liste zum Durchgehen steht in `ANSTEHEND.md`, Block A.
 
 ---
 
@@ -120,29 +151,8 @@ Der Vollständigkeit wegen, weil sie zeigen, wo meine Werkzeuge lügen:
 
 ---
 
-## Nächste Ziele
+## Was die Ziele angeht
 
-Drei Stück, in dieser Reihenfolge. Mehr setze ich mir nicht — bei
-fünfzehn offenen Punkten wird jede Liste zur Wunschliste.
-
-**Ziel 1 — Diesen Stand grün bekommen.**
-`npm run pruefen`, `npm run build`, Migration `0005`, Deploy. Danach
-prüfe ich im Browser durch, was oben in der zweiten Liste steht.
-
-**Ziel 2 — Kommentare mit Likes.**
-Vier Entscheidungen brauche ich vorher von dir; sie stehen in
-`QUEUE.md` unter Punkt 4. Eine Falle kenne ich schon:
-`comment_votes` erzeugt genau dieselbe Doppeldeutigkeit, die den Feed
-lahmgelegt hat (Nummer 9). Der Fremdschlüssel muss von Anfang an
-benannt werden.
-
-**Ziel 3 — Erwähnungen mit `@`.**
-Baut auf Kommentaren und der Personensuche auf. Offene Frage:
-Benachrichtigungen gibt es in Voria noch gar nicht — das wäre ein
-eigenes Stück samt Tabelle und Ungelesen-Zähler.
-
-**Ausdrücklich nicht als Ziel:** Repost, direkter Beitragseditor und
-gemeinsame Reisen. Alle drei ändern das Datenmodell, und beim
-Beitragseditor rührt es an Vorias Kern — dass ein Beitrag ein geteilter
-Tag ist und nichts anderes. Dazu will ich eine Entscheidung von dir,
-keine Vermutung von mir.
+Stand hier nicht mehr — es hat sich als die Stelle erwiesen, an der
+zwei Dokumente auseinanderlaufen. **Die nächsten Schritte stehen in
+`ANSTEHEND.md`, und nur dort.**

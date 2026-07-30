@@ -91,6 +91,18 @@ body {
   height: 100%;
 }
 
+/*
+ * Platz für die Scrollleiste immer reservieren, auch wenn keine da ist.
+ *
+ * Der Feed blendet seine Leiste aus (siehe `.ohne-scrollleiste`). Ohne
+ * `stable` würde der Inhalt dabei um deren Breite breiter werden — die
+ * ganze Seite ruckt beim Betreten und Verlassen des Feeds seitlich weg.
+ * Dasselbe gilt für kurze Seiten, die gar nicht scrollen.
+ */
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   background: var(--surface-canvas);

@@ -10,18 +10,20 @@
  * Motion hier ist schneller als im Log: motion-feed, 200 ms.
  */
 
-import { useOptimistic, useTransition } from 'react';
+import { useOptimistic, useState, useTransition } from 'react';
 import Link from 'next/link';
-import { ArrowBigUp } from 'lucide-react';
+import { ArrowBigUp, MessageCircle } from 'lucide-react';
 import type { Beitrag } from './queries';
 import { voten } from './actions';
 import { FotoBild } from '@/features/log/FotoBild';
 import { Avatar } from '@/ui/Avatar';
 import { TeilenKnopf } from './TeilenKnopf';
+import { Kommentare } from './Kommentare';
 import { useT } from '@/i18n/Sprachraum';
 
 export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
   const { t, locale } = useT();
+  const [kommentareOffen, setKommentareOffen] = useState(false);
   const [zustand, setzeOptimistisch] = useOptimistic(
     { votes: beitrag.votes, gesetzt: beitrag.selbstGevotet },
     (jetzt) => ({
@@ -84,7 +86,23 @@ export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
           titel={beitrag.tag.titel || beitrag.tag.ort || t.feed.einTag}
           verfasser={beitrag.verfasser.name}
         />
+
+        {/*
+          Drei Knöpfe, nicht vier. Repost ist entschieden noch nicht
+          gebaut — ein toter Knopf in der Leiste wäre schlechter als
+          keiner.
+        */}
+        <button
+          type="button"
+          onClick={() => setKommentareOffen((o) => !o)}
+          aria-expanded={kommentareOffen}
+        >
+          <MessageCircle size={18} strokeWidth={1.5} aria-hidden />
+          <span>{beitrag.kommentare > 0 ? beitrag.kommentare : t.kommentar.knopf}</span>
+        </button>
       </footer>
+
+      {kommentareOffen && <Kommentare beitragId={beitrag.id} />}
 
       <style jsx>{`
         .beitrag {

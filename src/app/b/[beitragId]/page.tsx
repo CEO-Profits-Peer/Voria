@@ -23,7 +23,7 @@
  * Bekannte Einschränkung: `trip_countries_all` verlangt
  * `t.user_id = auth.uid()`. Nichtangemeldete bekommen die Länder einer
  * Reise deshalb nicht, und der Beitrag erscheint hier ohne
- * Regionen-Theme. Steht als offener Punkt in QUEUE.md.
+ * Regionen-Theme. Steht als offener Punkt in ANSTEHEND.md.
  */
 
 import type { Metadata } from 'next';

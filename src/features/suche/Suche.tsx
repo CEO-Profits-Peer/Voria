@@ -19,6 +19,7 @@ import { useEffect, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { Search, X } from 'lucide-react';
 import { suchen, leuteSuchen, type Treffer, type Person } from './actions';
+import { Hervorgehoben } from './Hervorgehoben';
 import { FolgenKnopf } from '@/features/profile/FolgenKnopf';
 import { Avatar } from '@/ui/Avatar';
 import { useT } from '@/i18n/Sprachraum';
@@ -32,6 +33,10 @@ export function Suche() {
   const [treffer, setTreffer] = useState<Treffer[]>([]);
   const [leute, setLeute] = useState<Person[]>([]);
   const [gesucht, setGesucht] = useState(false);
+  /* Nicht `wort` zum Hervorheben nehmen: das läuft der Abfrage voraus
+     und würde im angezeigten Auszug schon das nächste Zeichen
+     markieren, das dort noch gar nicht gesucht wurde. */
+  const [gefunden, setGefunden] = useState('');
   const [laeuft, starten] = useTransition();
 
   useEffect(() => {
@@ -51,6 +56,7 @@ export function Suche() {
       starten(async () => {
         if (bereich === 'tage') setTreffer(await suchen(wort.trim()));
         else setLeute(await leuteSuchen(wort.trim()));
+        setGefunden(wort.trim());
         setGesucht(true);
       });
     }, 320);
@@ -133,7 +139,11 @@ export function Suche() {
                 {tr.ort && <> · {tr.ort}</>}
               </span>
               <span className="titel">{tr.titel ?? tr.reiseTitel}</span>
-              {tr.auszug && <span className="auszug">{tr.auszug}</span>}
+              {tr.auszug && (
+                <span className="auszug">
+                  <Hervorgehoben text={tr.auszug} wort={gefunden} />
+                </span>
+              )}
             </Link>
           </li>
         ))}

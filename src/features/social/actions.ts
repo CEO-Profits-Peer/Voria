@@ -2,6 +2,12 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/lib/supabase-server';
+import { ladeFeed, type Beitrag } from './queries';
+
+/** Den nächsten Stapel Beiträge holen. Siehe `SEITE` in queries.ts. */
+export async function mehrBeitraege(versatz: number): Promise<Beitrag[]> {
+  return ladeFeed(versatz);
+}
 
 /** Upvote setzen oder zurücknehmen. Der Zähler läuft per Trigger mit. */
 export async function voten(beitragId: string, gesetzt: boolean) {

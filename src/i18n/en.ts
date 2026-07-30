@@ -71,6 +71,8 @@ export const en: Woerterbuch = {
     land: 'country',
     laender: 'countries',
     heuteSchreiben: 'Write about today',
+    andererTag: 'Another day',
+    andererTagLabel: 'Pick a date',
     zurueckZurReise: 'Back to the journey',
     zurueckZuAllen: 'Back to all journeys',
     reiseBearbeiten: 'Edit journey',
@@ -172,6 +174,23 @@ export const en: Woerterbuch = {
     kopiert: 'Copied',
     anzeige: 'Sponsored',
     einTag: 'A day',
+  },
+
+  kommentar: {
+    titel: 'Comments',
+    knopf: 'Comments',
+    schreiben: 'Say something about this',
+    antwortSchreiben: 'Reply',
+    senden: 'Post',
+    speichern: 'Save',
+    abbrechen: 'Cancel',
+    antworten: 'Reply',
+    bearbeiten: 'Edit',
+    bearbeitet: 'edited',
+    nochNichts: 'Nobody has said anything yet.',
+    eineAntwort: 'One reply',
+    antwortenZeigen: 'replies',
+    antwortenVerbergen: 'Hide replies',
   },
 
   profil: {

@@ -35,6 +35,26 @@ export function FeedFlaeche({ children }: { children: React.ReactNode }) {
   const aussen = useRef<HTMLDivElement>(null);
   const strom = useRef<HTMLDivElement>(null);
 
+  /** Trifft der Klick die Fläche selbst und nicht eine Karte darin? */
+  const insLeere = (ziel: EventTarget) => ziel === aussen.current || ziel === strom.current;
+
+  /*
+   * OHNE DAS MARKIERT DER SPRUNG DIE BILDER BLAU.
+   *
+   * Der Browser beginnt die Auswahl beim zweiten `mousedown` — also
+   * bevor `dblclick` überhaupt feuert. In `springen` ist es dafür schon
+   * zu spät: dort lässt sich die Markierung nur noch wegräumen,
+   * nachdem sie kurz zu sehen war. Ein Doppelklick neben eine Karte
+   * fasst dabei das Nächstgelegene, und das ist meistens das Foto.
+   *
+   * `user-select: none` auf der Fläche wäre der falsche Weg — dann
+   * ließe sich auch der Text eines Beitrags nicht mehr markieren.
+   * Deshalb nur hier, nur bei der zweiten Betätigung, nur im Leeren.
+   */
+  const auswahlVerhindern = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.detail >= 2 && insLeere(e.target)) e.preventDefault();
+  };
+
   const springen = (e: React.MouseEvent<HTMLDivElement>) => {
     /*
      * Zwei Ebenen, weil `.strom` nur 620 px breit ist. Auf einem
@@ -45,8 +65,13 @@ export function FeedFlaeche({ children }: { children: React.ReactNode }) {
      *
      * Alles andere — Karten, Text, Knöpfe — läuft weiter wie gewohnt.
      */
-    const ziel_ = e.target;
-    if (ziel_ !== aussen.current && ziel_ !== strom.current) return;
+    if (!insLeere(e.target)) return;
+
+    /*
+     * Nachräumen für den Fall, dass doch etwas markiert wurde — etwa
+     * weil die erste Betätigung schon eine Auswahl aufgezogen hat.
+     */
+    window.getSelection()?.removeAllRanges();
 
     const karten = strom.current?.children;
     if (!karten) return;
@@ -61,6 +86,13 @@ export function FeedFlaeche({ children }: { children: React.ReactNode }) {
      */
     let ziel: Element | null = null;
     for (const karte of Array.from(karten)) {
+      /*
+       * Die Wache des Nachladens ist ein unsichtbares Element ohne
+       * Höhe. Ohne diese Zeile wäre sie ein gültiges Sprungziel — der
+       * Doppelklick landete dann scheinbar im Nichts.
+       */
+      if (karte.hasAttribute('data-wache')) continue;
+
       if (karte.getBoundingClientRect().top > SCHWELLE) {
         ziel = karte;
         break;
@@ -79,7 +111,12 @@ export function FeedFlaeche({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div ref={aussen} className="strom-flaeche" onDoubleClick={springen}>
+    <div
+      ref={aussen}
+      className="strom-flaeche"
+      onMouseDown={auswahlVerhindern}
+      onDoubleClick={springen}
+    >
       <div ref={strom} className="strom">
         {children}
       </div>

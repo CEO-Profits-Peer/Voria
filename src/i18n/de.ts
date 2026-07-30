@@ -71,6 +71,8 @@ export const de = {
     land: 'Land',
     laender: 'Länder',
     heuteSchreiben: 'Heute schreiben',
+    andererTag: 'Einen anderen Tag',
+    andererTagLabel: 'Datum wählen',
     zurueckZurReise: 'Zurück zur Reise',
     zurueckZuAllen: 'Zurück zu allen Reisen',
     reiseBearbeiten: 'Reise bearbeiten',
@@ -174,6 +176,23 @@ export const de = {
     kopiert: 'Kopiert',
     anzeige: 'Anzeige',
     einTag: 'Ein Tag',
+  },
+
+  kommentar: {
+    titel: 'Kommentare',
+    knopf: 'Kommentare',
+    schreiben: 'Etwas dazu schreiben',
+    antwortSchreiben: 'Antworten',
+    senden: 'Abschicken',
+    speichern: 'Speichern',
+    abbrechen: 'Abbrechen',
+    antworten: 'Antworten',
+    bearbeiten: 'Bearbeiten',
+    bearbeitet: 'bearbeitet',
+    nochNichts: 'Noch hat niemand etwas gesagt.',
+    eineAntwort: 'Eine Antwort',
+    antwortenZeigen: 'Antworten',
+    antwortenVerbergen: 'Antworten ausblenden',
   },
 
   profil: {

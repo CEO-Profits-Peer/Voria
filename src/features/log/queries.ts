@@ -66,16 +66,32 @@ export async function ladeReisen(): Promise<Reise[]> {
   } = await supabase.auth.getUser();
   if (!user) return [];
 
-  const { data } = await supabase
+  /*
+   * `entries(count)` statt `entries(id)`: vorher kamen sämtliche
+   * Eintrags-IDs aller Reisen über die Leitung, nur um sie zu zählen.
+   * Bei zwanzig Reisen à hundert Tagen sind das zweitausend IDs für
+   * eine Zahl je Karte.
+   *
+   * Der Fehler wird geloggt, weil ein Fehlschlag hier die Seite
+   * „Noch keine Reise" zeigen würde — die Reisen wären scheinbar weg.
+   */
+  const { data, error } = await supabase
     .from('trips')
-    .select('id, title, started_on, ended_on, region_override, trip_countries(country_code, days), entries(id)')
+    .select(
+      'id, title, started_on, ended_on, region_override, trip_countries(country_code, days), entries(count)',
+    )
     .eq('user_id', user.id)
     .order('started_on', { ascending: false, nullsFirst: false });
 
+  if (error) {
+    console.error('[ladeReisen] Reisen konnten nicht geladen werden:', error);
+    return [];
+  }
   if (!data) return [];
 
   return data.map((t) => {
     const laender = (t.trip_countries ?? []) as { country_code: string; days: number }[];
+    const zaehler = (t.entries ?? []) as unknown as { count: number }[];
     return {
       id: t.id,
       titel: t.title || 'Ohne Titel',
@@ -86,7 +102,7 @@ export async function ladeReisen(): Promise<Reise[]> {
         t.region_override as RegionOrNeutral | null,
       ),
       laender: laender.map((l) => l.country_code),
-      tage: (t.entries ?? []).length,
+      tage: zaehler[0]?.count ?? 0,
     };
   });
 }

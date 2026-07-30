@@ -9,6 +9,7 @@
 
 import { createServerClient } from '@/lib/supabase-server';
 import { regionForCountry, type RegionOrNeutral } from '@/themes/regions';
+import { SEITE } from './konstanten';
 
 export interface Beitrag {
   id: string;
@@ -16,6 +17,7 @@ export interface Beitrag {
   text: string;
   votes: number;
   selbstGevotet: boolean;
+  kommentare: number;
   verfasser: { name: string; benutzername: string; bild: string | null };
   tag: { datum: string; titel: string | null; ort: string | null };
   region: RegionOrNeutral;
@@ -24,7 +26,7 @@ export interface Beitrag {
 
 const SCHWELLE_FUER_ALGORITHMUS = 200;
 
-export async function ladeFeed(): Promise<Beitrag[]> {
+export async function ladeFeed(versatz = 0, anzahl = SEITE): Promise<Beitrag[]> {
   const supabase = await createServerClient();
   const {
     data: { user },
@@ -60,14 +62,22 @@ export async function ladeFeed(): Promise<Beitrag[]> {
   const { data, error } = await supabase
     .from('posts')
     .select(
-      `id, entry_id, caption, vote_count, published_at,
+      `id, entry_id, caption, vote_count, published_at, comments(count),
        profiles!posts_user_id_fkey(username, display_name, avatar_url),
        entries(entry_date, title, place_name,
                trips(region_override, trip_countries(country_code, days)),
                blocks(kind, position, photos(r2_key, width, height, blurhash)))`,
     )
     .order(chronologisch ? 'published_at' : 'vote_count', { ascending: false })
-    .limit(50);
+    /*
+     * Zweites Sortierfeld, sonst ist die Reihenfolge nicht eindeutig.
+     * Bei gleicher Stimmenzahl darf Postgres frei entscheiden — und
+     * über zwei Abfragen hinweg entscheidet es unterschiedlich. Dann
+     * erscheint derselbe Beitrag zweimal, während ein anderer nie
+     * auftaucht. Genau die Sorte Fehler, die niemand meldet.
+     */
+    .order('id', { ascending: false })
+    .range(versatz, versatz + anzahl - 1);
 
   if (error) {
     console.error('[ladeFeed] Feed-Abfrage fehlgeschlagen:', error);
@@ -95,6 +105,7 @@ export async function ladeFeed(): Promise<Beitrag[]> {
       text: p.caption ?? '',
       votes: p.vote_count ?? 0,
       selbstGevotet: eigene.has(p.id),
+      kommentare: p.comments?.[0]?.count ?? 0,
       verfasser: {
         name: p.profiles?.display_name || p.profiles?.username || 'Jemand',
         benutzername: p.profiles?.username ?? '',
