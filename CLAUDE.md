@@ -97,6 +97,7 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 4. `0004_profil_trigger.sql` — Profil entsteht beim Registrieren
 5. `0005_leute_suchen.sql` — Trigramm-Indizes für die Personensuche
 6. `0006_kommentare.sql` — Kommentare und ihre Stimmen
+7. `0007_leute_unscharf.sql` — Personensuche mit Tippfehlertoleranz
 
 **`0006` muss vor dem nächsten Deploy laufen.** Der Feed fragt
 `comments(count)` mit ab; fehlt die Tabelle, schlägt die ganze

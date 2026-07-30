@@ -9,7 +9,7 @@
 
 import { createServerClient } from '@/lib/supabase-server';
 import { regionForCountry, type RegionOrNeutral } from '@/themes/regions';
-import { SEITE } from './konstanten';
+import { SEITE, type Reiter } from './konstanten';
 
 export interface Beitrag {
   id: string;
@@ -26,14 +26,49 @@ export interface Beitrag {
 
 const SCHWELLE_FUER_ALGORITHMUS = 200;
 
-export async function ladeFeed(versatz = 0, anzahl = SEITE): Promise<Beitrag[]> {
+export async function ladeFeed(
+  versatz = 0,
+  anzahl = SEITE,
+  reiter: Reiter = 'fuerdich',
+): Promise<Beitrag[]> {
   const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { count } = await supabase.from('posts').select('id', { count: 'exact', head: true });
-  const chronologisch = (count ?? 0) < SCHWELLE_FUER_ALGORITHMUS;
+  /*
+   * „Folge ich": erst die Gefolgten holen, dann darauf einschränken.
+   *
+   * Ohne den Rückzieher bei leerer Liste baut PostgREST `in.()` — eine
+   * Bedingung ohne Inhalt, die je nach Fassung einen Fehler wirft oder
+   * ALLES durchlässt. Das zweite wäre schlimmer: der Reiter zeigte
+   * dann fremde Leute, obwohl man niemandem folgt.
+   */
+  let gefolgte: string[] | null = null;
+  if (reiter === 'folgeich') {
+    if (!user) return [];
+    const { data: f, error: fFehler } = await supabase
+      .from('follows')
+      .select('followee_id')
+      .eq('follower_id', user.id);
+
+    if (fFehler) {
+      console.error('[ladeFeed] Gefolgte konnten nicht geladen werden:', fFehler);
+      return [];
+    }
+    gefolgte = (f ?? []).map((x) => x.followee_id);
+    if (gefolgte.length === 0) return [];
+  }
+
+  /*
+   * Die Kaltstart-Zählung nur im offenen Feed. „Folge ich" sortiert
+   * immer chronologisch — die Auswahl hat der Nutzer schon getroffen.
+   */
+  let chronologisch = true;
+  if (reiter === 'fuerdich') {
+    const { count } = await supabase.from('posts').select('id', { count: 'exact', head: true });
+    chronologisch = (count ?? 0) < SCHWELLE_FUER_ALGORITHMUS;
+  }
 
 /*
  * WARUM HIER DER FREMDSCHLÜSSEL AUSDRÜCKLICH DASTEHT
@@ -59,7 +94,7 @@ export async function ladeFeed(versatz = 0, anzahl = SEITE): Promise<Beitrag[]> 
  * oder `follows` ein zweites Mal auf `profiles` zeigt, muss der
  * Fremdschlüssel benannt werden.
  */
-  const { data, error } = await supabase
+  let abfrage = supabase
     .from('posts')
     .select(
       `id, entry_id, caption, vote_count, published_at, comments(count),
@@ -78,6 +113,10 @@ export async function ladeFeed(versatz = 0, anzahl = SEITE): Promise<Beitrag[]> 
      */
     .order('id', { ascending: false })
     .range(versatz, versatz + anzahl - 1);
+
+  if (gefolgte) abfrage = abfrage.in('user_id', gefolgte);
+
+  const { data, error } = await abfrage;
 
   if (error) {
     console.error('[ladeFeed] Feed-Abfrage fehlgeschlagen:', error);

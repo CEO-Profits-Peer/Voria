@@ -176,6 +176,11 @@ export const de = {
     kopiert: 'Kopiert',
     anzeige: 'Anzeige',
     einTag: 'Ein Tag',
+    fuerDich: 'Für dich',
+    folgeIch: 'Folge ich',
+    niemandGefolgt: 'Du folgst noch niemandem',
+    niemandGefolgtZeile:
+      'Hier stehen die Tage der Leute, denen du folgst — in der Reihenfolge, in der sie geschrieben wurden. Über die Suche findest du die ersten.',
   },
 
   kommentar: {

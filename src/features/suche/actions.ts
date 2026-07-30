@@ -79,32 +79,45 @@ export interface Person {
 }
 
 /**
- * Zeichen entfernen, die die Filtersyntax von PostgREST zerlegen.
- *
- * `or=(username.ilike.%x%,display_name.ilike.%x%)` ist eine
- * Zeichenkette, die serverseitig geparst wird. Ein Komma oder eine
- * Klammer aus der Eingabe würde die Bedingung umschreiben — nicht
- * gefährlich für die Datenbank, weil Row Level Security darüber liegt,
- * aber die Suche liefert dann Unsinn oder einen Fehler.
- *
- * Deshalb bleiben nur Buchstaben, Ziffern, Unterstrich, Punkt,
- * Bindestrich und Leerzeichen übrig. Umlaute ausdrücklich erlaubt —
- * Anzeigenamen enthalten sie.
+ * Eine Zeile, wie `leute_suchen` sie liefert — die Spalten von
+ * `profiles`, noch nicht umbenannt. Die Funktion gibt `setof profiles`
+ * zurück, also kommt hier alles an, was die Tabelle hat.
  */
-function filterSicher(wort: string): string {
-  return wort.replace(/[^\p{L}\p{N}_.\- ]/gu, '').trim();
+interface Person0 {
+  id: string;
+  username: string;
+  display_name: string | null;
+  bio: string | null;
+  avatar_url: string | null;
 }
 
 /**
- * Profile über Benutzernamen und Anzeigenamen finden.
+ * Die Platzhalter von LIKE entschärfen.
  *
- * Kein Volltextindex wie bei den Tagen: Namen werden nicht gebeugt,
- * hier zählt Teilübereinstimmung. `ilike` mit führendem Platzhalter
- * kann keinen B-Baum nutzen, deshalb liegt in Migration 0005 ein
- * Trigramm-Index darauf.
+ * Die Werte gehen als gebundene Parameter an `leute_suchen`, eine
+ * Umschreibung der Bedingung ist also nicht mehr möglich. `%` und `_`
+ * bleiben trotzdem gefährlich für das Ergebnis: Wer `%` eintippt,
+ * bekäme sonst jedes Profil zurück, weil die Funktion daraus
+ * `'%' || '%' || '%'` baut.
+ */
+function filterSicher(wort: string): string {
+  return wort.replace(/[^\p{L}\p{N}.\- ]/gu, '').trim();
+}
+
+/**
+ * Profile über Benutzernamen und Anzeigenamen finden — auch bei
+ * Tippfehlern.
  *
- * Private Profile kommen nicht zurück — dafür sorgt `profiles_read`
- * in der Datenbank, nicht diese Funktion.
+ * Kein Volltextindex wie bei den Tagen: Namen werden nicht gebeugt.
+ * Gesucht wird über die Datenbankfunktion aus Migration `0007`, weil
+ * `similarity()` sich über PostgREST weder filtern noch sortieren
+ * lässt — und die Ähnlichkeit ist genau das, wonach sortiert werden
+ * muss. „marakesh" findet damit „Marrakesch".
+ *
+ * Private Profile kommen nicht zurück. Dafür sorgt `profiles_read` in
+ * der Datenbank, und dafür ist die Funktion `security invoker` — mit
+ * `definer` käme jedes private Profil durch, und die Suche sähe dabei
+ * nur „besser" aus.
  */
 export async function leuteSuchen(wort: string): Promise<Person[]> {
   const sauber = filterSicher(wort);
@@ -115,23 +128,25 @@ export async function leuteSuchen(wort: string): Promise<Person[]> {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const muster = `%${sauber}%`;
-  let abfrage = supabase
-    .from('profiles')
-    .select('id, username, display_name, bio, avatar_url')
-    .or(`username.ilike.${muster},display_name.ilike.${muster}`)
-    .limit(20);
-
-  // Sich selbst zu finden hilft niemandem.
-  if (user) abfrage = abfrage.neq('id', user.id);
-
-  const { data, error } = await abfrage;
+  const { data: roh, error } = await supabase.rpc('leute_suchen', {
+    wort: sauber,
+    hoechstens: 20,
+  });
 
   if (error) {
     console.error('[leuteSuchen]', error);
     return [];
   }
-  if (!data || data.length === 0) return [];
+  if (!roh || roh.length === 0) return [];
+
+  /*
+   * Sich selbst zu finden hilft niemandem. Die Aussortierung steht
+   * hier und nicht in der Funktion, damit dieselbe Funktion später
+   * auch dort taugt, wo das eigene Profil dazugehört — etwa bei
+   * Erwähnungen mit `@`.
+   */
+  const data = (roh as Person0[]).filter((p) => p.id !== user?.id);
+  if (data.length === 0) return [];
 
   const ids = data.map((p) => p.id);
 
@@ -164,15 +179,19 @@ export async function leuteSuchen(wort: string): Promise<Person[]> {
   }));
 
   /*
-   * Sortierung: was am Anfang des Namens passt, ist wahrscheinlich
-   * gemeint. „anna" soll `anna` vor `marianna` zeigen. Erst danach
-   * zählt, wie vielen Leuten jemand folgt — das ist nur ein
-   * Stichentscheid, keine Beliebtheitsrangliste.
+   * HIER WIRD NICHT MEHR SORTIERT.
+   *
+   * Vorher stand an dieser Stelle eine Sortierung nach Anfangstreffer
+   * und Followerzahl. Sie muss weg, seit die Datenbank nach
+   * Ähnlichkeit ordnet: Ein Tippfehlertreffer fängt naturgemäß NICHT
+   * mit dem Suchwort an — „marakesh" gegen „Marrakesch" —, wäre also
+   * ans Ende gerutscht und die ganze Migration 0007 wirkungslos
+   * gewesen. Genau die Sorte Fehler, die niemand meldet, weil das
+   * Ergebnis ja irgendwie plausibel aussieht.
+   *
+   * `leute_suchen` ordnet: Anfangstreffer zuerst, dann die beste
+   * Ähnlichkeit, dann alphabetisch. Die Followerzahl ist damit kein
+   * Stichentscheid mehr — Ähnlichkeit ist der bessere.
    */
-  const klein = sauber.toLowerCase();
-  return treffer.sort((a, b) => {
-    const rang = (p: Person) =>
-      p.benutzername.toLowerCase().startsWith(klein) || p.name.toLowerCase().startsWith(klein) ? 0 : 1;
-    return rang(a) - rang(b) || b.folgen - a.folgen || a.benutzername.localeCompare(b.benutzername);
-  });
+  return treffer;
 }

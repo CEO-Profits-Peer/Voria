@@ -3,10 +3,17 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/lib/supabase-server';
 import { ladeFeed, type Beitrag } from './queries';
+import { SEITE, type Reiter } from './konstanten';
 
-/** Den nächsten Stapel Beiträge holen. Siehe `SEITE` in queries.ts. */
-export async function mehrBeitraege(versatz: number): Promise<Beitrag[]> {
-  return ladeFeed(versatz);
+/**
+ * Den nächsten Stapel holen.
+ *
+ * Der Reiter muss mitgereicht werden: sonst lädt „Folge ich" ab der
+ * zehnten Karte den offenen Feed nach, und plötzlich stehen Fremde in
+ * einer Liste, die ausdrücklich nur Gefolgte zeigen sollte.
+ */
+export async function mehrBeitraege(versatz: number, reiter: Reiter): Promise<Beitrag[]> {
+  return ladeFeed(versatz, SEITE, reiter);
 }
 
 /** Upvote setzen oder zurücknehmen. Der Zähler läuft per Trigger mit. */

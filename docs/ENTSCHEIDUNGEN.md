@@ -570,6 +570,70 @@ ausdrücklich verworfen — Bedienelemente bleiben global gleich.
 
 ---
 
+### 2026-07-30 · Pro-Vorschlag: zweimal die Woche, als Streifen, nie modal
+
+Der Vorschlag, alle ein bis drei Stunden ein Pop-up zu zeigen, wurde
+verworfen. Grund war nicht nur die Haltung („Die App drängt nicht"),
+sondern die Nutzung: Ein Reisetagebuch wird abends für zehn Minuten
+geöffnet. Ein Zeitgeber von Stunden bedeutet, dass praktisch jedes
+Öffnen mit einem Verkaufsgespräch beginnt — auch das, bei dem jemand
+über einen gestorbenen Großvater schreiben wollte.
+
+**Festgelegt: höchstens zweimal je Woche.** Dazu:
+
+* Ein **Streifen zum Wegwischen**, kein modaler Dialog. Modale sind
+  für Entscheidungen, nicht für Angebote.
+* **Nie**, während jemand schreibt.
+* Nach dem **dritten Wegwischen drei Monate Ruhe.** Wer dreimal nein
+  sagt, meint nein.
+* Unabhängig davon und ohne Zeitgeber: der Vorschlag **im Moment des
+  Wunsches** (beim Exportieren, an der Fotogrenze) und der dauerhafte
+  Eintrag „Pro werden" im Profil.
+
+Das Intervall liegt als **eine Zahl an einer Stelle**, damit es sich
+nach echten Zahlen ändern lässt statt nach Bauchgefühl.
+
+Anlass war ein Fund beim Wettbewerb: Travel Diaries zeigt sein
+Mitgliedschafts-Pop-up ungefragt auf dem Dashboard. Die erste Reaktion
+darauf war „schwach", nicht „interessant".
+
+### 2026-07-30 · Es heißt „smart", nicht „KI"
+
+Nach außen wird nichts als KI vermarktet. Nicht aus Scheu, sondern
+weil „KI-Tagebuch" genau die Erwartung weckt, die Voria nicht erfüllen
+will: dass die App für einen schreibt.
+
+**Was es geben soll:** automatische Verschlagwortung von Fotos, eine
+bessere Anstoßfrage aus dem, was der Tag schon hergibt, und später
+semantische Suche („Tage, an denen ich erschöpft war") über
+Einbettungen. Das kann kein Volltextindex, und es ist der einzige
+Punkt, an dem ein Modell etwas beiträgt, was die vorhandene Suche
+prinzipiell nicht kann.
+
+**Was es nicht geben soll: den Tagestext aus Stichworten schreiben
+lassen.** Wenn jemand in zehn Jahren nachliest, wie sich sein Leben
+angefühlt hat, und der Text stammt von einem Modell, liest er eine
+Lüge über sein eigenes Leben. Das ist der eine Ort, an dem Voria nicht
+schummeln darf. Ein Modell darf fragen, nicht antworten.
+
+### 2026-07-30 · Vom Wettbewerb übernommen: die Buchansicht
+
+Travel Diaries zeigt das Tagebuch im Editor als aufgeschlagenes Buch
+mit umblätterbaren Seiten. Das wird übernommen, weil es das Produkt
+als **Gegenstand** zeigt statt als Liste — und weil es bei Voria drei
+Dinge auf einmal löst: die Pro-Vorschau, die PDF-Vorschau und später
+die Fotobuch-Vorschau sind dasselbe Bauteil.
+
+Ebenfalls übernommen: ein **Titelbild je Reise**. `trips.cover_photo_id`
+steht seit `0001_init.sql` im Schema und wird bisher nirgends benutzt.
+
+**Nicht übernommen:** Kapitel (der Tag ist die bessere Einheit),
+Stilauswahl von Hand (die zwölf Regionen machen das automatisch), und
+ausgegraute Pro-Knöpfe in der Werkzeugleiste — die zeigen Abwesenheit,
+und Voria verkauft Anwesenheit.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.

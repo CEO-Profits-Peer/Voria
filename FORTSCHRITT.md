@@ -57,7 +57,7 @@ markieren.
 
 ---
 
-## Gebaut — 12 Funktionen
+## Gebaut — 16 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -91,8 +91,24 @@ markieren.
 12. **Suchtreffer hervorheben** — Auszug zerlegt und als React-Knoten
     zusammengesetzt, ausdrücklich kein HTML eingesetzt.
 
-Dazu 6 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
-`0006` Kommentare) und die Dokumente `START.md` und `DEPLOY.md`.
+13. **Feed lädt nach** — zehn Beiträge je Stapel statt fünfzig auf
+    einmal, ausgelöst beim ersten Beitrag des letzten Stapels. Die
+    Werbung wird über den ganzen angesammelten Bestand gemischt, nicht
+    je Stapel — sonst stünde an jeder Stapelgrenze eine Anzeige falsch.
+14. **Feed-Reiter „Für dich" und „Folge ich"** — Verweise statt Knöpfe,
+    Reiter steht im Adressfeld.
+15. **Feed ohne Scrollleiste** — eine Leiste, deren Griff bei jedem
+    Nachladen kleiner wird, behauptet eine Länge, die es nicht gibt.
+
+16. **Personensuche verzeiht Tippfehler** — „marakesh" findet
+    „Marrakesch". Der Trigramm-Index lag seit `0005` da, nur die Frage
+    war die falsche: `ilike` verlangt die Zeichenkette buchstäblich.
+    Jetzt eine Datenbankfunktion, weil `similarity()` über PostgREST
+    weder filterbar noch sortierbar ist.
+
+Dazu 7 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+`0006` Kommentare, `0007` unscharfe Personensuche) und die Dokumente
+`START.md` und `DEPLOY.md`.
 
 ---
 

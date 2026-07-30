@@ -19,7 +19,7 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react';
 import type { Beitrag } from './queries';
-import { SEITE } from './konstanten';
+import { SEITE, type Reiter } from './konstanten';
 import { mehrBeitraege } from './actions';
 import { mitAnzeigen } from './werbung';
 import { BeitragKarte } from './BeitragKarte';
@@ -29,10 +29,12 @@ export function FeedStrom({
   start,
   werbung,
   kennzeichen,
+  reiter,
 }: {
   start: Beitrag[];
   werbung: boolean;
   kennzeichen: string;
+  reiter: Reiter;
 }) {
   const [beitraege, setBeitraege] = useState(start);
   /* Weniger als ein voller Stapel heißt: das war alles. */
@@ -54,7 +56,7 @@ export function FeedStrom({
          * dann liefe derselbe Stapel doppelt los.
          */
         laeuft.current = true;
-        mehrBeitraege(beitraege.length)
+        mehrBeitraege(beitraege.length, reiter)
           .then((neue) => {
             if (neue.length < SEITE) setNochWelche(false);
             if (neue.length > 0) {
@@ -80,7 +82,7 @@ export function FeedStrom({
 
     beobachter.observe(ziel);
     return () => beobachter.disconnect();
-  }, [beitraege.length, nochWelche]);
+  }, [beitraege.length, nochWelche, reiter]);
 
   const karten = werbung
     ? mitAnzeigen(beitraege)

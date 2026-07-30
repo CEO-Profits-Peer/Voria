@@ -174,6 +174,11 @@ export const en: Woerterbuch = {
     kopiert: 'Copied',
     anzeige: 'Sponsored',
     einTag: 'A day',
+    fuerDich: 'For you',
+    folgeIch: 'Following',
+    niemandGefolgt: 'You are not following anyone yet',
+    niemandGefolgtZeile:
+      'This is where the days of people you follow appear, in the order they were written. Search is where you find the first few.',
   },
 
   kommentar: {

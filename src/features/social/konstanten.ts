@@ -24,3 +24,18 @@
  * und das Nachladen fällt nicht auf.
  */
 export const SEITE = 10;
+
+/**
+ * Die beiden Reiter über dem Feed.
+ *
+ * `fuerdich` ist der offene Feed samt Kaltstart-Regel. `folgeich`
+ * zeigt ausschließlich Beiträge von Gefolgten, immer chronologisch —
+ * dort ist die Auswahl schon getroffen, eine Gewichtung obendrauf
+ * würde nur verbergen, was man ausdrücklich sehen wollte.
+ */
+export type Reiter = 'fuerdich' | 'folgeich';
+
+/** Aus dem Adressfeld, das dort alles stehen kann. */
+export function alsReiter(wert: string | undefined): Reiter {
+  return wert === 'folgeich' ? 'folgeich' : 'fuerdich';
+}

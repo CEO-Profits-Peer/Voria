@@ -21,11 +21,18 @@ npm run pruefen
 npm run build
 ```
 
-**Vor dem Deploy:** `supabase/migrations/0006_kommentare.sql` im
-Supabase SQL Editor ausführen. Der Feed fragt `comments(count)` mit ab —
-ohne die Tabelle schlägt die ganze Feed-Abfrage fehl und der Feed ist
-leer. Der Fehler landet in der Serverkonsole, sichtbar ist nur die
-leere Seite.
+**Vor dem Deploy zwei Migrationen ausführen**, in dieser Reihenfolge:
+
+1. `0006_kommentare.sql` — **blockierend.** Der Feed fragt
+   `comments(count)` mit ab; ohne die Tabelle schlägt die ganze
+   Feed-Abfrage fehl und der Feed ist leer. Der Fehler landet in der
+   Serverkonsole, sichtbar ist nur die leere Seite.
+2. `0007_leute_unscharf.sql` — **blockierend für die Personensuche.**
+   `leuteSuchen` ruft jetzt die Datenbankfunktion `leute_suchen`; ohne
+   sie findet der Reiter „Leute" niemanden mehr.
+
+Beide prüfen sich am Ende selbst und brechen mit einer Meldung ab,
+wenn etwas fehlt.
 
 Danach im Browser durchgehen, in dieser Reihenfolge:
 
@@ -36,6 +43,9 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Kommentar-Stimme | Feed → Kommentar → Pfeil | Zähler zählt, und der Kommentar bekommt **kein** „bearbeitet" |
 | Bereich offen lassen | Feed → Kommentare auf → antworten | Bleibt der Bereich offen? `revalidatePath('/feed')` baut die Serverseite neu — größte offene Unsicherheit |
 | Doppelklick | Feed, in die Leere neben den Karten | Springt weich zum nächsten Beitrag, **ohne die Bilder blau zu markieren** |
+| Feed-Reiter | Feed → „Folge ich" | Nur Gefolgte? Reiter im Adressfeld? Neu laden behält ihn? |
+| Reiterwechsel | Feed → nachladen → auf den anderen Reiter | Stehen dort wirklich **andere** Beiträge, nicht die alten? |
+| Niemandem folgen | Neues Konto → „Folge ich" | Hinweis statt leerer Fläche, und die Reiter bleiben bedienbar |
 | Nachladen | Feed mit mehr als 10 Beiträgen, langsam scrollen | Kommen die nächsten zehn, **bevor** man unten ankommt? Steht keiner doppelt? |
 | Werbung nach dem Nachladen | Feed, zweiter Stapel | Immer noch jede sechste Karte über die **ganze** Liste — nicht je Stapel neu |
 | Keine Scrollleiste | Feed betreten und wieder verlassen | Leiste im Feed weg, danach wieder da, **und die Seite ruckt seitlich nicht** |
@@ -44,6 +54,8 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Textblöcke | Tag → Fläche → Plus → Text | Tippen, neu laden, verschieben, zweiter Block, löschen |
 | Profilbild | `/du/bearbeiten` | Hochladen, erscheint es in Feed, Suche, Seitenleiste? |
 | Personensuche | `/suche` → Reiter „Leute" | `qualle`, `lore`, Folgen-Knopf |
+| Tippfehler | `/suche` → „Leute" → einen Namen **falsch** tippen | Wird er trotzdem gefunden? Steht der beste Treffer oben? |
+| Private Profile | Ein Profil auf privat, dann danach suchen | Darf **nicht** auftauchen — sonst läuft `leute_suchen` mit falschen Rechten |
 | Teilen | Feed → Teilen | Link in einem privaten Fenster öffnen — ohne Anmeldung sichtbar? |
 | Tagesleiste | Tag, beide Modi | Foto und Sichtbarkeit in **Seite** und **Fläche** erreichbar? |
 | Werbung | Feed | Erst ab Beitrag 7, nie zwei hintereinander, nie zuletzt |
@@ -87,17 +99,30 @@ Nutzer, aber nicht nebensächlich für Voria.** Wer ihn nie öffnet, hat
 ein vollständiges Tagebuch — trotzdem verdient Voria dort sein Geld.
 Also gut bauen, nicht zurückstellen. Siehe `docs/ENTSCHEIDUNGEN.md`.
 
-### „Für dich" und „Folge ich" — nächster Bau
+### „Für dich" und „Folge ich" — GEBAUT, ungeprüft
 
 Zwei Reiter über dem Feed, nach dem Muster aus `/suche`. Kein eigener
 Hauptbereich (die Navigation hat bewusst vier), kein verstecktes Menü
 hinter drei Punkten (findet niemand).
 
 * **Für dich** — der bestehende Feed samt Kaltstart-Regel
-* **Folge ich** — nur Beiträge von Gefolgten, chronologisch
+* **Folge ich** — nur Beiträge von Gefolgten, immer chronologisch
 
-Braucht keine neue Tabelle, `follows` liegt vor. Beantwortet zugleich
-den Wunsch, Beiträge von Gefolgten zu priorisieren.
+Verweise statt Knöpfe: der Reiter steht im Adressfeld, überlebt das
+Neuladen und lässt sich weitergeben.
+
+Drei Dinge, die dabei Aufmerksamkeit brauchten:
+
+**Leere Gefolgtenliste.** Ohne Rückzieher baut PostgREST `in.()` — eine
+Bedingung ohne Inhalt, die je nach Fassung wirft oder **alles**
+durchlässt. Das zweite wäre schlimmer: der Reiter zeigte dann Fremde.
+
+**Der Reiter muss beim Nachladen mit.** Sonst holt „Folge ich" ab der
+zehnten Karte den offenen Feed nach.
+
+**`key={reiter}` am `FeedStrom`.** Ohne ihn sieht React dieselbe Stelle
+im Baum und lässt `useState(start)` unberührt — im neuen Reiter stünden
+die Beiträge des alten.
 
 ### Benachrichtigungen — jetzt gesetzt
 
