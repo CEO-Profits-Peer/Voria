@@ -30,8 +30,12 @@ npm run build
 2. `0007_leute_unscharf.sql` — **blockierend für die Personensuche.**
    `leuteSuchen` ruft jetzt die Datenbankfunktion `leute_suchen`; ohne
    sie findet der Reiter „Leute" niemanden mehr.
+3. `0008_hinweise.sql` — **blockierend für die Hülle.** Die Seitenleiste
+   zählt bei jedem Aufruf die ungelesenen Hinweise. Fehlt die Tabelle,
+   steht der Fehler in der Serverkonsole und der Punkt fehlt einfach.
+   Die Einstellungsseite liest vier neue Spalten aus `profiles`.
 
-Beide prüfen sich am Ende selbst und brechen mit einer Meldung ab,
+Alle drei prüfen sich am Ende selbst und brechen mit einer Meldung ab,
 wenn etwas fehlt.
 
 Danach im Browser durchgehen, in dieser Reihenfolge:
@@ -54,6 +58,10 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Textblöcke | Tag → Fläche → Plus → Text | Tippen, neu laden, verschieben, zweiter Block, löschen |
 | Profilbild | `/du/bearbeiten` | Hochladen, erscheint es in Feed, Suche, Seitenleiste? |
 | Personensuche | `/suche` → Reiter „Leute" | `qualle`, `lore`, Folgen-Knopf |
+| Hinweise | Zweites Konto: folgen, kommentieren, Tag teilen | Kommen alle vier Arten an? Punkt an der Glocke? |
+| Kein Selbstlärm | Eigenen Beitrag selbst kommentieren | Es darf **kein** Hinweis entstehen |
+| Stiller Modus | Einstellungen → an → vom zweiten Konto reagieren | Nichts kommt an. Danach aus: **stehen die drei Schalter wieder wie vorher?** |
+| Neue Zeilen | `/hinweise` öffnen | Bleiben die Markierungen an den neuen Zeilen stehen, oder verschwinden sie sofort? |
 | Tippfehler | `/suche` → „Leute" → einen Namen **falsch** tippen | Wird er trotzdem gefunden? Steht der beste Treffer oben? |
 | Private Profile | Ein Profil auf privat, dann danach suchen | Darf **nicht** auftauchen — sonst läuft `leute_suchen` mit falschen Rechten |
 | Teilen | Feed → Teilen | Link in einem privaten Fenster öffnen — ohne Anmeldung sichtbar? |
@@ -124,23 +132,35 @@ zehnten Karte den offenen Feed nach.
 im Baum und lässt `useState(start)` unberührt — im neuen Reiter stünden
 die Beiträge des alten.
 
-### Benachrichtigungen — jetzt gesetzt
+### Benachrichtigungen und Stiller Modus — GEBAUT, ungeprüft
 
-Rote Punkte sind erlaubt, solange sie **Ereignisse** melden (Antwort,
-neue Folger, Upload von Gefolgten) und nicht **Verhalten** (Serien,
-Abzeichen, Fortschritt). Alles einzeln abschaltbar.
+Vier Arten: Kommentar, Antwort, neuer Folger, Upload von jemandem, dem
+man folgt. Alle drei Gruppen einzeln abschaltbar, dazu der Stille
+Modus als Sammelschalter. Migration `0008_hinweise.sql`.
 
-Nötig: eigene Tabelle, Ungelesen-Zähler, Glockensymbol. Trägt danach
-auch Erwähnungen mit `@`.
+Fünf Festlegungen stecken in der Umsetzung:
 
-### Stiller Modus
+**Hinweise entstehen nur per Trigger.** Es gibt keine `insert`-Regel
+auf `notifications` — niemand kann sich selbst oder anderen welche
+schreiben.
 
-Ein Schalter in den Einstellungen, der die ruhige Nutzung in einem Zug
-herstellt: keine Hinweise, nichts Soziales im Blick. Beim Ausschalten
-steht alles wieder wie vorher — **der Schalter überschreibt die
-Einzeleinstellungen, er löscht sie nicht.** Das ist der Unterschied
-zwischen einem Modus und einem Rundumschlag, und es ist der Punkt, an
-dem die Umsetzung schiefgehen kann.
+**Der Schalter wird beim Schreiben geprüft, nicht beim Anzeigen.** Ein
+Hinweis, den niemand sehen will, entsteht gar nicht erst. Gewollte
+Folge: Wer den Stillen Modus ausschaltet, bekommt keinen Stapel
+nachgereicht, sondern fängt sauber an.
+
+**Der Stille Modus überschreibt, er löscht nicht.** Eigene Spalte, die
+drei Einzelschalter bleiben unberührt und werden nur ausgegraut — man
+soll sehen, wohin man zurückkehrt.
+
+**Ein Punkt, keine Zahl.** Eine wachsende Zahl drängt.
+
+**Kein `revalidatePath` beim Abhaken.** Es wäre der Reflex, würde aber
+die Seite darunter neu bauen — und damit die Markierungen an den neuen
+Zeilen eine Sekunde nach dem Öffnen löschen. Der Punkt an der Glocke
+verschwindet stattdessen beim nächsten Seitenwechsel.
+
+Trägt jetzt Erwähnungen mit `@` — das ist der nächste Baustein.
 
 ### Repost
 

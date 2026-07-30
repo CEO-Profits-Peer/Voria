@@ -132,6 +132,19 @@
   transition: background 200ms, color 200ms;
 }
 
+/* Der Punkt an den Hinweisen. Sitzt am Ende der Zeile, nicht am
+   Symbol: am Symbol wäre er ein Abzeichen, hier ist er eine Notiz.
+   Kein eigener Rotton — Voria hat keine Alarmfarbe, und ein Hinweis
+   ist kein Alarm. */
+.vo-punkt {
+  margin-left: auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent-primary);
+  flex: none;
+}
+
 .vo-ziel:hover {
   background: var(--surface-sunken);
   color: var(--content-primary);

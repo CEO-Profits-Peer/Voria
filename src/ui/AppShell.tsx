@@ -14,16 +14,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, Map, Users, UserRound, Search, Sparkles, Plus } from 'lucide-react';
+import { BookOpen, Map, Users, UserRound, Search, Sparkles, Plus, Bell } from 'lucide-react';
 import { useT } from '@/i18n/Sprachraum';
 import { Avatar } from '@/ui/Avatar';
 
 export function AppShell({
   children,
   nutzer,
+  ungelesen = 0,
 }: {
   children: React.ReactNode;
   nutzer?: { name: string; kuerzel: string; bild: string | null } | null;
+  /** Zahl am Glockensymbol. 0 heißt: gar kein Punkt. */
+  ungelesen?: number;
 }) {
   const pfad = usePathname();
   const { t } = useT();
@@ -35,7 +38,13 @@ export function AppShell({
     { href: '/feed', label: t.nav.feed, Icon: Users },
   ];
 
+  /*
+   * Hinweise stehen unter „Mehr", nicht in der Hauptnavigation. Die
+   * vier Hauptbereiche sind gesetzt, und ein fünfter würde die
+   * Reihenfolge brechen, die am Handy und am Rechner identisch ist.
+   */
   const weiteres = [
+    { href: '/hinweise', label: t.hinweise.titel, Icon: Bell },
     { href: '/rueckblick', label: t.rueckblick.titel, Icon: Sparkles },
     { href: '/suche', label: t.nav.suchen, Icon: Search },
   ];
@@ -65,6 +74,12 @@ export function AppShell({
             <Link key={href} href={href} data-aktiv={aktiv(href)} className="vo-ziel">
               <Icon size={16} strokeWidth={1.75} aria-hidden />
               <span>{label}</span>
+              {/* Ein Punkt, keine Zahl. Wie viele es genau sind, ändert
+                  nichts an dem, was man tut — und eine Zahl, die
+                  wächst, drängt. */}
+              {href === '/hinweise' && ungelesen > 0 && (
+                <span className="vo-punkt" aria-label={`${ungelesen} ${t.hinweise.ungelesen}`} />
+              )}
             </Link>
           ))}
         </div>

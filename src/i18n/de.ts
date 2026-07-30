@@ -200,6 +200,25 @@ export const de = {
     antwortenVerbergen: 'Antworten ausblenden',
   },
 
+  hinweise: {
+    titel: 'Hinweise',
+    zeile: 'Was passiert ist, während du weg warst.',
+    ungelesen: 'ungelesen',
+    nochNichts: 'Noch nichts passiert',
+    nochNichtsZeile:
+      'Hier steht später, wenn jemand auf dich reagiert oder etwas teilt. Nichts davon musst du beantworten.',
+    folgtDir: 'folgt dir jetzt.',
+    hatKommentiert: 'hat deinen Tag kommentiert.',
+    hatGeantwortet: 'hat dir geantwortet.',
+    hatGeteilt: 'hat einen Tag geteilt.',
+    stillerModus: 'Stiller Modus',
+    stillerModusZeile:
+      'Schaltet alle Hinweise auf einmal ab. Deine einzelnen Einstellungen bleiben stehen — wenn du ihn wieder ausschaltest, ist alles wie vorher.',
+    schalterKommentar: 'Kommentare und Antworten',
+    schalterFolger: 'Neue Follower',
+    schalterUpload: 'Wenn jemand teilt, dem du folgst',
+  },
+
   profil: {
     du: 'Du',
     reisen: 'Reisen',

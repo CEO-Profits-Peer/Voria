@@ -10,7 +10,8 @@ Reisetagebuch für Browser und App. Diese Datei zuerst lesen, dann gezielt weite
 |---|---|
 | `src/app/` | Nur Routen. Absichtlich dünn — keine Logik hier |
 | `src/features/log/` | Reisen, Tage, Blöcke, beide Schreibmodi, Fotos |
-| `src/features/social/` | Feed, Beiträge, Votes, Folgen |
+| `src/features/social/` | Feed, Beiträge, Votes, Folgen, Kommentare |
+| `src/features/hinweise/` | Benachrichtigungen und der Stille Modus |
 | `src/features/profile/` | Profil und Einstellungen mit Regionen-Vorschau |
 | `src/features/auth/` | Anmeldung, Registrierung, Sitzung |
 | `src/features/marketing/` | Öffentliche Startseite |
@@ -98,6 +99,7 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 5. `0005_leute_suchen.sql` — Trigramm-Indizes für die Personensuche
 6. `0006_kommentare.sql` — Kommentare und ihre Stimmen
 7. `0007_leute_unscharf.sql` — Personensuche mit Tippfehlertoleranz
+8. `0008_hinweise.sql` — Benachrichtigungen, Trigger, vier Schalter
 
 **`0006` muss vor dem nächsten Deploy laufen.** Der Feed fragt
 `comments(count)` mit ab; fehlt die Tabelle, schlägt die ganze
@@ -163,8 +165,8 @@ Volltextsuche · „Deine Welt" · Profil · Einstellungen mit
 Regionen-Vorschau · Startseite · Offline über Service Worker ·
 installierbar als App · Fehler-, Lade- und Offline-Seiten.
 
-**Fehlt:** Beiträge melden · Benachrichtigungen · gemeinsame Reisen ·
-Jahresrückblick · Fotobuch-Druck · Preismodell.
+**Fehlt:** Beiträge melden · Erwähnungen · Repost · gemeinsame Reisen ·
+Export · Offline-Schreiben · Fotobuch-Druck · Preismodell.
 
 **Ungeprüft:** Der Code ist syntaktisch und strukturell geprüft, aber
 noch nie ausgeführt worden. Beim ersten `npm run dev` sind Nachbesserungen

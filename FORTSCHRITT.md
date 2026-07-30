@@ -57,7 +57,7 @@ markieren.
 
 ---
 
-## Gebaut — 16 Funktionen
+## Gebaut — 17 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -106,9 +106,16 @@ markieren.
     Jetzt eine Datenbankfunktion, weil `similarity()` über PostgREST
     weder filterbar noch sortierbar ist.
 
-Dazu 7 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
-`0006` Kommentare, `0007` unscharfe Personensuche) und die Dokumente
-`START.md` und `DEPLOY.md`.
+17. **Hinweise und Stiller Modus** — vier Arten, per Trigger erzeugt,
+    einzeln abschaltbar, Punkt in der Seitenleiste. Dabei zwei eigene
+    Fehler abgefangen: der doppelte Weg von `notifications` nach
+    `profiles` (derselbe `PGRST201`, der den Feed lahmgelegt hat) und
+    ein Schreibvorgang während des Renderns, den der Build nicht
+    zeigen kann, weil die Seite dynamisch ist.
+
+Dazu 8 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+`0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise)
+und die Dokumente `START.md` und `DEPLOY.md`.
 
 ---
 

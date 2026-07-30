@@ -198,6 +198,25 @@ export const en: Woerterbuch = {
     antwortenVerbergen: 'Hide replies',
   },
 
+  hinweise: {
+    titel: 'Activity',
+    zeile: 'What happened while you were away.',
+    ungelesen: 'unread',
+    nochNichts: 'Nothing yet',
+    nochNichtsZeile:
+      'This is where it shows up when someone responds to you or shares something. None of it needs an answer.',
+    folgtDir: 'is now following you.',
+    hatKommentiert: 'commented on your day.',
+    hatGeantwortet: 'replied to you.',
+    hatGeteilt: 'shared a day.',
+    stillerModus: 'Quiet mode',
+    stillerModusZeile:
+      'Turns off every notice at once. Your individual settings stay as they are — switch it back off and everything is where you left it.',
+    schalterKommentar: 'Comments and replies',
+    schalterFolger: 'New followers',
+    schalterUpload: 'When someone you follow shares',
+  },
+
   profil: {
     du: 'You',
     reisen: 'Journeys',

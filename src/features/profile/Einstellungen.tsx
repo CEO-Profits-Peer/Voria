@@ -13,10 +13,11 @@ import { Sun, Moon, Monitor } from 'lucide-react';
 import { REGIONS, type Region } from '@/themes/regions';
 import { useT } from '@/i18n/Sprachraum';
 import { SprachWahl } from './SprachWahl';
+import { HinweisSchalter, type SchalterStand } from '@/features/hinweise/HinweisSchalter';
 
 type Modus = 'light' | 'dark' | 'system';
 
-export function Einstellungen() {
+export function Einstellungen({ hinweise }: { hinweise: SchalterStand }) {
   const { t } = useT();
   const [modus, setModus] = useState<Modus>('system');
   const [vorschau, setVorschau] = useState<Region>('maghreb');
@@ -59,6 +60,13 @@ export function Einstellungen() {
       </section>
 
       <SprachWahl />
+
+      {/* Vor den zwölf Welten, weil die Welten das lange Schaufenster
+          sind — was man einstellen WILL, soll nicht dahinter liegen. */}
+      <section>
+        <h2>{t.hinweise.titel}</h2>
+        <HinweisSchalter stand={hinweise} />
+      </section>
 
       <section>
         <h2>{t.einstellungen.zwoelfWelten}</h2>
