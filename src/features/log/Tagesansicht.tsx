@@ -17,6 +17,7 @@ import type { Tag } from './queries';
 import { modusWechseln } from './actions';
 import { RuhigerModus } from './RuhigerModus';
 import { OpenSpace } from './OpenSpace';
+import { TagLeiste } from './TagLeiste';
 import { FotoWaehler } from './FotoWaehler';
 import { TeilenDialog } from './TeilenDialog';
 import { Vollansicht } from './Vollansicht';
@@ -78,9 +79,7 @@ export function Tagesansicht({
           titel={tag.titel}
           bloecke={tag.bloecke}
           istErsterTag={istErsterTag}
-          sichtbarkeit={tag.sichtbarkeit}
           aufFotoWaehlen={() => setFotoOffen(true)}
-          aufTeilen={() => setTeilenOffen(true)}
           aufFotoOeffnen={(i) => setVollansicht(i)}
         />
       ) : (
@@ -91,6 +90,17 @@ export function Tagesansicht({
         />
       )}
       </div>
+
+      {/*
+        Foto und Sichtbarkeit gehören dem TAG, nicht einem seiner Modi.
+        Deshalb steht die Leiste hier, außerhalb des Moduswechsels —
+        sonst fehlt sie auf der freien Fläche, so wie vorher.
+      */}
+      <TagLeiste
+        sichtbarkeit={tag.sichtbarkeit}
+        aufFotoWaehlen={() => setFotoOffen(true)}
+        aufTeilen={() => setTeilenOffen(true)}
+      />
 
       {fotoOffen && <FotoWaehler eintragId={tag.id} aufSchliessen={() => setFotoOffen(false)} />}
 

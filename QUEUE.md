@@ -158,25 +158,50 @@ Offene Entscheidungen, bevor ich anfange:
 
 ---
 
-## 4b. Leute finden und Profile sehen
+## 4b. Leute finden — GEBAUT, ungetestet
 
-**Gute Nachricht: die Hälfte steht schon.** `/u/[benutzername]` zeigt
-bereits Name, Bio, Anzahl Follower, Anzahl Gefolgte, den Folgen-Knopf
-und alle Beiträge der Person. `FolgenKnopf` und die `follows`-Tabelle
-sind fertig.
+Die Personensuche ist da. `/suche` hat jetzt zwei Reiter, „Tage" und
+„Leute", unter einem gemeinsamen Feld — das Wort bleibt beim
+Umschalten stehen, weil man oft erst tippt und dann merkt, dass man im
+falschen Bereich ist.
 
-Es fehlt:
+Gebaut:
 
-* **Leute suchen.** `/suche` durchsucht ausschließlich `entries` über
-  `textSearch('suche', …)`. Profile kommen dort nicht vor. Nötig ist
-  eine zweite Abfrage auf `profiles` über `username` und
-  `display_name`, plus eine Umschaltung im Suchergebnis
-  („Tage" / „Leute").
-* **Bereiste Orte auf dem Profil.** Die Zahlen sind da, die Landkarte
-  nicht. Ließe sich aus `trip_countries` der öffentlichen Reisen
-  ableiten — aber Achtung: `trips_read` gibt fremde Reisen nur bei
-  `visibility = 'public'` heraus, und das steht bei niemandem. Ohne
-  eine Entscheidung dazu bleibt die Liste leer.
+* `leuteSuchen(wort)` in `features/suche/actions.ts` — Teilüberein-
+  stimmung auf `username` und `display_name`
+* Migration `0005_leute_suchen.sql`: Trigramm-Indizes auf beide
+  Namensspalten plus ein Index auf `follows(followee_id)`
+* Treffer zeigen Avatar, Name, `@benutzername`, Followerzahl, Bio —
+  und den bestehenden `FolgenKnopf`, direkt im Ergebnis
+* Sortierung: Anfangstreffer zuerst („anna" zeigt `anna` vor
+  `marianna`), Followerzahl nur als Stichentscheid
+* Sich selbst findet man nicht, das hilft niemandem
+
+Zwei Dinge, die dabei Aufmerksamkeit brauchten:
+
+**Filtersyntax.** `.or('username.ilike.%x%,display_name.ilike.%x%')`
+ist eine Zeichenkette, die PostgREST serverseitig parst. Ein Komma oder
+eine Klammer aus der Eingabe schreibt die Bedingung um. Gefährlich ist
+das nicht — Row Level Security liegt darüber —, aber die Suche liefert
+Unsinn. `filterSicher()` lässt nur Buchstaben, Ziffern, Unterstrich,
+Punkt, Bindestrich und Leerzeichen durch, Umlaute ausdrücklich
+eingeschlossen.
+
+**Followerzahlen ohne N+1.** Bei zwanzig Treffern wären es sonst
+vierzig Abfragen pro Tastendruck. Jetzt zwei Abfragen für alle Treffer,
+gezählt wird im Speicher.
+
+**Noch nicht getestet.** Migration `0005` muss vorher in Supabase
+laufen. Ohne sie funktioniert die Suche trotzdem, nur ohne Index.
+
+Was hier noch fehlt:
+
+* **Bereiste Orte auf dem Profil.** Die Zahlen sind da, die Orte nicht.
+  Ließe sich aus `trip_countries` ableiten — aber `trips_read` gibt
+  fremde Reisen nur bei `visibility = 'public'` heraus, und das steht
+  bei niemandem. Braucht erst eine Entscheidung, ob Reisen überhaupt
+  öffentlich werden können oder ob die Länder aus den geteilten Tagen
+  abgeleitet werden.
 * **Berühmte Leute** gibt es nicht von selbst. Das ist kein
   Suchproblem, sondern ein Kaltstartproblem: ohne Nutzer keine
   Profile. Denkbar wäre eine kleine redaktionelle Liste zum Start.

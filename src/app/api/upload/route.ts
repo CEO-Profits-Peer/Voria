@@ -10,7 +10,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@/lib/supabase-server';
-import { storage, photoKey, thumbKey } from '@/lib/storage';
+import { storage, photoKey, thumbKey, avatarKey } from '@/lib/storage';
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerClient();
@@ -20,8 +20,31 @@ export async function POST(request: NextRequest) {
 
   if (!user) return NextResponse.json({ fehler: 'Nicht angemeldet' }, { status: 401 });
 
-  const { endung } = (await request.json()) as { endung: 'avif' | 'webp' | 'jpg' };
+  const { endung, art = 'foto' } = (await request.json()) as {
+    endung: 'avif' | 'webp' | 'jpg';
+    art?: 'foto' | 'avatar';
+  };
   const id = crypto.randomUUID();
+
+  /*
+   * Profilbilder brauchen kein zweites Ziel. Sie sind schon quadratisch
+   * und 256 px klein — eine Vorschaufassung davon wäre sinnlos.
+   */
+  if (art === 'avatar') {
+    const schluessel = avatarKey(user.id, id, endung);
+    try {
+      const ziel = await storage.createUploadTarget(
+        schluessel,
+        `image/${endung === 'jpg' ? 'jpeg' : endung}`,
+      );
+      return NextResponse.json({ id, bild: ziel });
+    } catch (e) {
+      return NextResponse.json(
+        { fehler: e instanceof Error ? e.message : 'Upload-Ziel fehlgeschlagen' },
+        { status: 500 },
+      );
+    }
+  }
 
   const anzeige = photoKey(user.id, id, endung);
   const vorschau = thumbKey(user.id, id);

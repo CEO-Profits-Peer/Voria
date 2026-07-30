@@ -73,3 +73,50 @@ export async function profilSpeichern(
   revalidatePath('/', 'layout');
   return { gesichert: true };
 }
+
+/**
+ * Profilbild setzen oder entfernen.
+ *
+ * Gespeichert wird der SCHLÜSSEL, nicht die fertige Adresse — beim
+ * Wechsel des Speichers von Supabase auf R2 muss sonst jede Zeile
+ * angefasst werden. Auflösung passiert in `bildUrl()`.
+ *
+ * Das alte Bild wird nicht gelöscht. Absicht: der Löschversuch würde
+ * den service_role-Schlüssel brauchen, und ein fehlgeschlagenes Löschen
+ * darf das Setzen des neuen Bildes nicht verhindern. Ein verwaistes
+ * 30-KB-Bild ist das kleinere Übel. Aufräumen gehört in einen Job.
+ */
+export async function avatarSpeichern(schluessel: string | null): Promise<ProfilErgebnis> {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { fehler: 'Nicht angemeldet.' };
+
+  /*
+   * Prüfen, dass der Schlüssel im eigenen Ordner liegt.
+   *
+   * Die Regel des Buckets verhindert schon, dass jemand woanders
+   * hochlädt. Aber diese Action bekommt eine Zeichenkette vom Client —
+   * ohne Prüfung könnte man hier den Pfad eines fremden Bildes
+   * eintragen und es als eigenes Profilbild ausgeben.
+   */
+  if (schluessel !== null && !schluessel.startsWith(`fotos/${user.id}/avatar/`)) {
+    console.error('[avatarSpeichern] Fremder Pfad abgewiesen');
+    return { fehler: 'Das Bild konnte nicht übernommen werden.' };
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ avatar_url: schluessel })
+    .eq('id', user.id);
+
+  if (error) {
+    console.error('[avatarSpeichern]', error);
+    return { fehler: 'Das Profilbild konnte nicht gespeichert werden.' };
+  }
+
+  // 'layout', weil das Bild auch in der Seitenleiste steht.
+  revalidatePath('/', 'layout');
+  return { gesichert: true };
+}

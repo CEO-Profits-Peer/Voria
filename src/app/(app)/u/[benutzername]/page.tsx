@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createServerClient } from '@/lib/supabase-server';
 import { Seitenkopf } from '@/ui/Bausteine';
+import { Avatar } from '@/ui/Avatar';
 import { BeitragKarte } from '@/features/social/BeitragKarte';
 import { FolgenKnopf } from '@/features/profile/FolgenKnopf';
 import { ladeProfilBeitraege } from '@/features/social/profilQueries';
@@ -15,7 +16,7 @@ export default async function FremdesProfil({
 
   const { data: profil } = await supabase
     .from('profiles')
-    .select('id, username, display_name, bio')
+    .select('id, username, display_name, bio, avatar_url')
     .eq('username', benutzername.toLowerCase())
     .maybeSingle();
 
@@ -36,6 +37,11 @@ export default async function FremdesProfil({
 
   return (
     <div className="seite">
+      <div className="profil-kopf">
+        <Avatar bild={profil.avatar_url} name={profil.display_name || profil.username} groesse={64} />
+        <span className="profil-name">@{profil.username}</span>
+      </div>
+
       <Seitenkopf
         titel={profil.display_name || profil.username}
         zeile={profil.bio || undefined}

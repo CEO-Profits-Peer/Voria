@@ -11,10 +11,13 @@
  */
 
 import { useOptimistic, useTransition } from 'react';
+import Link from 'next/link';
 import { ArrowBigUp } from 'lucide-react';
 import type { Beitrag } from './queries';
 import { voten } from './actions';
 import { FotoBild } from '@/features/log/FotoBild';
+import { Avatar } from '@/ui/Avatar';
+import { TeilenKnopf } from './TeilenKnopf';
 import { useT } from '@/i18n/Sprachraum';
 
 export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
@@ -30,8 +33,19 @@ export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
 
   return (
     <article className="beitrag region-surface eintritt-feed" data-region={beitrag.region}>
+      {/*
+        Der Kopf führt zum Profil. Vorher stand der Name als reiner Text
+        da — man sah, wer geschrieben hat, kam aber nicht hin.
+
+        Der Verweis umfasst Bild und Name, nicht die Ortszeile: sonst
+        würde ein Klick auf „Marrakesch · 3. Juli" zum Profil führen,
+        was niemand erwartet.
+      */}
       <header>
-        <span className="wer">{beitrag.verfasser.name}</span>
+        <Link href={`/u/${beitrag.verfasser.benutzername}`} className="verfasser">
+          <Avatar bild={beitrag.verfasser.bild} name={beitrag.verfasser.name} groesse={36} />
+          <span className="wer">{beitrag.verfasser.name}</span>
+        </Link>
         <span className="wo">
           {beitrag.tag.ort ?? t.feed.irgendwo} · {kurz(beitrag.tag.datum, locale)}
         </span>
@@ -64,6 +78,12 @@ export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
           <ArrowBigUp size={20} strokeWidth={1.5} aria-hidden />
           <span>{zustand.votes}</span>
         </button>
+
+        <TeilenKnopf
+          beitragId={beitrag.id}
+          titel={beitrag.tag.titel || beitrag.tag.ort || t.feed.einTag}
+          verfasser={beitrag.verfasser.name}
+        />
       </footer>
 
       <style jsx>{`
@@ -78,13 +98,33 @@ export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
         }
         header {
           display: flex;
-          align-items: baseline;
+          /* Nicht mehr baseline: mit dem Bild im Kopf muss die
+             Ortszeile an der Mitte ausgerichtet sein, sonst klebt sie
+             am oberen Rand des Kreises. */
+          align-items: center;
           justify-content: space-between;
           gap: var(--space-12);
+        }
+        /* :global(), weil styled-jsx <Link> nicht scopet —
+           siehe src/styles/huelle.css. Gescopet über header davor. */
+        header :global(a.verfasser) {
+          display: flex;
+          align-items: center;
+          gap: var(--space-12);
+          min-width: 0;
+          text-decoration: none;
+          color: inherit;
+        }
+        header :global(a.verfasser:hover) .wer {
+          text-decoration: underline;
+          text-underline-offset: 2px;
         }
         .wer {
           font-weight: var(--weight-medium);
           color: var(--content-primary);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
         .wo,
         footer span {
@@ -109,6 +149,14 @@ export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
           line-height: var(--leading-normal);
           color: var(--content-secondary);
           text-wrap: pretty;
+        }
+        /* Zwei Knöpfe im Fuß: Zustimmen links, Teilen rechts daneben.
+           Ohne diese Regel wäre der Fuß ein Block und die Knöpfe
+           würden nur zufällig nebeneinander liegen. */
+        footer {
+          display: flex;
+          align-items: center;
+          gap: var(--space-4);
         }
         footer button {
           display: inline-flex;

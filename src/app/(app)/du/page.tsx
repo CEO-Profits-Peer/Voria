@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Settings, Sparkles, Pencil } from 'lucide-react';
 import { createServerClient } from '@/lib/supabase-server';
 import { Seitenkopf } from '@/ui/Bausteine';
+import { Avatar } from '@/ui/Avatar';
 import { abmelden } from '@/features/auth/actions';
 import { texte } from '@/i18n/server';
 
@@ -13,7 +14,7 @@ export default async function DuSeite() {
   const { data: { user } } = await supabase.auth.getUser();
 
   const { data: profil } = user
-    ? await supabase.from('profiles').select('username, display_name, bio').eq('id', user.id).maybeSingle()
+    ? await supabase.from('profiles').select('username, display_name, bio, avatar_url').eq('id', user.id).maybeSingle()
     : { data: null };
 
   const [{ count: reisen }, { count: folgen }, { count: folgend }] = await Promise.all([
@@ -26,6 +27,15 @@ export default async function DuSeite() {
 
   return (
     <div className="seite">
+      <div className="profil-kopf">
+        <Avatar
+          bild={profil?.avatar_url ?? null}
+          name={profil?.display_name || profil?.username || '?'}
+          groesse={64}
+        />
+        {profil?.username && <span className="profil-name">@{profil.username}</span>}
+      </div>
+
       <Seitenkopf
         titel={profil?.display_name || profil?.username || t.profil.du}
         zeile={profil?.bio || undefined}

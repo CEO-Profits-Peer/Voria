@@ -16,7 +16,7 @@ export interface Beitrag {
   text: string;
   votes: number;
   selbstGevotet: boolean;
-  verfasser: { name: string; benutzername: string };
+  verfasser: { name: string; benutzername: string; bild: string | null };
   tag: { datum: string; titel: string | null; ort: string | null };
   region: RegionOrNeutral;
   foto: { pfad: string; breite: number; hoehe: number; blurhash: string | null } | null;
@@ -61,7 +61,7 @@ export async function ladeFeed(): Promise<Beitrag[]> {
     .from('posts')
     .select(
       `id, entry_id, caption, vote_count, published_at,
-       profiles!posts_user_id_fkey(username, display_name),
+       profiles!posts_user_id_fkey(username, display_name, avatar_url),
        entries(entry_date, title, place_name,
                trips(region_override, trip_countries(country_code, days)),
                blocks(kind, position, photos(r2_key, width, height, blurhash)))`,
@@ -98,6 +98,7 @@ export async function ladeFeed(): Promise<Beitrag[]> {
       verfasser: {
         name: p.profiles?.display_name || p.profiles?.username || 'Jemand',
         benutzername: p.profiles?.username ?? '',
+        bild: p.profiles?.avatar_url ?? null,
       },
       tag: {
         datum: eintrag?.entry_date ?? '',

@@ -26,6 +26,18 @@ const nextConfig: NextConfig = {
       ...(supabaseHost
         ? [{ protocol: 'https' as const, hostname: supabaseHost, pathname: '/storage/v1/object/public/**' }]
         : []),
+      /*
+       * NUR FÜR TESTDATEN. Die zwanzig Beispielbeiträge aus
+       * supabase/seed/feed_testdaten.sql verweisen auf Bilder von
+       * picsum.photos, weil ich keine echten Fotos in den Speicher
+       * hochladen kann.
+       *
+       * Vor dem ersten echten Start entfernen — sonst darf jeder
+       * Bilder von dort in Voria einbetten.
+       */
+      { protocol: 'https' as const, hostname: 'picsum.photos' },
+      { protocol: 'https' as const, hostname: 'fastly.picsum.photos' },
+
       // Später, wenn STORAGE_DRIVER=r2:
       // { protocol: 'https', hostname: '<bucket>.r2.dev' },
     ],

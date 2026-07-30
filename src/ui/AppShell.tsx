@@ -16,13 +16,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BookOpen, Map, Users, UserRound, Search, Sparkles, Plus } from 'lucide-react';
 import { useT } from '@/i18n/Sprachraum';
+import { Avatar } from '@/ui/Avatar';
 
 export function AppShell({
   children,
   nutzer,
 }: {
   children: React.ReactNode;
-  nutzer?: { name: string; kuerzel: string } | null;
+  nutzer?: { name: string; kuerzel: string; bild: string | null } | null;
 }) {
   const pfad = usePathname();
   const { t } = useT();
@@ -69,9 +70,7 @@ export function AppShell({
         </div>
 
         <Link href="/du" className="vo-chip" data-aktiv={aktiv('/du')}>
-          <span className="vo-avatar" aria-hidden>
-            {nutzer?.kuerzel ?? '?'}
-          </span>
+          <Avatar bild={nutzer?.bild ?? null} name={nutzer?.kuerzel ?? '?'} groesse={28} />
           <span className="vo-chip-worte">
             <span className="vo-chip-name">{nutzer?.name ?? t.profil.du}</span>
             <span className="vo-chip-zeile">{t.nav.dasBistDu}</span>

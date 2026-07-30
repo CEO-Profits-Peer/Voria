@@ -44,6 +44,21 @@ export function thumbKey(userId: string, id: string) {
   return `fotos/${userId}/thumbs/${id}.avif`;
 }
 
+/**
+ * Ablageort für Profilbilder: fotos/<nutzer>/avatar/<uuid>.<endung>
+ *
+ * Der Pfad MUSS mit `fotos/<nutzer-id>/` beginnen — genau darauf prüft
+ * die Schreibregel des Buckets in 0002_storage.sql. Ein Pfad wie
+ * `avatare/<nutzer>/…` würde von der Datenbank abgelehnt.
+ *
+ * Die UUID im Namen ist wichtig: schriebe jeder sein Bild immer nach
+ * `avatar.avif`, würde der Browser das alte aus seinem Cache zeigen,
+ * teils tagelang. Neues Bild, neuer Name, kein Cache-Problem.
+ */
+export function avatarKey(userId: string, id: string, ext: 'avif' | 'webp' | 'jpg') {
+  return `fotos/${userId}/avatar/${id}.${ext}`;
+}
+
 // ---------------------------------------------------------------
 // Supabase Storage — Standard, keine Kreditkarte nötig
 // ---------------------------------------------------------------

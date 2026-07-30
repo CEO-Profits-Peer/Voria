@@ -63,3 +63,116 @@ function auszugUm(text: string, wort: string): string | null {
   const bis = Math.min(text.length, stelle + 100);
   return (von > 0 ? '… ' : '') + text.slice(von, bis).trim() + (bis < text.length ? ' …' : '');
 }
+
+/* ============================================================
+   Leute suchen
+   ============================================================ */
+
+export interface Person {
+  id: string;
+  benutzername: string;
+  name: string;
+  bio: string | null;
+  bild: string | null;
+  folgtBereits: boolean;
+  folgen: number;
+}
+
+/**
+ * Zeichen entfernen, die die Filtersyntax von PostgREST zerlegen.
+ *
+ * `or=(username.ilike.%x%,display_name.ilike.%x%)` ist eine
+ * Zeichenkette, die serverseitig geparst wird. Ein Komma oder eine
+ * Klammer aus der Eingabe würde die Bedingung umschreiben — nicht
+ * gefährlich für die Datenbank, weil Row Level Security darüber liegt,
+ * aber die Suche liefert dann Unsinn oder einen Fehler.
+ *
+ * Deshalb bleiben nur Buchstaben, Ziffern, Unterstrich, Punkt,
+ * Bindestrich und Leerzeichen übrig. Umlaute ausdrücklich erlaubt —
+ * Anzeigenamen enthalten sie.
+ */
+function filterSicher(wort: string): string {
+  return wort.replace(/[^\p{L}\p{N}_.\- ]/gu, '').trim();
+}
+
+/**
+ * Profile über Benutzernamen und Anzeigenamen finden.
+ *
+ * Kein Volltextindex wie bei den Tagen: Namen werden nicht gebeugt,
+ * hier zählt Teilübereinstimmung. `ilike` mit führendem Platzhalter
+ * kann keinen B-Baum nutzen, deshalb liegt in Migration 0005 ein
+ * Trigramm-Index darauf.
+ *
+ * Private Profile kommen nicht zurück — dafür sorgt `profiles_read`
+ * in der Datenbank, nicht diese Funktion.
+ */
+export async function leuteSuchen(wort: string): Promise<Person[]> {
+  const sauber = filterSicher(wort);
+  if (sauber.length < 2) return [];
+
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const muster = `%${sauber}%`;
+  let abfrage = supabase
+    .from('profiles')
+    .select('id, username, display_name, bio, avatar_url')
+    .or(`username.ilike.${muster},display_name.ilike.${muster}`)
+    .limit(20);
+
+  // Sich selbst zu finden hilft niemandem.
+  if (user) abfrage = abfrage.neq('id', user.id);
+
+  const { data, error } = await abfrage;
+
+  if (error) {
+    console.error('[leuteSuchen]', error);
+    return [];
+  }
+  if (!data || data.length === 0) return [];
+
+  const ids = data.map((p) => p.id);
+
+  /*
+   * Follower zählen und eigene Verbindungen holen — zwei Abfragen für
+   * alle Treffer, nicht eine pro Person. Bei zwanzig Treffern wären
+   * das sonst vierzig Abfragen für eine Tastatureingabe.
+   */
+  const [{ data: folgenRohe }, { data: meine }] = await Promise.all([
+    supabase.from('follows').select('followee_id').in('followee_id', ids),
+    user
+      ? supabase.from('follows').select('followee_id').eq('follower_id', user.id).in('followee_id', ids)
+      : Promise.resolve({ data: [] as { followee_id: string }[] }),
+  ]);
+
+  const zahl = new Map<string, number>();
+  for (const f of folgenRohe ?? []) {
+    zahl.set(f.followee_id, (zahl.get(f.followee_id) ?? 0) + 1);
+  }
+  const folgeIch = new Set((meine ?? []).map((f) => f.followee_id));
+
+  const treffer: Person[] = data.map((p) => ({
+    id: p.id,
+    benutzername: p.username,
+    name: p.display_name || p.username,
+    bio: p.bio || null,
+    bild: p.avatar_url ?? null,
+    folgtBereits: folgeIch.has(p.id),
+    folgen: zahl.get(p.id) ?? 0,
+  }));
+
+  /*
+   * Sortierung: was am Anfang des Namens passt, ist wahrscheinlich
+   * gemeint. „anna" soll `anna` vor `marianna` zeigen. Erst danach
+   * zählt, wie vielen Leuten jemand folgt — das ist nur ein
+   * Stichentscheid, keine Beliebtheitsrangliste.
+   */
+  const klein = sauber.toLowerCase();
+  return treffer.sort((a, b) => {
+    const rang = (p: Person) =>
+      p.benutzername.toLowerCase().startsWith(klein) || p.name.toLowerCase().startsWith(klein) ? 0 : 1;
+    return rang(a) - rang(b) || b.folgen - a.folgen || a.benutzername.localeCompare(b.benutzername);
+  });
+}

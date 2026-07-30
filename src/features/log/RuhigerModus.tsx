@@ -13,7 +13,7 @@
  */
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Lock, Users, Globe, Share2, ImagePlus } from 'lucide-react';
+import { ImagePlus } from 'lucide-react';
 import type { Block } from './queries';
 import { textSpeichern, titelSpeichern } from './actions';
 import { FotoBild } from './FotoBild';
@@ -28,9 +28,7 @@ export function RuhigerModus({
   titel: titelStart,
   bloecke,
   istErsterTag,
-  sichtbarkeit,
   aufFotoWaehlen,
-  aufTeilen,
   aufFotoOeffnen,
 }: {
   eintragId: string;
@@ -39,9 +37,7 @@ export function RuhigerModus({
   titel: string | null;
   bloecke: Block[];
   istErsterTag: boolean;
-  sichtbarkeit: 'private' | 'followers' | 'public';
   aufFotoWaehlen: () => void;
-  aufTeilen: () => void;
   aufFotoOeffnen: (index: number) => void;
 }) {
   const { t, locale } = useT();
@@ -116,6 +112,11 @@ export function RuhigerModus({
           </figure>
         ))}
 
+      {/*
+        Der Hinweis auf Fotos bleibt — aber nur solange der Tag leer
+        ist, als sanfter Anstoß. Der eigentliche Weg zum Foto liegt
+        jetzt in TagLeiste.tsx und ist immer erreichbar, in beiden Modi.
+      */}
       {istLeer && (
         <button type="button" className="fotoweg" onClick={aufFotoWaehlen}>
           <ImagePlus size={20} strokeWidth={1.5} aria-hidden />
@@ -123,32 +124,6 @@ export function RuhigerModus({
         </button>
       )}
 
-      <div className="ornament-divider fuss-linie" />
-
-      <footer>
-        <span className="privat">
-          {sichtbarkeit === 'private' ? (
-            <>
-              <Lock size={14} strokeWidth={1.5} aria-hidden />
-              {t.teilen.privat}
-            </>
-          ) : sichtbarkeit === 'followers' ? (
-            <>
-              <Users size={14} strokeWidth={1.5} aria-hidden />
-              {t.teilen.folgende}
-            </>
-          ) : (
-            <>
-              <Globe size={14} strokeWidth={1.5} aria-hidden />
-              {t.teilen.oeffentlich}
-            </>
-          )}
-        </span>
-        <button type="button" className="teilen" onClick={aufTeilen}>
-          <Share2 size={14} strokeWidth={1.5} aria-hidden />
-          {sichtbarkeit === 'private' ? t.teilen.teilen : t.teilen.aendern}
-        </button>
-      </footer>
 
       <style jsx>{`
         .blatt {
@@ -236,34 +211,6 @@ export function RuhigerModus({
           transition: color var(--motion-feed);
         }
         .fotoweg:hover {
-          color: var(--accent-primary);
-        }
-        .fuss-linie {
-          margin-top: var(--space-16);
-        }
-        footer {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .privat,
-        .teilen {
-          display: inline-flex;
-          align-items: center;
-          gap: var(--space-8);
-          min-height: 44px;
-          font-size: var(--size-14);
-          color: var(--content-muted);
-        }
-        .teilen {
-          border: none;
-          background: transparent;
-          font-family: var(--font-text);
-          font-weight: var(--weight-medium);
-          cursor: pointer;
-          transition: color var(--motion-feed);
-        }
-        .teilen:hover {
           color: var(--accent-primary);
         }
       `}</style>
