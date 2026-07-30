@@ -44,11 +44,20 @@ export default async function ReiseSeite({ params }: { params: Promise<{ reiseId
               </Link>
             </li>
           ))}
-          <li>
-            <Link href={`/log/${reise.id}/${heuteAlsDatum()}`} className="neu">
-              {t.log.heuteSchreiben}
-            </Link>
-          </li>
+          {/*
+            „Heute schreiben" nur, wenn es für heute noch keinen Tag
+            gibt. Vorher stand die Zeile IMMER da — hatte man heute
+            schon geschrieben, erschien der Tag zweimal in der Liste:
+            einmal mit seinem Titel, einmal als Einladung, ihn
+            anzulegen. Beide führten an dieselbe Stelle.
+          */}
+          {!reise.tage.some((tag) => tag.datum === heuteAlsDatum()) && (
+            <li>
+              <Link href={`/log/${reise.id}/${heuteAlsDatum()}`} className="neu">
+                {t.log.heuteSchreiben}
+              </Link>
+            </li>
+          )}
         </ol>
       </div>
     </div>

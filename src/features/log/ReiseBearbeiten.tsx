@@ -12,8 +12,15 @@ import { useState, useTransition } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Feld } from '@/ui/Feld';
 import { Knopf } from '@/ui/Knopf';
-import { REGIONS, REGION_LABELS, regionForCountry } from '@/themes/regions';
+/*
+ * REGION_LABELS wird hier NICHT mehr benutzt: die Namen dort stehen nur
+ * auf Deutsch. Bei englischer Oberfläche brach die Seite sonst mitten
+ * in der Auswahlliste in die falsche Sprache um. `t.regionen` hat
+ * dieselben Schlüssel, aber in beiden Sprachen.
+ */
+import { REGIONS, regionForCountry } from '@/themes/regions';
 import { reiseSpeichern, landHinzufuegen, landEntfernen } from './actions';
+import { useT } from '@/i18n/Sprachraum';
 
 export function ReiseBearbeiten({
   reiseId,
@@ -35,6 +42,7 @@ export function ReiseBearbeiten({
   const [bis, setBis] = useState(bisStart ?? '');
   const [region, setRegion] = useState(regionUeberschrieben ?? '');
   const [neuesLand, setNeuesLand] = useState('');
+  const { t } = useT();
   const [laeuft, starten] = useTransition();
 
   const berechnet = laender.length
@@ -45,22 +53,19 @@ export function ReiseBearbeiten({
     <div className="wrap">
       <Feld
         name="titel"
-        beschriftung="Name der Reise"
+        beschriftung={t.log.nameDerReise}
         value={titel}
         onChange={(e) => setTitel(e.target.value)}
       />
 
       <div className="zwei">
-        <Feld name="von" type="date" beschriftung="Erster Tag" value={von} onChange={(e) => setVon(e.target.value)} />
-        <Feld name="bis" type="date" beschriftung="Letzter Tag" value={bis} onChange={(e) => setBis(e.target.value)} />
+        <Feld name="von" type="date" beschriftung={t.log.ersterTag} value={von} onChange={(e) => setVon(e.target.value)} />
+        <Feld name="bis" type="date" beschriftung={t.log.letzterTag} value={bis} onChange={(e) => setBis(e.target.value)} />
       </div>
 
       <section>
-        <h2>Länder</h2>
-        <p className="zeile">
-          Bestimmt, wie die Reise aussieht. Mehrere Länder sind möglich — es gewinnt das mit den
-          meisten Tagen.
-        </p>
+        <h2>{t.log.laenderTitel}</h2>
+        <p className="zeile">{t.log.laenderZeile}</p>
 
         <ul className="laender">
           {laender.map((l) => (
@@ -97,25 +102,30 @@ export function ReiseBearbeiten({
             onChange={(e) => setNeuesLand(e.target.value)}
             placeholder="MA"
             maxLength={2}
-            aria-label="Länderkürzel"
+            aria-label={t.log.laenderkuerzel}
           />
-          <button type="submit" aria-label="Land hinzufügen">
+          <button type="submit" aria-label={t.log.landHinzufuegen}>
             <Plus size={18} strokeWidth={1.5} aria-hidden />
           </button>
         </form>
       </section>
 
       <section>
-        <h2>Aussehen</h2>
+        <h2>{t.log.aussehenTitel}</h2>
         <p className="zeile">
-          Aus den Ländern ergibt sich <strong>{REGION_LABELS[berechnet as keyof typeof REGION_LABELS] ?? 'noch nichts'}</strong>.
-          Du kannst das überschreiben.
+          {t.log.aussehenErgibt}{' '}
+          <strong>
+            {berechnet && berechnet !== 'neutral'
+              ? t.regionen[berechnet as keyof typeof t.regionen]
+              : t.log.nochNichts}
+          </strong>
+          . {t.log.aussehenUeberschreiben}
         </p>
-        <select value={region} onChange={(e) => setRegion(e.target.value)} aria-label="Region">
-          <option value="">Aus den Ländern ableiten</option>
+        <select value={region} onChange={(e) => setRegion(e.target.value)} aria-label={t.log.regionWahl}>
+          <option value="">{t.log.regionAbleiten}</option>
           {REGIONS.map((r) => (
             <option key={r} value={r}>
-              {REGION_LABELS[r]}
+              {t.regionen[r]}
             </option>
           ))}
         </select>
@@ -137,7 +147,7 @@ export function ReiseBearbeiten({
           )
         }
       >
-        {laeuft ? 'Einen Moment' : 'Übernehmen'}
+        {laeuft ? t.auth.einenMoment : t.log.uebernehmen}
       </Knopf>
 
       <style jsx>{`

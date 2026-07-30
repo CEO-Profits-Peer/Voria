@@ -1,6 +1,7 @@
 import { ladeFeed } from '@/features/social/queries';
 import { BeitragKarte } from '@/features/social/BeitragKarte';
 import { AnzeigeKarte } from '@/features/social/AnzeigeKarte';
+import { FeedFlaeche } from '@/features/social/FeedFlaeche';
 import { mitAnzeigen } from '@/features/social/werbung';
 import { LeererBereich } from '@/ui/LeererBereich';
 import { Seitenkopf } from '@/ui/Bausteine';
@@ -34,7 +35,7 @@ export default async function FeedSeite() {
   return (
     <div className="seite">
       <Seitenkopf titel={t.feed.titel} />
-      <div className="strom">
+      <FeedFlaeche>
         {karten.map((k) =>
           k.art === 'beitrag' ? (
             <BeitragKarte key={k.wert.id} beitrag={k.wert} />
@@ -42,7 +43,7 @@ export default async function FeedSeite() {
             <AnzeigeKarte key={k.wert.id} anzeige={k.wert} kennzeichen={t.feed.anzeige} />
           ),
         )}
-      </div>
+      </FeedFlaeche>
     </div>
   );
 }

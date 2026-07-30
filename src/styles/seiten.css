@@ -562,3 +562,12 @@ h1.gross {
 .b-fuss a:hover {
   color: var(--content-primary);
 }
+
+/* Trägerfläche für den Doppelklick im Feed.
+   Muss die volle Breite haben — .strom ist auf 620 px begrenzt, und
+   auf großen Bildschirmen klickt man in die Leere daneben.
+   min-height, damit auch unter dem letzten Beitrag noch Fläche liegt. */
+
+.strom-flaeche {
+  min-height: 60dvh;
+}
