@@ -100,6 +100,7 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 6. `0006_kommentare.sql` — Kommentare und ihre Stimmen
 7. `0007_leute_unscharf.sql` — Personensuche mit Tippfehlertoleranz
 8. `0008_hinweise.sql` — Benachrichtigungen, Trigger, vier Schalter
+9. `0009_start_und_rueckmeldung.sql` — Startbereich und Rückmeldungen
 
 **`0006` muss vor dem nächsten Deploy laufen.** Der Feed fragt
 `comments(count)` mit ab; fehlt die Tabelle, schlägt die ganze

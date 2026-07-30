@@ -634,6 +634,54 @@ und Voria verkauft Anwesenheit.
 
 ---
 
+### 2026-07-30 · Voria startet im Feed, nicht im Log
+
+Wer die App öffnet, soll etwas vorfinden statt ein leeres Blatt. Der
+Log ist einen Griff weit weg, und wer lieber dort startet, stellt es
+in den Einstellungen um.
+
+Das ist kein Widerspruch zu „der Log ist der Kern". Der Kern ist, wo
+die Arbeit passiert — der Einstieg ist, wo man ankommt. Ein Tagebuch,
+das einen beim Öffnen anschweigt, wird seltener geöffnet.
+
+**Der Stille Modus überschreibt das auf den Log** — nach derselben
+Regel wie bei den Hinweisen: Er schreibt die Wahl nicht um. Wer ihn
+ausschaltet, startet wieder dort, wo er vorher gestartet ist.
+
+Entschieden wird in `middleware.ts`, und die Abfrage läuft nur, wenn
+tatsächlich umgeleitet wird — nicht bei jedem Aufruf.
+
+### 2026-07-30 · Die Feed-Reiter ducken sich beim Lesen weg
+
+Die Leiste klebt oben, verschwindet aber, sobald man nach unten liest,
+und kommt bei einem Stück Hochscrollen zurück. Beim Lesen braucht
+niemand einen Umschalter; ein fester Balken kostet dauerhaft Platz,
+und ein Balken, der bei jedem Ruckeln auftaucht, ist schlimmer als
+gar keiner.
+
+Deshalb zwei Feinheiten: eine Schwelle von sechs Pixeln, damit nichts
+flackert, und ganz oben ist die Leiste immer da.
+
+### 2026-07-30 · Rückmeldungen: eine Tabelle ohne Leserecht
+
+Kein Ticketsystem, kein Fremddienst, keine E-Mail — eine Zeile in
+`feedback`, gelesen wird im Supabase-Dashboard. Das trägt die nächsten
+tausend Nutzer und lässt sich später ersetzen, ohne dass etwas daran
+hängt.
+
+**Absichtlich keine `select`-Regel.** Rückmeldungen enthalten
+regelmäßig Dinge, die andere nichts angehen: Fehlerbeschreibungen mit
+Namen darin, Ärger über jemanden, manchmal eine Adresse. Ohne
+`select`-Regel gibt PostgREST nichts heraus, an niemanden. Die
+Migration bricht ab, wenn jemand später doch eine anlegt.
+
+Das Formular hat als eine der wenigen Stellen in Voria einen
+Absendeknopf. Der Rest speichert von selbst, weil dort das eigene
+Tagebuch entsteht — eine Nachricht an jemand anderen darf nicht
+verschickt werden, solange man noch tippt.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.

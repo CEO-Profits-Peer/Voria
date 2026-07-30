@@ -219,6 +219,32 @@ export const de = {
     schalterUpload: 'Wenn jemand teilt, dem du folgst',
   },
 
+  rechtliches: { datenschutz: 'Datenschutz' },
+
+  rueckmeldung: {
+    titel: 'Rückmeldung',
+    zeile: 'Was fehlt, was stört, was kaputt ist. Alles hilft.',
+    platzhalter:
+      'Schreib einfach drauflos. Wenn etwas nicht funktioniert hat: was hast du gemacht, und was ist stattdessen passiert?',
+    senden: 'Absenden',
+    laeuft: 'Wird gesendet …',
+    danke: 'Angekommen. Danke dafür.',
+    hinweis:
+      'Mitgesendet wird, auf welcher Seite du gerade warst — das erspart die Rückfrage. Sonst nichts.',
+    zuKurz: 'Ein paar Worte mehr, sonst lässt sich damit nichts anfangen.',
+    zuLang: 'Das ist länger als viertausend Zeichen. Kürz es bitte etwas ein.',
+    schiefgelaufen: 'Das hat nicht geklappt. Versuch es bitte gleich noch einmal.',
+  },
+
+  startbereich: {
+    titel: 'Womit Voria startet',
+    zeile: 'Wo du landest, wenn du die App öffnest.',
+    feed: 'Feed',
+    log: 'Log',
+    stillHinweis:
+      'Solange der Stille Modus an ist, startet Voria im Log. Deine Auswahl bleibt stehen.',
+  },
+
   profil: {
     du: 'Du',
     reisen: 'Reisen',

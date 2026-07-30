@@ -217,6 +217,32 @@ export const en: Woerterbuch = {
     schalterUpload: 'When someone you follow shares',
   },
 
+  rechtliches: { datenschutz: 'Privacy' },
+
+  rueckmeldung: {
+    titel: 'Feedback',
+    zeile: "What's missing, what's annoying, what's broken. All of it helps.",
+    platzhalter:
+      "Just start writing. If something did not work: what did you do, and what happened instead?",
+    senden: 'Send',
+    laeuft: 'Sending …',
+    danke: 'Received. Thank you for that.',
+    hinweis:
+      'The page you were on is sent along — it saves a follow-up question. Nothing else.',
+    zuKurz: 'A few more words, otherwise there is nothing to work with.',
+    zuLang: 'That is longer than four thousand characters. Please trim it a little.',
+    schiefgelaufen: 'That did not work. Please try again in a moment.',
+  },
+
+  startbereich: {
+    titel: 'Where Voria starts',
+    zeile: 'Where you land when you open the app.',
+    feed: 'Feed',
+    log: 'Log',
+    stillHinweis:
+      'While quiet mode is on, Voria starts in the log. Your choice stays as it is.',
+  },
+
   profil: {
     du: 'You',
     reisen: 'Journeys',

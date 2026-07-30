@@ -7,12 +7,13 @@ import { texte } from '@/i18n/server';
 
 export const metadata = { title: 'Einstellungen · Voria' };
 
-/** Voreinstellung wie in `0008_hinweise.sql`: alles an, still aus. */
+/** Voreinstellung wie in den Migrationen 0008 und 0009. */
 const STANDARD: SchalterStand = {
   hinweis_kommentar: true,
   hinweis_folger: true,
   hinweis_upload: true,
   stiller_modus: false,
+  startbereich: 'feed',
 };
 
 export default async function EinstellungenSeite() {
@@ -22,7 +23,7 @@ export default async function EinstellungenSeite() {
   const { data: profil, error } = user.user
     ? await supabase
         .from('profiles')
-        .select('hinweis_kommentar, hinweis_folger, hinweis_upload, stiller_modus')
+        .select('hinweis_kommentar, hinweis_folger, hinweis_upload, stiller_modus, startbereich')
         .eq('id', user.user.id)
         .maybeSingle()
     : { data: null, error: null };

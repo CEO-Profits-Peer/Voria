@@ -108,6 +108,10 @@ export function Startseite() {
 
       <footer className="fussleiste">
         <span>{t.marke}</span>
+        {/* Pflichtangaben. Sie müssen ohne Anmeldung erreichbar sein —
+            deshalb hier und nicht in den Einstellungen. */}
+        <Link href="/impressum">Impressum</Link>
+        <Link href="/datenschutz">{t.rechtliches.datenschutz}</Link>
         <Link href="/registrieren">{t.start.anfangen}</Link>
       </footer>
 

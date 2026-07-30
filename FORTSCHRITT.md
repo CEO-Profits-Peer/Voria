@@ -57,7 +57,7 @@ markieren.
 
 ---
 
-## Gebaut — 17 Funktionen
+## Gebaut — 21 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -113,9 +113,23 @@ markieren.
     ein Schreibvorgang während des Renderns, den der Build nicht
     zeigen kann, weil die Seite dynamisch ist.
 
-Dazu 8 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
-`0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise)
-und die Dokumente `START.md` und `DEPLOY.md`.
+18. **Startbereich** — Voria startet im Feed, umstellbar auf den Log.
+    Der Stille Modus überschreibt das auf den Log, ohne die Wahl
+    umzuschreiben. Entschieden wird in `middleware.ts`, und die
+    Abfrage läuft nur beim Umleiten, nicht bei jedem Aufruf.
+19. **Reiterleiste, die sich beim Lesen wegduckt** — zentriert,
+    breiter, klebt oben; verschwindet beim Weiterlesen und kommt beim
+    Hochscrollen zurück. Schwelle gegen Flackern, ganz oben immer da.
+20. **Rückmeldungen** — ein Feld, ein Knopf. Tabelle ohne
+    `select`-Regel: geschrieben wird über die App, gelesen im
+    Dashboard.
+21. **Impressum und Datenschutzerklärung** als Gerüst, öffentlich
+    erreichbar, jede offene Stelle sichtbar in eckigen Klammern.
+
+Dazu 9 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+`0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,
+`0009` Startbereich und Rückmeldungen) und die Dokumente `START.md`
+und `DEPLOY.md`.
 
 ---
 

@@ -19,6 +19,8 @@ export interface SchalterStand {
   hinweis_folger: boolean;
   hinweis_upload: boolean;
   stiller_modus: boolean;
+  /** Gehört nicht zu den Schaltern, kommt aber aus derselben Zeile. */
+  startbereich: 'feed' | 'log';
 }
 
 export function HinweisSchalter({ stand }: { stand: SchalterStand }) {

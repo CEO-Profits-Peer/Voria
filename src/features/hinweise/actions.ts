@@ -57,6 +57,30 @@ export type HinweisSchalter =
   | 'stiller_modus';
 
 /**
+ * Wo Voria startet.
+ *
+ * Steht hier und nicht bei den Hinweisen, weil es dieselbe Regel
+ * teilt: Der Stille Modus überschreibt die Wahl auf den Log, ohne sie
+ * umzuschreiben. Entschieden wird das in `middleware.ts`.
+ */
+export async function startbereichSetzen(wohin: 'feed' | 'log') {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ startbereich: wohin })
+    .eq('id', user.id);
+
+  if (error) console.error('[startbereichSetzen]', error);
+
+  revalidatePath('/du/einstellungen');
+}
+
+/**
  * Einen Schalter umlegen.
  *
  * Der Stille Modus ist hier ein Schalter wie die anderen — er schreibt

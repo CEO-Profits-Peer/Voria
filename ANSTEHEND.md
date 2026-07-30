@@ -35,7 +35,12 @@ npm run build
    steht der Fehler in der Serverkonsole und der Punkt fehlt einfach.
    Die Einstellungsseite liest vier neue Spalten aus `profiles`.
 
-Alle drei prüfen sich am Ende selbst und brechen mit einer Meldung ab,
+4. `0009_start_und_rueckmeldung.sql` — **blockierend für den Einstieg.**
+   Die Middleware liest `profiles.startbereich`, um zu entscheiden,
+   wohin ein Angemeldeter von `/` aus geht. Fehlt die Spalte, landen
+   alle im Log — nicht kaputt, aber nicht das Gewollte.
+
+Alle vier prüfen sich am Ende selbst und brechen mit einer Meldung ab,
 wenn etwas fehlt.
 
 Danach im Browser durchgehen, in dieser Reihenfolge:
@@ -58,6 +63,10 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Textblöcke | Tag → Fläche → Plus → Text | Tippen, neu laden, verschieben, zweiter Block, löschen |
 | Profilbild | `/du/bearbeiten` | Hochladen, erscheint es in Feed, Suche, Seitenleiste? |
 | Personensuche | `/suche` → Reiter „Leute" | `qualle`, `lore`, Folgen-Knopf |
+| Einstieg | Abmelden, anmelden | Landet man im **Feed**? Nach Umstellung im Log? Bei Stillem Modus im Log? |
+| Reiterleiste | Feed, nach unten lesen, dann leicht hoch | Verschwindet sie beim Lesen, kommt sie beim Hochscrollen zurück, **ohne zu flackern**? |
+| Rückmeldung | `/rueckmeldung` → absenden | Kommt die Zeile in Supabase an, mit Pfad? |
+| Rechtsseiten | `/impressum`, `/datenschutz` **abgemeldet** | Ohne Anmeldung erreichbar? Warnkasten sichtbar? |
 | Hinweise | Zweites Konto: folgen, kommentieren, Tag teilen | Kommen alle vier Arten an? Punkt an der Glocke? |
 | Kein Selbstlärm | Eigenen Beitrag selbst kommentieren | Es darf **kein** Hinweis entstehen |
 | Stiller Modus | Einstellungen → an → vom zweiten Konto reagieren | Nichts kommt an. Danach aus: **stehen die drei Schalter wieder wie vorher?** |
@@ -242,9 +251,13 @@ alle Zugriffsregeln auf `trips`, `entries` und `blocks` hängen heute an
   Lesen — es gibt weder IndexedDB noch eine Warteschlange für
   Schreibvorgänge. Wer abends im Hostel ohne Netz tippt, verliert den
   Text. Das ist kein fehlendes Extra, das ist die Kernnutzung.
-* **Datenschutzerklärung und Impressum.** Du speicherst E-Mail-Adressen
-  in `auth.users` bei einem US-Dienst. Ich bin kein Anwalt — das ist
-  nur der Hinweis, dass es ansteht.
+* **Datenschutzerklärung und Impressum ausfüllen.** Die Seiten stehen
+  als Gerüst unter `/impressum` und `/datenschutz`, jede offene Stelle
+  in eckigen Klammern. Die Aufstellung dessen, was Voria verarbeitet,
+  stimmt mit dem Code überein — Rechtsgrundlagen, Fristen und die
+  Angaben zur Person fehlen. **Ich bin kein Anwalt; das muss jemand
+  prüfen, der das darf.** Der Warnkasten oben auf beiden Seiten bleibt
+  stehen, bis das passiert ist.
 * **`SUPABASE_SERVICE_ROLE_KEY` neu erzeugen.** In `.env.local` steht
   ein Kommentar von dir selbst, dass das noch offen ist.
 * **Bezahlung anbinden** — `istPro()` gibt heute immer `false` zurück.

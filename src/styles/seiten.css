@@ -582,6 +582,70 @@ h1.gross {
    auf großen Bildschirmen klickt man in die Leere daneben.
    min-height, damit auch unter dem letzten Beitrag noch Fläche liegt. */
 
+/* ---------- Impressum und Datenschutz -----------------------
+   Reine Lesetexte ohne Navigation. Sie tragen deshalb als einzige
+   Seiten die Textschrift durchgehend — hier wird gelesen, nicht
+   bedient. */
+
+.rechtsseite {
+  max-width: 68ch;
+}
+
+.rechtsseite p,
+.rechtsseite li {
+  font-family: var(--font-text);
+  font-size: var(--size-16);
+  line-height: var(--leading-relaxed);
+  color: var(--content-secondary);
+  text-wrap: pretty;
+}
+
+.rechtsseite h2 {
+  margin: var(--space-32) 0 var(--space-8);
+  font-family: var(--font-display);
+  font-size: var(--size-20);
+  font-weight: var(--weight-medium);
+  color: var(--content-primary);
+}
+
+.rechtsseite h3 {
+  margin: var(--space-24) 0 var(--space-4);
+  font-family: var(--font-ui);
+  font-size: var(--size-14);
+  font-weight: var(--weight-semi);
+  color: var(--content-primary);
+}
+
+.rechtsseite .stand,
+.rechtsseite .zurueck {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--content-muted);
+}
+
+.rechtsseite .zurueck {
+  margin-top: var(--space-48);
+  padding-top: var(--space-20);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Der Warnkasten ist absichtlich auffällig: Ein Gerüst, das man für
+   fertig hält, ist schlimmer als eine fehlende Seite. */
+.rechtsseite .warnung {
+  padding: var(--space-16) var(--space-20);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-8);
+  background: var(--surface-sunken);
+  font-family: var(--font-ui);
+  font-size: var(--size-14);
+}
+
+.rechtsseite .platzhalter {
+  font-family: var(--font-ui);
+  font-size: var(--size-14);
+  color: var(--content-muted);
+}
+
 .strom-flaeche {
   min-height: 60dvh;
 }

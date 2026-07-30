@@ -9,11 +9,13 @@
  */
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { REGIONS, type Region } from '@/themes/regions';
 import { useT } from '@/i18n/Sprachraum';
 import { SprachWahl } from './SprachWahl';
 import { HinweisSchalter, type SchalterStand } from '@/features/hinweise/HinweisSchalter';
+import { StartWahl } from '@/features/hinweise/StartWahl';
 
 type Modus = 'light' | 'dark' | 'system';
 
@@ -64,6 +66,19 @@ export function Einstellungen({ hinweise }: { hinweise: SchalterStand }) {
       {/* Vor den zwölf Welten, weil die Welten das lange Schaufenster
           sind — was man einstellen WILL, soll nicht dahinter liegen. */}
       <section>
+        <h2>{t.rueckmeldung.titel}</h2>
+        <p className="zeile">{t.rueckmeldung.zeile}</p>
+        <Link href="/rueckmeldung" className="wahl-verweis">
+          {t.rueckmeldung.titel}
+        </Link>
+      </section>
+
+      <section>
+        <h2>{t.startbereich.titel}</h2>
+        <StartWahl wert={hinweise.startbereich} still={hinweise.stiller_modus} />
+      </section>
+
+      <section>
         <h2>{t.hinweise.titel}</h2>
         <HinweisSchalter stand={hinweise} />
       </section>
@@ -104,6 +119,28 @@ export function Einstellungen({ hinweise }: { hinweise: SchalterStand }) {
           display: flex;
           flex-direction: column;
           gap: var(--space-48);
+        }
+        /* :global(), weil styled-jsx <Link> nicht scopet — gescopet
+           über .wrap davor. Siehe src/styles/huelle.css. */
+        .wrap :global(a.wahl-verweis) {
+          display: inline-flex;
+          align-items: center;
+          height: 40px;
+          padding: 0 var(--space-20);
+          border: 1px solid var(--border-subtle);
+          border-radius: 7px;
+          background: var(--surface-raised);
+          color: var(--content-secondary);
+          font-family: var(--font-ui);
+          font-size: var(--size-14);
+          font-weight: var(--weight-medium);
+          text-decoration: none;
+          transition: background var(--motion-feed), color var(--motion-feed);
+        }
+        .wrap :global(a.wahl-verweis:hover) {
+          background: var(--surface-sunken);
+          color: var(--content-primary);
+          text-decoration: none;
         }
         h2 {
           margin: 0 0 var(--space-16);
