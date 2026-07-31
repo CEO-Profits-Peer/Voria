@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 37 Funktionen
+## Gebaut — 38 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -230,6 +230,14 @@ markieren.
     Wegwischen drei Monate Ruhe. **Nirgends im Log:** Wer schreibt,
     wird nicht gefragt — das ist keine Einstellung, sondern eine Frage
     des Ortes. Migration `0014`.
+
+38. **Offline schreiben, erste Stufe** — jeder Anschlag geht sofort in
+    den lokalen Speicher, erst danach läuft die Uhr fürs Sichern.
+    Scheitert das Sichern, liegt der Entwurf noch da und wird beim
+    nächsten Öffnen eingesetzt. Vorher war der Absatz in diesem Fall
+    fort, ohne Meldung und ohne Spur — und das ist genau der Fall,
+    für den die App gebaut ist. Keine Synchronisierung zwischen zwei
+    Geräten; die bleibt offen.
 
 Dazu 14 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,

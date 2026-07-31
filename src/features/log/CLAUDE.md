@@ -27,6 +27,16 @@ Open Space das Layout. Niemals zwei Strukturen bauen.
 **Kein Speichern-Knopf.** Text wird 900 ms nach der letzten Eingabe gesichert.
 Keine Rückmeldung, kein Zeichenzähler, keine Wortzahl.
 
+**Erst aufs Gerät, dann ins Netz.** Jeder Anschlag geht sofort nach `entwurf.ts`
+in den lokalen Speicher, erst danach läuft die Uhr fürs Sichern. Scheitert das
+Sichern — kein Netz, Tab zu, Akku leer —, liegt der Entwurf noch da und wird
+beim nächsten Öffnen eingesetzt. Vorher war der Absatz in diesem Fall fort,
+ohne Meldung und ohne Spur. Genau der Fall, für den ein Reisetagebuch gebaut
+ist: abends im Hostel, kein Netz.
+
+Das ist **keine Synchronisierung**. Zwei Geräte, die denselben Tag offline
+ändern, laufen weiterhin auseinander — offene Frage in `ENTSCHEIDUNGEN.md`.
+
 **Keine Gamification.** Kein Streak, kein Fortschritt, keine Ermahnung.
 
 **Was dem TAG gehört, gehört keinem Modus.** Titel, Ort, Foto und Sichtbarkeit

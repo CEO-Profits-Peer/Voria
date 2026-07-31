@@ -17,6 +17,7 @@ import { ImagePlus } from 'lucide-react';
 import type { Block } from './queries';
 import { textSpeichern } from './actions';
 import { Tagestitel } from './Tagestitel';
+import { entwurfMerken, entwurfVergessen, entwurfOderServer } from './entwurf';
 import { FotoBild } from './FotoBild';
 import { useT } from '@/i18n/Sprachraum';
 
@@ -43,18 +44,59 @@ export function RuhigerModus({
 }) {
   const { t, locale } = useT();
   const textBloecke = bloecke.filter((b) => b.art === 'text');
-  const [text, setText] = useState(textBloecke.map((b) => b.text ?? '').join('\n\n'));
+  const vomServer = textBloecke.map((b) => b.text ?? '').join('\n\n');
   const blockId = useRef<string | null>(textBloecke[0]?.id ?? null);
+
+  /*
+   * Beim Öffnen gewinnt ein liegengebliebener Entwurf.
+   *
+   * Er liegt nur dann noch da, wenn das Sichern NICHT durchkam — er
+   * ist damit zwangsläufig der jüngere Stand. Siehe entwurf.ts.
+   *
+   * `useState` mit Funktion: Der Griff in den lokalen Speicher darf
+   * nur einmal passieren, nicht bei jedem Rendern.
+   */
+  const [text, setText] = useState(
+    () => entwurfOderServer(eintragId, blockId.current, vomServer).text,
+  );
   const feld = useRef<HTMLTextAreaElement>(null);
   const istLeer = bloecke.length === 0 && text.trim() === '';
 
-  // Verzögertes Sichern. Kein Knopf, keine Rückmeldung — es passiert einfach.
+  /*
+   * ERST AUFS GERÄT, DANN INS NETZ.
+   *
+   * Vorher stand hier nur das verzögerte Sichern — und wenn das
+   * scheiterte, war der Absatz beim nächsten Laden fort. Ohne
+   * Meldung, ohne Spur. Genau der Fall, für den ein Reisetagebuch
+   * gebaut ist: abends im Hostel, kein Netz.
+   *
+   * Der lokale Griff steht deshalb VOR der Uhr, nicht in ihr. Er
+   * kostet nichts und kann nicht fehlschlagen.
+   */
   useEffect(() => {
-    if (text === textBloecke.map((b) => b.text ?? '').join('\n\n')) return;
+    if (text === vomServer) return;
+
+    entwurfMerken(eintragId, blockId.current, text);
+
     const uhr = setTimeout(async () => {
-      const id = await textSpeichern(eintragId, blockId.current, text);
-      if (id) blockId.current = id;
+      try {
+        const id = await textSpeichern(eintragId, blockId.current, text);
+        if (id) {
+          blockId.current = id;
+          /* Angekommen — der Entwurf hat seinen Zweck erfüllt. */
+          entwurfVergessen(eintragId, id);
+          entwurfVergessen(eintragId, null);
+        }
+      } catch (fehler) {
+        /*
+         * Kein Netz, kein Drama: Der Entwurf liegt schon auf dem
+         * Gerät. Beim nächsten Anschlag wird es wieder versucht,
+         * spätestens beim nächsten Öffnen ist der Text wieder da.
+         */
+        console.error('[RuhigerModus] Sichern fehlgeschlagen, Entwurf bleibt liegen:', fehler);
+      }
     }, 900);
+
     return () => clearTimeout(uhr);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, eintragId]);
