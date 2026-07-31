@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 31 Funktionen
+## Gebaut — 33 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -197,6 +197,18 @@ markieren.
     `istPro()` fragt sie statt `false` zu liefern, Webhook unter
     `/api/paddle` mit Signaturprüfung. Bezahlt bleibt bezahlt bis zum
     Ende der Periode; im Zweifel gilt „frei".
+
+32. **Einstellungen in vier Kategorien** — vorher sieben Abschnitte in
+    einem Scroll: Wer den Schalter für die Hinweise suchte, kam an
+    einem Schaufenster mit zwölf Themes vorbei. Jetzt eine Übersicht
+    und vier Unterseiten (Aussehen, Hinweise, PRO, Konto). Dabei
+    `Erscheinungsbild` und `RegionenVorschau` als eigene Komponenten
+    herausgelöst; die Sammelkomponente `Einstellungen.tsx` ist weg.
+33. **Preisseite `/pro`** — Fassung A aus dem Entwurf: zuerst das
+    Blatt, dann der Preis, dann vier Absätze in ganzen Sätzen. Kein
+    Vergleichsraster mit Häkchen. Öffentlich erreichbar, damit man
+    ohne Konto erfährt, was Voria kostet. Statt eines Kaufknopfes, der
+    nichts tut, steht dort ein ehrlicher Satz.
 
 Dazu 13 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,

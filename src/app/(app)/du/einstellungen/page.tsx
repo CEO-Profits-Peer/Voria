@@ -1,40 +1,20 @@
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
-import { Einstellungen } from '@/features/profile/Einstellungen';
-import type { SchalterStand } from '@/features/hinweise/HinweisSchalter';
-import { createServerClient } from '@/lib/supabase-server';
+import { ChevronLeft, Palette, Bell, Gem, UserRound } from 'lucide-react';
+import { Kategorien } from '@/ui/Kategorien';
 import { texte } from '@/i18n/server';
 
 export const metadata = { title: 'Einstellungen · Voria' };
 
-/** Voreinstellung wie in den Migrationen 0008 und 0009. */
-const STANDARD: SchalterStand = {
-  hinweis_kommentar: true,
-  hinweis_folger: true,
-  hinweis_upload: true,
-  stiller_modus: false,
-  startbereich: 'feed',
-};
-
+/**
+ * Vier Kategorien statt sieben Abschnitten in einem langen Scroll.
+ *
+ * Die Reihenfolge folgt dem, wonach jemand tatsächlich sucht:
+ * Aussehen zuerst (das wollen die meisten), Hinweise als Zweites
+ * (das will man abstellen), PRO danach, Konto zuletzt — dort liegt
+ * das Löschen, und dorthin soll niemand versehentlich stolpern.
+ */
 export default async function EinstellungenSeite() {
-  const supabase = await createServerClient();
-  const [{ t }, { data: user }] = await Promise.all([texte(), supabase.auth.getUser()]);
-
-  const { data: profil, error } = user.user
-    ? await supabase
-        .from('profiles')
-        /* Eine einzige Zeichenkette, nicht zusammengesetzt: Supabase
-           leitet die Typen aus dem LITERAL ab. Sobald hier ein `+`
-           steht, ist es für TypeScript nur noch `string`, und die
-           Antwort verliert ihre Form. */
-        // prettier-ignore
-        .select('username, hinweis_kommentar, hinweis_folger, hinweis_upload, stiller_modus, startbereich, pro_design, pro_material, pro_bewegung')
-        .eq('id', user.user.id)
-        .maybeSingle()
-    : { data: null, error: null };
-
-  // Ohne diese Zeile sähe eine fehlende Migration wie „alles an" aus.
-  if (error) console.error('[EinstellungenSeite] Schalter nicht geladen:', error);
+  const { t } = await texte();
 
   return (
     <div className="seite">
@@ -42,14 +22,34 @@ export default async function EinstellungenSeite() {
         <ChevronLeft size={18} strokeWidth={1.5} aria-hidden /> {t.profil.du}
       </Link>
       <h1 className="gross">{t.einstellungen.titel}</h1>
-      <Einstellungen
-        hinweise={profil ?? STANDARD}
-        benutzername={profil?.username ?? ''}
-        pro={{
-          pro_design: profil?.pro_design ?? null,
-          pro_material: profil?.pro_material ?? true,
-          pro_bewegung: profil?.pro_bewegung ?? false,
-        }}
+
+      <Kategorien
+        eintraege={[
+          {
+            href: '/du/einstellungen/aussehen',
+            titel: t.einstellungen.katAussehen,
+            zeile: t.einstellungen.katAussehenZeile,
+            Icon: Palette,
+          },
+          {
+            href: '/du/einstellungen/hinweise',
+            titel: t.einstellungen.katHinweise,
+            zeile: t.einstellungen.katHinweiseZeile,
+            Icon: Bell,
+          },
+          {
+            href: '/du/einstellungen/pro',
+            titel: t.pro.titel,
+            zeile: t.einstellungen.katProZeile,
+            Icon: Gem,
+          },
+          {
+            href: '/du/einstellungen/konto',
+            titel: t.konto.titel,
+            zeile: t.einstellungen.katKontoZeile,
+            Icon: UserRound,
+          },
+        ]}
       />
     </div>
   );

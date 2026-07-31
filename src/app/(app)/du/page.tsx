@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Settings, Sparkles, Pencil } from 'lucide-react';
+import { Settings, Sparkles, Pencil, Gem } from 'lucide-react';
 import { createServerClient } from '@/lib/supabase-server';
+import { istPro } from '@/lib/plan';
 import { Seitenkopf } from '@/ui/Bausteine';
 import { Avatar } from '@/ui/Avatar';
 import { abmelden } from '@/features/auth/actions';
@@ -10,7 +11,7 @@ export const metadata = { title: 'Du · Voria' };
 
 export default async function DuSeite() {
   const supabase = await createServerClient();
-  const { t } = await texte();
+  const [{ t }, hatPro] = await Promise.all([texte(), istPro()]);
   const { data: { user } } = await supabase.auth.getUser();
 
   const { data: profil } = user
@@ -64,6 +65,24 @@ export default async function DuSeite() {
           {t.rueckblick.zeile}
         </span>
       </Link>
+
+      {/*
+        „PRO werden" steht dauerhaft im Profil — so entschieden am
+        30.07. Aber nur, solange man es nicht hat: Wer bezahlt, soll
+        nicht bei jedem Blick aufs eigene Profil daran erinnert
+        werden, dass er bezahlt.
+
+        Kein Zeitgeber, kein Pop-up. Es steht da und wartet.
+      */}
+      {!hatPro && (
+        <Link href="/pro" className="rueckblick-band">
+          <Gem size={20} strokeWidth={1.5} aria-hidden />
+          <span>
+            <strong>{t.pro.einstieg}</strong>
+            {t.pro.einstiegZeile}
+          </span>
+        </Link>
+      )}
 
       {/* Unauffällig, neben dem Abmelden — eine Rückmeldung ist kein
           Hauptweg durch die App, aber sie soll jeder finden, ohne
