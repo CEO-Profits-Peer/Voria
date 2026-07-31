@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 30 Funktionen
+## Gebaut — 31 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -193,10 +193,16 @@ markieren.
     kein Theme anfassen darf, plus der Ortsmarken-Punkt hinter dem
     Wort. Dazu der Wächter aus Nummer 7.
 
-Dazu 11 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+31. **Abo-Gerüst** — Tabelle `subscriptions` ohne jede Schreibregel,
+    `istPro()` fragt sie statt `false` zu liefern, Webhook unter
+    `/api/paddle` mit Signaturprüfung. Bezahlt bleibt bezahlt bis zum
+    Ende der Periode; im Zweifel gilt „frei".
+
+Dazu 13 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,
 `0009` Startbereich und Rückmeldungen, `0010` PRO-Design,
-`0011` Gelesen-Merker) und die Dokumente `START.md` und `DEPLOY.md`.
+`0011` Gelesen-Merker, `0012` Spaltenrechte auf posts, `0013` Abos)
+und die Dokumente `START.md` und `DEPLOY.md`.
 
 ---
 

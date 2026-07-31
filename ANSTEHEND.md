@@ -360,7 +360,15 @@ beim direkten Beitragseditor — ein Beitrag ist ein geteilter Tag.
   stehen, bis das passiert ist.
 * **`SUPABASE_SERVICE_ROLE_KEY` neu erzeugen.** In `.env.local` steht
   ein Kommentar von dir selbst, dass das noch offen ist.
-* **Bezahlung anbinden** — `istPro()` gibt heute immer `false` zurück.
+* **Bezahlung scharfschalten.** Das Gerüst steht (Migration `0013`,
+  `/api/paddle`, `istPro()` fragt die Tabelle). Was noch fehlt, ist
+  außerhalb des Codes: Paddle-Konto, Produkt und Preis anlegen,
+  `PADDLE_WEBHOOK_SECRET` in Vercel hinterlegen, und in der
+  Kaufstrecke `custom_data.user_id` mitgeben — ohne das lässt sich
+  eine Zahlung keinem Konto zuordnen.
+  **Vor dem ersten echten Euro:** eine Testmeldung aus dem
+  Paddle-Dashboard schicken **und** eine absichtlich falsch
+  signierte. Geht die zweite durch, ist alles andere egal.
 * **Echte Anzeigen** statt der Platzhalter in `features/social/werbung.ts`.
 * **Verwaiste Profilbilder aufräumen.** Beim Tauschen bleibt das alte
   liegen — bewusst, damit ein fehlgeschlagenes Löschen nicht das Setzen

@@ -104,6 +104,8 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 10. `0010_pro_design.sql` — Voria PRO: Design, Material, Bewegung
 11. `0011_gelesen.sql` — Gelesen-Merker und der Feed als Funktion
 12. `0012_stimmen_schuetzen.sql` — Spaltenrechte auf `posts`
+13. `0013_abos.sql` — Abonnements. **Keine Schreibregel**, nur der
+    Webhook darf hinein
 
 **Row Level Security kennt keine Spalten.** Wer eine Zeile bearbeiten
 darf, darf jede Spalte darin bearbeiten — also auch einen Zähler, den

@@ -845,6 +845,39 @@ Beiträgen wäre der Satz eine Bemerkung über die Leere.
 
 ---
 
+### 2026-07-31 · Abos: der Webhook schreibt, sonst niemand
+
+`subscriptions` hat **keine** insert-, update- oder delete-Regel. Der
+Zahlungsanbieter meldet sich über `/api/paddle`, und diese Route
+schreibt mit dem service_role-Schlüssel.
+
+Gäbe es eine Schreibregel für `authenticated`, könnte sich jeder
+Nutzer selbst ein Abo eintragen. Bei Geld ist „wer darf schreiben" die
+einzige Frage, die zählt — die Migration prüft am Ende sogar
+ausdrücklich, dass keine Schreibregel existiert, und bricht sonst ab.
+
+**Bezahlt ist bezahlt, auch nach der Kündigung.** `laeuft_bis` steht
+neben dem Status: Wer heute kündigt, behält PRO bis zum Ende der
+bezahlten Periode. Ein gekündigtes Abo sofort abzuschalten wäre
+Diebstahl. `past_due` zählt ebenfalls als bezahlt — der Anbieter
+versucht die Abbuchung noch tagelang, und jemandem wegen einer
+abgelaufenen Karte sofort das Tagebuch umzufärben wäre die falsche
+Reaktion auf ein Problem, das sich meist von selbst löst.
+
+**Im Zweifel frei.** Fällt die Abfrage aus, gilt „frei": Dann sieht
+jemand Werbung und verliert sein Material — ärgerlich, aber harmlos.
+Andersherum bekäme bei jedem Aussetzer die ganze Welt PRO geschenkt.
+
+**Die Signaturprüfung ist die ganze Sicherheit dieser Route.** Sie
+steht vor jedem Blick in den Inhalt, vergleicht zeitkonstant und
+lehnt Meldungen über fünf Minuten Alter ab. Geprüft habe ich sie
+gegen acht Fälle, darunter nachträglich geänderter Rumpf, falsches
+Geheimnis, fehlende Signatur und Wiedereinspielung — alle abgelehnt.
+**Nicht geprüft: der Aufruf von Paddle selbst.** Das geht erst mit
+einem echten Konto.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.
