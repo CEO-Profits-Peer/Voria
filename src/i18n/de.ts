@@ -141,6 +141,7 @@ export const de = {
   },
 
   fotos: {
+    grenzeErreicht: 'An diesem Tag liegen schon {grenze} Fotos. Mit Voria PRO hört es dort nicht auf.',
     hinzufuegen: 'Fotos hinzufügen',
     auswaehlen: 'Bilder auswählen',
     warten: 'Such dir Bilder aus. Datum und Ort lese ich selbst heraus.',

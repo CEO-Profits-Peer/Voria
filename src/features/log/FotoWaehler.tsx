@@ -57,7 +57,7 @@ export function FotoWaehler({ eintragId, aufSchliessen }: { eintragId: string; a
           fetch(ziel.vorschau.url, { method: 'PUT', body: bild.vorschau }),
         ]);
 
-        await fotoEintragen({
+        const ergebnis = await fotoEintragen({
           eintragId,
           pfad: ziel.anzeige.key,
           pfadVorschau: ziel.vorschau.key,
@@ -69,6 +69,22 @@ export function FotoWaehler({ eintragId, aufSchliessen }: { eintragId: string; a
           breitengrad: exif.breitengrad,
           laengengrad: exif.laengengrad,
         });
+
+        /*
+         * DIE ANTWORT MUSS AUSGEWERTET WERDEN.
+         *
+         * Vorher stand hier `await fotoEintragen(…)` ohne Ergebnis.
+         * Mit der Fotogrenze wäre daraus genau die Sorte Fehler
+         * geworden, an der dieses Projekt reich ist: Das Foto wird
+         * hochgeladen, die Datenbank lehnt es ab, der Zähler läuft
+         * weiter, der Dialog meldet „Fertig" — und das Bild ist
+         * nirgends. Ohne eine einzige Fehlermeldung.
+         */
+        if (ergebnis && typeof ergebnis === 'object' && 'grenzeErreicht' in ergebnis) {
+          setStand('fehler');
+          setMeldung(t.fotos.grenzeErreicht.replace('{grenze}', String(ergebnis.grenze)));
+          return;
+        }
 
         setZahl((z) => ({ ...z, fertig: z.fertig + 1 }));
       } catch (e) {

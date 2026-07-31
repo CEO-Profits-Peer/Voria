@@ -98,6 +98,18 @@ export async function zeigtWerbung(): Promise<boolean> {
   return GRENZEN[await aktuellerPlan()].werbung;
 }
 
+/**
+ * Wie viele Fotos an einem Tag.
+ *
+ * Durchgesetzt wird das in `features/log/fotoActions.ts`, also
+ * serverseitig. Im Browser wäre es eine Höflichkeit, die jeder
+ * umgeht, der die Anfrage von Hand schickt — und ein Pro-Merkmal,
+ * das sich umgehen lässt, ist keins.
+ */
+export async function fotosJeTag(): Promise<number> {
+  return GRENZEN[await aktuellerPlan()].fotosJeTag;
+}
+
 /* ============================================================
    Aussehen von PRO
    ============================================================ */

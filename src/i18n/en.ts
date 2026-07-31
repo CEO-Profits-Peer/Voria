@@ -140,6 +140,7 @@ export const en: Woerterbuch = {
   },
 
   fotos: {
+    grenzeErreicht: 'This day already holds {grenze} photos. With Voria PRO it does not stop there.',
     hinzufuegen: 'Add photos',
     auswaehlen: 'Choose images',
     warten: 'Pick some images. I will read the date and place myself.',
