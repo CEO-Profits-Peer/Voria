@@ -180,6 +180,7 @@ export const de = {
     fuerDich: 'Für dich',
     folgeIch: 'Folge ich',
     entdecken: 'Entdecken',
+    amEnde: 'Das war alles für heute.',
     nichtsNeues: 'Nichts Fremdes gerade',
     nichtsNeuesZeile:
       'Hier stehen Tage aus Gegenden, in denen du noch nicht warst. Im Moment ist nichts dabei — schau später wieder vorbei.',

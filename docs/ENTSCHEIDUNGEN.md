@@ -817,6 +817,34 @@ für immer stabil. Noch offen.
 
 ---
 
+### 2026-07-31 · Kein künstlich unendlicher Feed
+
+Vorgeschlagen wurde, am Ende des Feeds wieder von vorne zu beginnen,
+damit er unendlich wirkt. Verworfen.
+
+**Der praktische Grund:** Dieselben zwanzig Beiträge ein zweites Mal
+erkennt jeder Nutzer binnen einer Minute. Es fühlt sich dann nicht
+nach viel Inhalt an, sondern nach kaputt. Instagram wirkt unendlich,
+weil es unendlich *ist* — nicht, weil es recycelt.
+
+**Der zweite Grund kam aus dem Vorschlag selbst:** „Später sollte es
+ja kein Ende mehr geben." Genau. Das Ende verschwindet von selbst,
+sobald genug Leute schreiben. Es heute zu fälschen löst ein Problem,
+das sich ohnehin auflöst, und hinterlässt Code, den später niemand
+mehr anfassen mag.
+
+**Was der Feed ohnehin schon tut:** `feed_laden` sortiert Ungelesenes
+nur nach vorne, es blendet Gelesenes nicht aus. Man scrollt also durch
+alles Neue und danach weiter durch das Bekannte. Ein Ende gibt es erst,
+wenn wirklich jeder Beitrag durch ist.
+
+**Gebaut wurde stattdessen ein Satz.** Vorher hörte die Liste einfach
+auf — kein Wort, nichts, was aussieht wie ein Ladefehler. Jetzt steht
+dort „Das war alles für heute." Erst ab der zweiten Ladung: Bei drei
+Beiträgen wäre der Satz eine Bemerkung über die Leere.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.

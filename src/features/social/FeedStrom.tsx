@@ -30,11 +30,14 @@ export function FeedStrom({
   werbung,
   kennzeichen,
   reiter,
+  ende,
 }: {
   start: Beitrag[];
   werbung: boolean;
   kennzeichen: string;
   reiter: Reiter;
+  /** Der Satz, der ganz unten steht, wenn nichts mehr kommt. */
+  ende: string;
 }) {
   const [beitraege, setBeitraege] = useState(start);
   /* Weniger als ein voller Stapel heißt: das war alles. */
@@ -164,6 +167,41 @@ export function FeedStrom({
           )}
         </Fragment>
       ))}
+
+      {/*
+        DAS ENDE, ALS SATZ.
+
+        Vorher hörte die Liste einfach auf — kein Wort, nichts. Das
+        sieht aus wie ein Ladefehler, und man scrollt weiter und
+        wartet.
+
+        Es wäre ein Leichtes, hier stattdessen von vorne zu beginnen
+        und den Feed unendlich WIRKEN zu lassen. Dagegen spricht:
+        Dieselben Beiträge ein zweites Mal erkennt jeder sofort, und
+        dann fühlt es sich nicht nach viel Inhalt an, sondern nach
+        kaputt. Das Ende verschwindet ohnehin von selbst, sobald genug
+        Leute schreiben.
+
+        Erst ab der zweiten Ladung. Bei drei Beiträgen im Feed wäre
+        „das war alles" eine Bemerkung über die Leere.
+      */}
+      {!nochWelche && beitraege.length > SEITE && (
+        <p className="ende" data-wache>
+          {ende}
+          <style jsx>{`
+            .ende {
+              margin: 0;
+              padding: var(--space-32) var(--space-24) var(--space-48);
+              text-align: center;
+              font-family: var(--font-ui);
+              font-size: var(--size-14);
+              line-height: var(--leading-normal);
+              color: var(--content-muted);
+              text-wrap: pretty;
+            }
+          `}</style>
+        </p>
+      )}
     </>
   );
 }

@@ -93,6 +93,7 @@ export default async function FeedSeite({
           werbung={werbung}
           kennzeichen={t.feed.anzeige}
           reiter={reiter}
+          ende={t.feed.amEnde}
         />
       </FeedFlaeche>
     </div>

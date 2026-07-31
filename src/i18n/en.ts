@@ -178,6 +178,7 @@ export const en: Woerterbuch = {
     fuerDich: 'For you',
     folgeIch: 'Following',
     entdecken: 'Discover',
+    amEnde: 'That was everything for today.',
     nichtsNeues: 'Nothing unfamiliar right now',
     nichtsNeuesZeile:
       'This is where days from places you have not been show up. Nothing at the moment — come back later.',
