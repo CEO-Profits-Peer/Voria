@@ -998,6 +998,18 @@ h1.gross {
   display: none;
 }
 
+/* DER SEITENANFANG IST AUCH EIN FANGPUNKT.
+
+   Ohne diese Regel war er keiner: Nur die Karten fingen, und wer ganz
+   nach oben scrollte, wurde zur ersten Karte zurückgezogen. Der Kopf
+   mit Titel und Reitern ließ sich dann nicht mehr in Ruhe ansehen —
+   die Seite rutschte immer wieder weg.
+
+   Eine Zeile, und „ganz oben" ist wieder eine gültige Ruhelage. */
+.feed-scrollen .seite {
+  scroll-snap-align: start;
+}
+
 /* Die Wischbremse. `always` verbietet, im Schwung über eine Karte
    hinwegzufliegen — ein kräftiger Wisch überspringt dadurch eine
    statt zwanzig. Ohne `scroll-margin-top` klebte die Karte am oberen

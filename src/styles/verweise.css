@@ -112,6 +112,26 @@
   color: var(--content-secondary);
 }
 
+/* Das Anzeigenbild. Eigener Radius, kein Regionen-Material — eine
+   Anzeige soll sich nicht wie eine Beitragskarte anfühlen. */
+.vo-anzeige-bild {
+  display: block;
+  margin-bottom: var(--space-12);
+  border-radius: var(--radius-8);
+  overflow: hidden;
+  /* Grund für die Zeit, bis das Bild da ist. Ohne ihn springt die
+     Karte beim Nachladen, und der Feed ruckelt. */
+  background: var(--surface-sunken);
+  aspect-ratio: 1200 / 628;
+}
+
+.vo-anzeige-bild img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .vo-anzeige-titel {
   margin: 0;
   font-family: var(--font-ui);

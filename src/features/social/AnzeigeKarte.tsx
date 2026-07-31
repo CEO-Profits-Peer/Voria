@@ -32,6 +32,35 @@ export function AnzeigeKarte({ anzeige, kennzeichen }: { anzeige: Anzeige; kennz
         <span className="vo-anzeige-absender">{anzeige.absender}</span>
       </div>
 
+      {/*
+        DAS BILD IST SELBST EIN VERWEIS.
+        Wer auf eine Anzeige klickt, meint sie — egal ob er das Bild
+        oder den Knopf trifft. Zwei Verweise auf dasselbe Ziel sind
+        für Screenreader lästig, deshalb trägt dieser hier
+        `aria-hidden` und `tabIndex={-1}`: Mit der Tastatur führt
+        weiterhin genau ein Weg hin, nämlich der Knopf unten.
+
+        Bilder liegen unter /public/werbung/ und werden mitgeliefert.
+        Sie von einem fremden Server zu holen hieße, jedem
+        Werbetreibenden zu erlauben, die Aufrufe seiner Anzeige zu
+        zählen — und genau das soll Voria nicht möglich machen.
+      */}
+      {anzeige.bild && (
+        <a
+          className="vo-anzeige-bild"
+          href={anzeige.ziel}
+          target="_blank"
+          rel="sponsored nofollow noopener"
+          aria-hidden
+          tabIndex={-1}
+        >
+          {/* Kein next/image: die Datei liegt lokal und hat feste
+              Maße, der Umweg über den Bilddienst bringt hier nichts. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={anzeige.bild} alt="" width={1200} height={628} loading="lazy" />
+        </a>
+      )}
+
       <p className="vo-anzeige-titel">{anzeige.titel}</p>
       <p className="vo-anzeige-text">{anzeige.text}</p>
 

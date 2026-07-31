@@ -31,10 +31,47 @@ export interface Anzeige {
   /** Beschriftung des Knopfes. Kein „Jetzt!", kein Ausrufezeichen. */
   ruf: string;
   ziel: string;
+  /**
+   * Pfad zu einem Bild unter `/public/werbung/`, Seitenverhältnis
+   * 1200 × 628.
+   *
+   * AUSDRÜCKLICH KEIN FREMDER SERVER. Ein Bild von außen einzubinden
+   * hieße, jedem Werbetreibenden zu erlauben, die Aufrufe seiner
+   * Anzeige selbst zu zählen — er sähe IP-Adresse und Gerät jedes
+   * Nutzers, der die Karte auch nur überscrollt. Genau das ist der
+   * Grund, warum `picsum.photos` aus `next.config.ts` geflogen ist.
+   *
+   * Bilder werden also mitgeliefert. Das ist unbequemer und der
+   * einzige Weg, das Versprechen zu halten: keine Weitergabe an
+   * Werbetreibende.
+   */
+  bild?: string;
 }
 
 /** Nach wie vielen Beiträgen eine Anzeige kommt. */
 export const ABSTAND = 6;
+
+/**
+ * Anzeigen in eigener Sache.
+ *
+ * Der erste Werbeplatz, der kein Platzhalter ist. Eigene Produkte
+ * bewerben ist der ehrlichste Anfang: kein Werbenetz, keine
+ * Nutzerdaten, kein Vertrag — und es zeigt, dass die Plätze
+ * funktionieren, bevor jemand dafür bezahlt.
+ *
+ * Beim Ersetzen durch echte Partner bleibt die Form dieselbe.
+ */
+export const EIGENE_ANZEIGEN: Anzeige[] = [
+  {
+    id: 'eigen-nexusnode',
+    absender: 'Nexus Node',
+    titel: 'Vernetzt. Aber ohne Überblick?',
+    text: 'Ein Adressbuch, das zeigt, wer wen kennt — als Netz, auf der Karte, in Gruppen.',
+    ruf: 'Nexus Node ansehen',
+    ziel: 'https://getnexusnode.github.io/nexus-node-site/',
+    bild: '/werbung/nexus-node.svg',
+  },
+];
 
 export const TEST_ANZEIGEN: Anzeige[] = [
   {
@@ -90,9 +127,18 @@ export const TEST_ANZEIGEN: Anzeige[] = [
  * Beiträgen im Feed wäre eine Anzeige jede sechste Karte — auf einem
  * so leeren Feed wirkt das wie eine Werbeseite mit Beitragsdeko.
  */
+/**
+ * Was tatsächlich ausgespielt wird.
+ *
+ * Die eigenen zuerst: Sie sind echt, die anderen sind Platzhalter.
+ * Sobald es zahlende Partner gibt, verschwinden die Platzhalter aus
+ * dieser Zeile — und nur aus dieser.
+ */
+export const ANZEIGEN: Anzeige[] = [...EIGENE_ANZEIGEN, ...TEST_ANZEIGEN];
+
 export function mitAnzeigen<T>(
   beitraege: T[],
-  anzeigen: Anzeige[] = TEST_ANZEIGEN,
+  anzeigen: Anzeige[] = ANZEIGEN,
 ): Array<{ art: 'beitrag'; wert: T } | { art: 'anzeige'; wert: Anzeige }> {
   const raus: Array<{ art: 'beitrag'; wert: T } | { art: 'anzeige'; wert: Anzeige }> = [];
   if (anzeigen.length === 0 || beitraege.length <= ABSTAND) {

@@ -178,3 +178,50 @@ Chrome DevTools → **Application** → **Service Workers** → *Unregister*,
 dann **Storage** → *Clear site data*, neu laden.
 
 Die ausführliche Erklärung steht in `START.md`.
+
+---
+
+## Zurückrollen, wenn etwas kaputt geht
+
+Drei Wege, vom schnellsten zum gründlichsten. **Der erste braucht
+keinen Code und wirkt in Sekunden.**
+
+### 1. Vercel: die vorherige Fassung wieder scharfschalten
+
+Vercel-Dashboard → Deployments → die letzte funktionierende Zeile →
+`⋯` → **Promote to Production**. Damit ist die alte Fassung sofort
+wieder live. Der Code im Projekt bleibt unberührt — das ist der
+Notausgang, nicht die Reparatur.
+
+### 2. Einen einzelnen Commit rückgängig machen
+
+Jeder Commit hier ist ein abgeschlossener Schritt mit einer
+Begründung in der Nachricht. Deshalb lässt sich einer davon
+herausnehmen, ohne die anderen zu verlieren:
+
+```powershell
+git log --oneline -15          # den richtigen finden
+git revert <commit>            # legt einen neuen Commit an, der ihn aufhebt
+git push
+```
+
+`revert` statt `reset`: Die Geschichte bleibt vollständig, und was
+schon gepusht war, wird niemandem unter den Füßen weggezogen.
+
+### 3. Datenbank
+
+**Migrationen rollen sich nicht von selbst zurück.** Sie sind alle
+wiederholbar (siehe `CLAUDE.md`), aber nicht umkehrbar. Wenn eine
+Migration Schaden anrichtet, ist der Weg zurück eine neue Migration,
+die das Gegenteil tut — nicht das Löschen der alten Datei.
+
+Zwei Migrationen legen bei Fehlen den Feed lahm: `0006` (Kommentare)
+und `0011` (`feed_laden`). Wer eine Fassung zurückrollt, die davor
+lag, muss also nichts an der Datenbank tun — zusätzliche Tabellen
+stören eine ältere Anwendung nicht.
+
+### Was NICHT hilft
+
+`git push --force` auf `main`. Vercel baut dann eine Geschichte, die
+es vorher nie gab, und der Weg zurück ist weg. Wenn `revert` reicht,
+und das tut es fast immer, dann `revert`.

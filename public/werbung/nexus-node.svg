@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 628" width="1200" height="628" role="img" aria-label="Nexus Node">
+  <!--
+    Anzeigenbild für Nexus Node, in eigener Sache.
+
+    Als SVG statt als Foto: skaliert auf jedem Bildschirm, wiegt vier
+    Kilobyte statt zweihundert, und braucht keinen Bilddienst. Farben
+    aus dem dunklen Violett der Anwendung selbst.
+
+    Zum Ersetzen: eine eigene Datei mit demselben Seitenverhältnis
+    (1200 x 628) hier ablegen und den Pfad in werbung.ts anpassen.
+  -->
+  <defs>
+    <radialGradient id="schein" cx="50%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#3a2a6b" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0d0b12" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="kante" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#5b21b6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="628" fill="#0d0b12"/>
+  <rect width="1200" height="628" fill="url(#schein)"/>
+
+  <!-- Das Netz. Kanten zuerst, damit die Knoten darüber liegen. -->
+  <g stroke="url(#kante)" stroke-width="1.6" opacity="0.55" fill="none">
+    <path d="M600 314 L470 210 M600 314 L742 232 M600 314 L512 430 M600 314 L724 424
+             M470 210 L372 268 M742 232 L858 288 M512 430 L418 486 M724 424 L836 466
+             M470 210 L742 232 M512 430 L724 424"/>
+  </g>
+
+  <g fill="#8b5cf6">
+    <circle cx="470" cy="210" r="11"/>
+    <circle cx="742" cy="232" r="11"/>
+    <circle cx="512" cy="430" r="11"/>
+    <circle cx="724" cy="424" r="11"/>
+  </g>
+  <g fill="#4c3a7a">
+    <circle cx="372" cy="268" r="7"/>
+    <circle cx="858" cy="288" r="7"/>
+    <circle cx="418" cy="486" r="7"/>
+    <circle cx="836" cy="466" r="7"/>
+  </g>
+
+  <!-- Der Mittelknoten, hervorgehoben wie in der Anwendung. -->
+  <circle cx="600" cy="314" r="26" fill="#0d0b12" stroke="#a78bfa" stroke-width="3"/>
+  <circle cx="600" cy="314" r="15" fill="#a78bfa"/>
+
+  <text x="600" y="556" text-anchor="middle"
+        font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+        font-size="46" font-weight="600" letter-spacing="0.14em" fill="#efeae1">NEXUS NODE</text>
+</svg>
