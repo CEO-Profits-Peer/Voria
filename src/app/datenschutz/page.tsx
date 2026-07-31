@@ -104,10 +104,16 @@ export default function DatenschutzSeite() {
         Beschwerde bei einer Aufsichtsbehörde.
       </p>
       <p>
-        <strong>Konto löschen:</strong>{' '}
-        <Platzhalter>Weg eintragen, sobald der Knopf gebaut ist</Platzhalter>.
-        Beim Löschen des Kontos werden Reisen, Einträge, Fotos, Beiträge,
-        Kommentare und Hinweise mitgelöscht.
+        <strong>Konto löschen:</strong> in Voria unter <em>Du →
+        Einstellungen → Konto</em>. Dabei werden Reisen, Einträge, Fotos,
+        Beiträge, Kommentare, Zustimmungen, Folgeverbindungen und Hinweise
+        mitgelöscht, ebenso die abgelegten Bilddateien. Der Vorgang läuft
+        sofort und lässt sich nicht rückgängig machen.
+      </p>
+      <p>
+        Bereits abgeschickte <strong>Rückmeldungen</strong> bleiben erhalten,
+        verlieren aber die Verbindung zum Konto — der Inhalt wird für die
+        Fehlerbehebung gebraucht, der Absender nicht mehr.
       </p>
 
       <h2>Speicherdauer</h2>

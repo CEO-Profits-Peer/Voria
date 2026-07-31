@@ -3,6 +3,7 @@ import { fontVariables } from './fonts';
 import { OfflineWaechter } from '@/ui/OfflineWaechter';
 import { Sprachraum } from '@/i18n/Sprachraum';
 import { aktuelleSprache } from '@/i18n/server';
+import { proAussehen } from '@/lib/plan';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -26,10 +27,26 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const sprache = await aktuelleSprache();
+  const [sprache, aussehen] = await Promise.all([aktuelleSprache(), proAussehen()]);
 
+  /*
+   * Design und Material stehen am <html>, weil ein PRO-Design die
+   * Region überall ersetzt — auch dort, wo gar keine steht. Gesetzt
+   * werden sie nur, wenn `istPro()` wahr ist; `proAussehen()` prüft
+   * das und gibt sonst nichts zurück.
+   *
+   * `undefined` statt `false`: ein Attribut, das gar nicht im
+   * Markup steht, kann auch nichts auslösen.
+   */
   return (
-    <html lang={sprache} className={fontVariables} suppressHydrationWarning>
+    <html
+      lang={sprache}
+      className={fontVariables}
+      data-pro-design={aussehen.design ?? undefined}
+      data-pro-material={aussehen.material ? 'an' : undefined}
+      data-pro-bewegung={aussehen.bewegung ? 'an' : undefined}
+      suppressHydrationWarning
+    >
       <head>
         {/*
           Theme vor dem ersten Malen setzen, sonst blitzt beim Laden

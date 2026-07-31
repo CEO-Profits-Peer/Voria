@@ -568,6 +568,41 @@ Die Regel „Ein Theme ändert Atmosphäre, niemals Struktur" bleibt
 unangetastet. Gold in Navigation, Knöpfen oder Rändern wurde
 ausdrücklich verworfen — Bedienelemente bleiben global gleich.
 
+**Nachtrag 31.07., nach dem ersten Entwurf von Claude Design:** Der
+Entwurf schlug vier Designs statt eines vor (Basalt & Messing, Messing
+& Elfenbein, Schiefer & Ader mit vier Aderfarben, Nordlicht &
+Polarnacht). Entschieden: **zuerst nur Nordlicht & Polarnacht bauen**,
+die anderen drei folgen später als Nachschub. PRO soll seinen Wert
+über die Materialschicht und den PDF-Satz beweisen, nicht über die
+Anzahl der Designs — acht Theme-Definitionen zu pflegen, bevor jemand
+bezahlt hat, ist Lagerbestand auf Verdacht.
+
+Ebenfalls entschieden: Das im Entwurf vorgeschlagene bewegte Nordlicht
+(dauerhaft wandernder Hintergrund) bleibt **standardmäßig aus** und
+wird ein eigener Schalter (`pro_bewegung`). Grund: Vorias
+Bewegungsregeln kennen nur an eine Handlung gebundene Übergänge (Log
+400 ms, Feed 200 ms); eine Kategorie „läuft immer, ohne Anlass" gibt es
+bislang nicht, und ein wanderndes Licht hinter dem Text, während
+jemand über etwas Schweres schreibt, passt nicht zu „die App drängt
+nicht". Wer es will, schaltet es ein — sehr langsam, 48 Sekunden je
+Durchlauf, und aus unter `prefers-reduced-motion`.
+
+**Umgesetzt:** Migration `0010_pro_design.sql` (`pro_design`,
+`pro_material`, `pro_bewegung` an `profiles`), Material-Tokens und die
+Nordlicht-Definition in `src/styles/pro-designs.css`, gesetzt am
+`<html>` in `src/app/layout.tsx` über `proAussehen()` in
+`src/lib/plan.ts`. Die Wahl in den Einstellungen zeigt ein echtes
+Blatt statt einer Merkmalsliste — siehe `ProWahl.tsx`.
+
+**Technische Randbedingung, die die Umsetzung geprägt hat:**
+`src/styles/tokens.css` ist auf diesem Rechner schreibgeschützt. Die
+sieben Materialwerte (`--material-foil` und weitere) stehen deshalb in
+`pro-designs.css` statt in Schicht 2 von `tokens.css` — inhaltlich
+richtig verortet wäre Schicht 2, aber die Regel „kein Hex-Wert im
+Komponentencode" ist damit trotzdem eingehalten, weil ein Stylesheet
+kein Komponentencode ist. Wird die Sperre einmal aufgehoben, können die
+Werte nach `tokens.css` wandern.
+
 ---
 
 ### 2026-07-30 · Pro-Vorschlag: zweimal die Woche, als Streifen, nie modal

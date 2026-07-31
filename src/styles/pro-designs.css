@@ -1,0 +1,250 @@
+/* ============================================================
+   Voria PRO — Materialschicht und PRO-Designs
+   ------------------------------------------------------------
+   ZWEI DINGE, DIE UNABHÄNGIG VONEINANDER SIND:
+
+   1. DAS MATERIAL — Goldfolie am Ornament, feineres Papier,
+      Prägung am Titel. Es ersetzt keine Region, es nimmt ihre
+      Farbe auf. Läuft dadurch in allen zwölf Regionen und in
+      jedem PRO-Design. Schalter: [data-pro-material='an'].
+
+   2. EIN PRO-DESIGN — ersetzt die Region vollständig, setzt aber
+      GENAU DIESELBEN ELF SLOTS wie die zwölf Regionen. Es ist
+      kein dreizehnter Ort, sondern eine Werkstatt: keinem Land
+      zugeordnet, in keiner Regionenwahl, gewählt in den
+      Einstellungen. Schalter: [data-pro-design='…'].
+
+   Beide sitzen am <html>, gesetzt in src/app/layout.tsx und nur
+   dann, wenn `istPro()` wahr ist.
+
+   WAS HIER NICHT PASSIEREN DARF: ein Abstand, ein Radius, eine
+   Größe, eine Anordnung. Die Materialschicht besteht ausschließlich
+   aus Farbe, Verlauf, Maske und Textschatten — sie verschiebt
+   nichts. Wer hier `padding` schreibt, bricht die Regel aus
+   CLAUDE.md.
+   ============================================================ */
+
+/* ---------- Die Material-Tokens -----------------------------
+   Sie stehen hier und nicht in tokens.css, aus zwei Gründen:
+   `tokens.css` ist schreibgeschützt, und regions.css bringt ihre
+   Farbwerte genauso selbst mit. Die Regel lautet „kein Hex im
+   KOMPONENTENCODE" — ein Stylesheet, das ein Material definiert,
+   ist genau der richtige Ort dafür.
+
+   Nur die Materialschicht unten liest sie. Kein Knopf, keine
+   Navigation, kein Rand.
+   ------------------------------------------------------------ */
+
+:root {
+  --material-foil: #9b7c3f;
+  --material-foil-high: #e4cd96;
+  --material-foil-low: #5d4620;
+  --material-emboss: #26221e;
+  --material-aurora-a: #9ad9bd;
+  --material-aurora-b: #93c4dd;
+  --material-aurora-c: #b9abda;
+}
+
+:root[data-theme='dark'] {
+  --material-foil: #b1904e;
+  --material-foil-high: #f0dda9;
+  --material-foil-low: #4a3819;
+  --material-emboss: #000000;
+  --material-aurora-a: #3fdc9d;
+  --material-aurora-b: #2eb4c9;
+  --material-aurora-c: #8a6fd8;
+}
+
+/* ============================================================
+   1 · DAS MATERIAL
+   ============================================================ */
+
+/*
+ * Die Folie ist kein eigener Farbton, sondern eine Mischung aus
+ * Messing und der Ornamentfarbe der jeweiligen Region. Deshalb
+ * trägt dasselbe Ornament in Marokko einen anderen Ton als in
+ * Norwegen — ohne dass es zwölf Folien braucht.
+ *
+ * `color-mix(in oklab, …)`: in oklab, weil Mischen in sRGB durch
+ * einen grauen Zwischenwert läuft und die Folie dabei schlammig
+ * wird.
+ */
+[data-pro-material='an'] .ornament-divider {
+  background-color: color-mix(in oklab, var(--material-foil) 72%, var(--ornament-tint));
+  background-image: linear-gradient(
+    100deg,
+    var(--material-foil-low) 0%,
+    var(--material-foil) 22%,
+    var(--material-foil-high) 38%,
+    var(--material-foil) 54%,
+    var(--material-foil-low) 78%,
+    var(--material-foil) 100%
+  );
+  /* Der Glanz ist der ganze Unterschied zwischen Gold und
+     gelber Linie. Die Maske bleibt die der Region. */
+  opacity: 0.92;
+}
+
+[data-pro-material='an'] .ornament-corner {
+  background-color: color-mix(in oklab, var(--material-foil) 72%, var(--ornament-tint));
+  background-image: linear-gradient(
+    135deg,
+    var(--material-foil-high) 0%,
+    var(--material-foil) 40%,
+    var(--material-foil-low) 100%
+  );
+  opacity: 0.78;
+}
+
+/*
+ * Feineres Papier: dieselbe Textur, feiner aufgelöst und schwächer.
+ * `background-size` ist hier ausdrücklich KEIN Layoutmaß — es
+ * skaliert ein Muster, verschiebt aber nichts.
+ */
+[data-pro-material='an'] .region-surface::before {
+  opacity: calc(var(--texture-opacity) * 0.62);
+  background-size: calc(var(--texture-scale) * 0.58);
+}
+
+[data-pro-material='an'] .region-surface[data-flaeche='offen']::before {
+  opacity: calc(var(--texture-opacity) * 1.5);
+}
+
+/*
+ * Die Prägung. Zwei Schatten: einer hell nach oben, einer dunkel
+ * nach unten — so entsteht der Eindruck, der Titel sei in das
+ * Papier gedrückt. `text-shadow` verschiebt kein Layout.
+ *
+ * Nur auf Titeln INNERHALB einer Regionenfläche. Überschriften der
+ * Bedienoberfläche bleiben unberührt, sonst wäre es Dekoration an
+ * einer Stelle, an der bedient wird.
+ */
+[data-pro-material='an'] .region-surface h1,
+[data-pro-material='an'] .region-surface h2,
+[data-pro-material='an'] .region-surface h3 {
+  text-shadow:
+    0 1px 0 color-mix(in oklab, var(--surface-raised) 70%, transparent),
+    0 -1px 0 color-mix(in oklab, var(--material-emboss) 12%, transparent);
+}
+
+/* ============================================================
+   2 · NORDLICHT & POLARNACHT
+   Schneekorn und kaltes Weiß im Hellen, Polarnacht im Dunkeln.
+   Über beidem steht das Licht.
+   ------------------------------------------------------------
+   Setzt genau die elf Slots. Die Spezifität ist mit Absicht hoch:
+   `[data-region='x']` wiegt (0,1,0), die dunkle Fassung davon
+   (0,2,0). Ein Design muss beide schlagen, deshalb `:root[…] […]`.
+   ============================================================ */
+
+:root[data-pro-design='nordlicht'],
+:root[data-pro-design='nordlicht'] [data-region] {
+  --accent-primary: #3c6f7e;
+  --accent-soft: #e7eff2;
+  --canvas-tint: #f7f9fa;
+  --raised-tint: #fdfefe;
+  /* Schneekorn: feines, gerichtetes Rauschen. Graustufig, wie es
+     die Slot-Regel verlangt — die Farbe kommt aus den Tokens. */
+  --texture-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23t)'/%3E%3C/svg%3E");
+  --texture-opacity: 0.03;
+  --texture-scale: 280px;
+  --texture-blend: multiply;
+  /* Eine Doppellinie, ungleich stark — wie ein Horizont über Eis. */
+  --ornament-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='3'%3E%3Cg fill='%23000'%3E%3Crect width='56' height='1'/%3E%3Crect width='56' height='0.5' y='2' opacity='0.5'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='44' height='1'/%3E%3Crect x='0' y='0' width='1' height='44'/%3E%3Crect x='0' y='7' width='30' height='0.5' opacity='0.6'/%3E%3Crect x='7' y='0' width='0.5' height='30' opacity='0.6'/%3E%3C/g%3E%3C/svg%3E");
+  --ornament-tint: #8fa6b0;
+  --font-display: var(--font-cormorant, Georgia), Georgia, serif;
+}
+
+:root[data-theme='dark'][data-pro-design='nordlicht'],
+:root[data-theme='dark'][data-pro-design='nordlicht'] [data-region] {
+  --accent-primary: #6fb0c0;
+  --accent-soft: #16262c;
+  --canvas-tint: #0d1218;
+  --raised-tint: #141b23;
+  --texture-opacity: 0.05;
+  --texture-blend: screen;
+  --ornament-tint: #4a6270;
+}
+
+/* ---------- Das Licht ----------------------------------------
+   KEINE GRAFIK, SONDERN EINE MATERIALSCHICHT. Drei weiche
+   Radialverläufe auf `.region-surface::after` — dadurch braucht
+   es keine einzige Änderung an einer Komponente. `::before` trägt
+   schon die Textur, `::after` war frei.
+
+   `z-index: -1` legt es hinter den Text; `isolation: isolate` auf
+   .region-surface hält die Mischung in der Fläche und lässt sie
+   nicht auf die Seite darunter durchschlagen.
+   ------------------------------------------------------------- */
+
+:root[data-pro-design='nordlicht'] .region-surface::after {
+  content: '';
+  position: absolute;
+  inset: -20% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      42% 58% at 22% 8%,
+      color-mix(in oklab, var(--material-aurora-a) 55%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      38% 52% at 62% 0%,
+      color-mix(in oklab, var(--material-aurora-b) 48%, transparent) 0%,
+      transparent 72%
+    ),
+    radial-gradient(
+      46% 44% at 88% 12%,
+      color-mix(in oklab, var(--material-aurora-c) 40%, transparent) 0%,
+      transparent 75%
+    );
+  background-repeat: no-repeat;
+  background-size: 140% 120%, 130% 110%, 150% 100%;
+  /* Im Hellen legt sich das Licht auf das Papier, im Dunkeln
+     leuchtet es daraus hervor. Derselbe Verlauf, zwei Rollen. */
+  mix-blend-mode: multiply;
+  opacity: 0.42;
+}
+
+:root[data-theme='dark'][data-pro-design='nordlicht'] .region-surface::after {
+  mix-blend-mode: screen;
+  opacity: 0.3;
+}
+
+/* ---------- Die Bewegung, standardmäßig aus -------------------
+   Ein dauerhaft wanderndes Licht hinter dem Text ist das eine,
+   was Voria sich nicht selbstverständlich leisten sollte: Es
+   kostet auf dem Handy Strom, und es bewegt sich, während jemand
+   über etwas Schweres schreibt. Deshalb ein eigener Schalter,
+   Voreinstellung AUS.
+
+   Sehr langsam — 48 Sekunden je Durchlauf. Wer die Bewegung
+   bemerkt, während er liest, hat eine zu schnelle gebaut.
+   ------------------------------------------------------------- */
+
+:root[data-pro-bewegung='an'][data-pro-design='nordlicht'] .region-surface::after {
+  animation: pro-nordlicht 48s ease-in-out infinite alternate;
+}
+
+@keyframes pro-nordlicht {
+  from {
+    background-position:
+      0% 0%,
+      0% 0%,
+      0% 0%;
+  }
+  to {
+    background-position:
+      26% 0%,
+      -20% 0%,
+      14% 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-pro-bewegung='an'][data-pro-design='nordlicht'] .region-surface::after {
+    animation: none;
+  }
+}

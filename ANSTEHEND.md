@@ -39,8 +39,11 @@ npm run build
    Die Middleware liest `profiles.startbereich`, um zu entscheiden,
    wohin ein Angemeldeter von `/` aus geht. Fehlt die Spalte, landen
    alle im Log — nicht kaputt, aber nicht das Gewollte.
+5. `0010_pro_design.sql` — **blockierend für die Einstellungsseite.**
+   Drei neue Spalten für Voria PRO. Fehlen sie, wirft das Laden der
+   Einstellungen einen Fehler, sichtbar nur in der Serverkonsole.
 
-Alle vier prüfen sich am Ende selbst und brechen mit einer Meldung ab,
+Alle fünf prüfen sich am Ende selbst und brechen mit einer Meldung ab,
 wenn etwas fehlt.
 
 Danach im Browser durchgehen, in dieser Reihenfolge:
@@ -60,12 +63,18 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Keine Scrollleiste | Feed betreten und wieder verlassen | Leiste im Feed weg, danach wieder da, **und die Seite ruckt seitlich nicht** |
 | Anderer Tag | Reiseseite, unter der Tagesliste | Datumsfeld öffnet sich, Sprung auf den gewählten Tag |
 | Suchtreffer | `/suche` → Tage | Gesuchtes Wort im Auszug farbig hinterlegt |
+| **Titel** | Tag in **beiden** Modi | Sieht man, dass dort ein Titel hingehört? Wird er in „Fläche" gespeichert? Steht er danach in der Tagesliste? |
 | Textblöcke | Tag → Fläche → Plus → Text | Tippen, neu laden, verschieben, zweiter Block, löschen |
 | Profilbild | `/du/bearbeiten` | Hochladen, erscheint es in Feed, Suche, Seitenleiste? |
 | Personensuche | `/suche` → Reiter „Leute" | `qualle`, `lore`, Folgen-Knopf |
+| **Konto löschen** | Wegwerfkonto anlegen, Foto hochladen, Tag teilen, dann löschen | Falscher Name → abgelehnt? Danach: Konto weg, **Datei im Bucket weg**, geteilter Beitrag weg? |
 | Einstieg | Abmelden, anmelden | Landet man im **Feed**? Nach Umstellung im Log? Bei Stillem Modus im Log? |
 | Reiterleiste | Feed, nach unten lesen, dann leicht hoch | Verschwindet sie beim Lesen, kommt sie beim Hochscrollen zurück, **ohne zu flackern**? |
-| Rückmeldung | `/rueckmeldung` → absenden | Kommt die Zeile in Supabase an, mit Pfad? |
+| Rückmeldung | `/du` → Zeile unten → `/rueckmeldung` → absenden | Findet man die Seite? Kommt die Zeile in Supabase an, mit Pfad? |
+| PRO-Material | Einstellungen → Voria PRO (`istPro()` kurz auf `true`) | Goldfolie am Ornament **in mehreren Regionen** — nimmt sie deren Farbe auf? |
+| PRO-Design | Einstellungen → Nordlicht wählen | Elf Slots gesetzt, **kein Layout verschiebt sich**, Titel geprägt |
+| Licht-Bewegung | Nordlicht wählen → „Das Licht bewegen" an | Sehr langsam, `prefers-reduced-motion` schaltet sie ab |
+| PRO nach Ablauf | Design wählen, dann `istPro()` zurück auf `false` | Aussehen verschwindet **sofort**, die Wahl bleibt aber in der Datenbank stehen |
 | Rechtsseiten | `/impressum`, `/datenschutz` **abgemeldet** | Ohne Anmeldung erreichbar? Warnkasten sichtbar? |
 | Hinweise | Zweites Konto: folgen, kommentieren, Tag teilen | Kommen alle vier Arten an? Punkt an der Glocke? |
 | Kein Selbstlärm | Eigenen Beitrag selbst kommentieren | Es darf **kein** Hinweis entstehen |
@@ -85,24 +94,18 @@ Kommt beim Bauen etwas hoch, ist es meins.
 
 **Erledigt:** doppelter „Heute schreiben" · Bearbeiten-Seite auf i18n ·
 vergangene Tage schreiben · Jahres-Gruppierung · Suchtreffer
-hervorheben · Doppelklick markiert keine Bilder mehr. Einzelheiten in
-`FORTSCHRITT.md`.
+hervorheben · Doppelklick markiert keine Bilder mehr · Konto löschen ·
+`picsum.photos` entfernt. Einzelheiten in `FORTSCHRITT.md`.
 
 **Offen:**
 
-1. **Konto löschen** — technisch räumt `on delete cascade` schon alles
-   weg, es fehlt nur der Knopf. Brauchst du für die
-   Datenschutzerklärung.
-2. **`picsum.photos` aus `next.config.ts` entfernen** — steht dort nur
-   für die Testdaten. Vor dem echten Start raus, sonst darf jeder
-   Bilder von dort in Voria einbetten.
-3. **Region auf geteilten Seiten** — `trip_countries_all` verlangt
+1. **Region auf geteilten Seiten** — `trip_countries_all` verlangt
    `t.user_id = auth.uid()`. Nichtangemeldete sehen `/b/<id>` deshalb
    ohne Regionen-Theme. Kosmetisch, aber falsch.
-4. **Zurück-Knopf auf fremden Profilen** — `/u/[name]` hat keinen. Man
+2. **Zurück-Knopf auf fremden Profilen** — `/u/[name]` hat keinen. Man
    kommt nur über die Browser-Taste zurück, und auf dem Handy als PWA
    gibt es die nicht sichtbar.
-5. **Kurzinfo beim Überfahren des Namens im Feed** — Follower, Anzahl
+3. **Kurzinfo beim Überfahren des Namens im Feed** — Follower, Anzahl
    Beiträge, Bio. Braucht eine eigene Abfrage; verzögert laden, sonst
    schickt jedes Überfahren eine Anfrage. Am Handy gibt es kein Hover —
    dort ersatzlos.
@@ -171,6 +174,45 @@ verschwindet stattdessen beim nächsten Seitenwechsel.
 
 Trägt jetzt Erwähnungen mit `@` — das ist der nächste Baustein.
 
+### Voria PRO: Materialschicht und erstes Design — GEBAUT, ungeprüft
+
+Umgesetzt nach dem Entwurf von Claude Design (30./31.07.) und den
+Festlegungen dazu in `docs/ENTSCHEIDUNGEN.md`. Migration
+`0010_pro_design.sql`.
+
+**Zwei Ebenen, unabhängig voneinander:**
+
+* **Das Material** — Goldfolie am `.ornament-divider` und an
+  `.ornament-corner`, feineres Papier, geprägte Titel. Nimmt die Farbe
+  der jeweiligen Region über `color-mix(in oklab, …)` auf, statt sie zu
+  ersetzen — läuft dadurch in allen zwölf Regionen ohne eine einzige
+  regionsspezifische Zeile.
+* **Nordlicht & Polarnacht** — das erste von vier im Entwurf
+  vorgeschlagenen Designs, die anderen drei bewusst zurückgestellt
+  (Begründung in `ENTSCHEIDUNGEN.md`). Setzt dieselben elf Slots wie
+  jede Region. Das Licht selbst ist keine Grafik, sondern drei weiche
+  Verläufe auf `.region-surface::after` — `::before` trägt schon die
+  Textur, `::after` war frei, deshalb keine einzige Änderung an einer
+  Komponente nötig.
+
+**Wo die Vorlage vom Prompt abwich, und warum das richtig war:**
+
+* **Die Bewegung ist standardmäßig aus**, eigener Schalter
+  `pro_bewegung`. Ein dauerhaft wanderndes Licht auf einer Schreibfläche
+  passt nicht zu „die App drängt nicht" und kostet auf dem Handy
+  ständig Strom.
+* **`tokens.css` ist schreibgeschützt.** Die sieben Materialwerte
+  stehen deshalb in der neuen `pro-designs.css` statt in Schicht 2 von
+  `tokens.css`. Die Regel „kein Hex im Komponentencode" bleibt
+  trotzdem eingehalten.
+* **Zwei fast identische Schalterzeilen** (eine für Hinweise, eine für
+  PRO) wurden zu einer gemeinsamen `src/ui/Schalterzeile.tsx`
+  zusammengelegt, bevor sie auseinanderlaufen konnten.
+
+**Was noch fehlt, bevor das online geht:** die Preisseite (zwei
+Fassungen liegen vor, siehe unten), der Streifen beim Exportieren und
+an der Fotogrenze, und drei weitere Designs als Nachschub.
+
 ### Repost
 
 Kommt. Offen bleiben zwei Fragen, die das Ergebnis ändern:
@@ -193,6 +235,23 @@ Setzt Benachrichtigungen voraus.
 ---
 
 ## D. Größer, Entscheidung nötig (du)
+
+### Preisseite — zwei Fassungen liegen vor
+
+Aus dem Entwurf von Claude Design: Fassung A führt mit der
+PRO-Vorschau und nennt den Preis sofort danach knapp; Fassung B ist
+als Brief geschrieben, der Preis steht mitten im Satz. Mein Rat war
+Fassung A — sie zeigt zuerst und zählt dann auf, statt den Preis zu
+verstecken —, aber das ist deine Entscheidung, nicht meine. Noch nicht
+gebaut.
+
+Zwei Dinge müssen vorher stimmen, unabhängig von der Fassung: Die
+Zeile über gesicherte Originale in voller Auflösung darf erst online,
+sobald diese Funktion existiert — heute liegt nur die Anzeigefassung
+in der Cloud. Und die Spaltennamen im Entwurf schwankten zwischen
+`pro_theme` und `pro_design`; umgesetzt ist `pro_design` (der Name
+`theme` ist im Projekt schon für die Regionen belegt), das gehört bei
+der Preisseite berücksichtigt.
 
 ### Beitrag direkt erstellen
 
@@ -231,11 +290,46 @@ Dieselbe Regel ist der Grund, warum `/b/<id>` ohne Regionen-Theme
 erscheint (Block B, Punkt 3) — es lohnt sich, beides zusammen zu
 entscheiden.
 
-### Gemeinsame Reisen
+### Gemeinsame Reisen — hochgestuft, weil ausdrücklich gewünscht
 
-Entschieden, nicht angefangen. Der Eingriff mit der größten Reichweite:
-alle Zugriffsregeln auf `trips`, `entries` und `blocks` hängen heute an
-`user_id = auth.uid()`.
+Entschieden, nicht angefangen, und am 31.07. noch einmal bekräftigt
+(„fände ich mega"). Bleibt trotzdem der Eingriff mit der größten
+Reichweite in diesem Dokument: **alle** Zugriffsregeln auf `trips`,
+`entries` und `blocks` hängen heute an `user_id = auth.uid()`.
+
+Was es braucht:
+
+* Tabelle `trip_members` (trip_id, user_id, rolle) mit RLS
+* Jede Regel auf `trips`, `entries`, `blocks` und `photos` umschreiben
+  von „mir gehörend" auf „mir gehörend **oder** ich bin Mitreisender"
+* Einladung — Verweis oder Benutzername, nicht E-Mail
+* Entscheidung: Dürfen Mitreisende fremde Tage **bearbeiten** oder nur
+  eigene beitragen? Das ändert das Datenmodell nicht, aber jede Regel.
+
+Nicht hinter PRO. Ein Mitreisender, der nicht zahlt, darf nicht der
+Grund sein, warum eine gemeinsame Reise nicht geht.
+
+### Instagram-Anregungen — was davon zu Voria passt
+
+Angesehen am 31.07.: Feed mit „Für dich"/„Gefolgt", Reels, Nachrichten.
+
+**Übernommen:** die zwei Reiter — steht bereits, siehe oben. Dass
+Instagram dieselbe Lösung gewählt hat, bestätigt die Entscheidung
+gegen ein verstecktes Menü.
+
+**Nachrichten: ja, aber nicht bald.** Direktnachrichten sind ein
+eigenes Produkt — Tabelle, Echtzeit, Ungelesenstände, Melden und
+Blockieren. Ohne Blockieren darf es gar nicht erst online gehen.
+Realistisch nach dem ersten Geld, nicht davor.
+
+**Reels: nein.** Video passt nicht zu Voria — weder zum Versprechen
+(„nachlesen, wie es sich angefühlt hat") noch zu den Kosten. Bewegtbild
+sprengt jede Speicher- und Egress-Rechnung, und die eiserne Regel „nur
+die Anzeigefassung in der Cloud" ließe sich für Video nicht halten.
+Ein Reel ist außerdem kein Tagebucheintrag.
+
+**Zwei Inhaltsarten (Post neben Reel): nein**, aus demselben Grund wie
+beim direkten Beitragseditor — ein Beitrag ist ein geteilter Tag.
 
 ---
 

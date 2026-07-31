@@ -224,6 +224,24 @@
   color: var(--content-primary);
 }
 
+/* Verweis, kein Knopf — führt zu einer Seite, tut nichts direkt.
+   Trefferfläche über min-height auf 44 px, sichtbar bleibt es klein. */
+.fusszeile-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: var(--space-24);
+  color: var(--content-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fusszeile-link:hover {
+  color: var(--content-primary);
+}
+
 .abmelden button {
   height: 34px;
   padding: 0 14px;

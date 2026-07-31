@@ -100,6 +100,7 @@ export const en: Woerterbuch = {
     modusFrei: 'Canvas',
     zurFreienFlaeche: 'Switch to the open space',
     zurRuhigenSeite: 'Switch to the quiet page',
+    titelPlatzhalter: 'Title',
     titelDesTages: 'Title of the day',
     wasHeutePassiertIst: 'What happened today',
     fotoWeg: 'Or start with a photo',
@@ -218,6 +219,42 @@ export const en: Woerterbuch = {
   },
 
   rechtliches: { datenschutz: 'Privacy' },
+
+  pro: {
+    titel: 'Voria PRO',
+    vorschauZeile:
+      'PRO changes not a single measurement. It is the same sheet, just finer: gold foil on the ornament, denser paper, an embossed title.',
+    designTitel: 'The design',
+    designRegion: 'Your region',
+    designRegionZeile: 'Everything stays as it is today',
+    designNordlicht: 'Northern Light & Polar Night',
+    designNordlichtZeile: 'Snow grain, cold light',
+    materialSchalter: 'PRO material',
+    materialZeile:
+      'Gold foil, finer paper, embossing. If you prefer it plain, switch it off — you paid for more than the looks.',
+    bewegungSchalter: 'Let the light drift',
+    bewegungZeile:
+      'Very slowly, about a minute per pass. Off by default, because nothing needs to move on a page you write on.',
+    blattMeta: '12 April 2026 · Chefchaouen, Morocco',
+    blattTitel: 'The bus never came',
+    blattText:
+      'So we stayed. After an hour the woman from the kiosk brought us tea without being asked. The square lay in shade, and at some point it was evening.',
+  },
+
+  konto: {
+    titel: 'Account',
+    loeschen: 'Delete account',
+    wasPassiert:
+      'This removes every trip, day, photo, shared post and comment. It cannot be undone, and none of it can be brought back. If you want to keep your entries, export them first.',
+    tippeNamen: 'Type {name} to confirm',
+    endgueltig: 'Delete permanently',
+    abbrechen: 'Never mind',
+    laeuft: 'Deleting …',
+    nameFalsch: 'That name does not match.',
+    dateienFehler:
+      'Your photos could not be deleted, so the account is still here. Please try again later.',
+    fehler: 'That did not work. The account still exists.',
+  },
 
   rueckmeldung: {
     titel: 'Feedback',

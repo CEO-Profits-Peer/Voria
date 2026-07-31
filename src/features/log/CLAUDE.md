@@ -14,6 +14,8 @@ Das Herz von Voria. Reisen, Tage, Blöcke, beide Schreibmodi, Fotos.
 | `OpenSpace.tsx` | Die freie Fläche mit Aufheben und Ablegen |
 | `FotoWaehler.tsx` | Auswahl, EXIF, Komprimierung, Upload |
 | `FotoBild.tsx` | Ein Foto mit ruhigem Ladezustand |
+| `TagLeiste.tsx` | Foto und Sichtbarkeit — gilt für beide Modi |
+| `Tagestitel.tsx` | Der Titel — gilt für beide Modi |
 | `datum.ts` | Drei Datumshilfen, bewusst ohne Bibliothek |
 
 ## Regeln hier
@@ -26,6 +28,16 @@ Open Space das Layout. Niemals zwei Strukturen bauen.
 Keine Rückmeldung, kein Zeichenzähler, keine Wortzahl.
 
 **Keine Gamification.** Kein Streak, kein Fortschritt, keine Ermahnung.
+
+**Was dem TAG gehört, gehört keinem Modus.** Titel, Ort, Foto und Sichtbarkeit
+sind Eigenschaften des Tages und müssen in „Seite" **und** „Fläche" erreichbar
+sein. Das ist dreimal schiefgegangen — Sichtbarkeit, Foto-Knopf, Titel. Wer
+etwas Neues an den Tag hängt: eine Ebene höher bauen, nicht in einen Modus.
+
+**Ruhe heißt nicht unsichtbar.** Der Titel trug `placeholder=""` plus
+`::placeholder { color: transparent }`. Gemeint war „keine leere Zeile", das
+Ergebnis war ein Feld, das niemand finden konnte. Zurückhaltend gestalten ja —
+unauffindbar nein.
 
 **Griffe im Open Space:** 26 px sichtbar, 44 px Trefferfläche über `::after`.
 Drehen und Skalieren sind bewusst Zwei-Hand-Gesten — siehe ENTSCHEIDUNGEN.md.

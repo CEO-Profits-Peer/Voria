@@ -31,6 +31,15 @@ export interface Storage {
   /** Öffentliche Leseadresse für einen Schlüssel. */
   publicUrl(key: string): string;
   remove(key: string): Promise<void>;
+  /**
+   * Alles unter einem Präfix löschen — für das Löschen eines Kontos.
+   *
+   * Die Datenbank räumt per `on delete cascade` ihre Zeilen weg, aber
+   * niemand räumt die Dateien: Ein gelöschtes Konto ließe sonst seine
+   * Fotos im Speicher zurück, dauerhaft und öffentlich lesbar. Genau
+   * das darf beim Löschen nicht passieren.
+   */
+  removeAllUnder(prefix: string): Promise<number>;
 }
 
 const DRIVER = (process.env.STORAGE_DRIVER ?? 'supabase') as StorageDriver;
@@ -89,6 +98,57 @@ const supabaseStorage: Storage = {
     const { error } = await supabase.storage.from(SUPABASE_BUCKET).remove([key]);
     if (error) throw new Error(`Löschen fehlgeschlagen: ${error.message}`);
   },
+
+  /*
+   * Supabase Storage kennt keine Ordner — was wie einer aussieht, ist
+   * ein Namensbestandteil. `list` gibt deshalb je Ebene zurück, und
+   * ein Eintrag ohne `id` ist kein Objekt, sondern ein Präfix.
+   * Deswegen wird hier von Hand abgestiegen.
+   *
+   * Die Ebenen unter `fotos/<nutzer>/` sind bekannt und flach:
+   * ein Ordner je Jahr, dazu `thumbs` und `avatar`. Die Rekursion
+   * bekommt trotzdem eine Tiefengrenze — eine Endlosschleife beim
+   * Kontolöschen wäre ein besonders unangenehmer Ort dafür.
+   */
+  async removeAllUnder(prefix) {
+    const { createServiceClient } = await import('./supabase-server');
+    const supabase = createServiceClient();
+
+    const sammeln = async (pfad: string, tiefe: number): Promise<string[]> => {
+      if (tiefe > 4) return [];
+
+      const { data, error } = await supabase.storage
+        .from(SUPABASE_BUCKET)
+        .list(pfad, { limit: 1000 });
+
+      if (error) throw new Error(`Auflisten fehlgeschlagen: ${error.message}`);
+      if (!data) return [];
+
+      const schluessel: string[] = [];
+      for (const eintrag of data) {
+        const voll = `${pfad}/${eintrag.name}`;
+        if (eintrag.id) schluessel.push(voll);
+        else schluessel.push(...(await sammeln(voll, tiefe + 1)));
+      }
+      return schluessel;
+    };
+
+    const alle = await sammeln(prefix, 0);
+    if (alle.length === 0) return 0;
+
+    /*
+     * In Blöcken löschen. Ein Aufruf mit tausenden Schlüsseln läuft
+     * in die Grenze der Anfrage, und dann bleibt alles liegen.
+     */
+    for (let i = 0; i < alle.length; i += 100) {
+      const { error } = await supabase.storage
+        .from(SUPABASE_BUCKET)
+        .remove(alle.slice(i, i + 100));
+      if (error) throw new Error(`Löschen fehlgeschlagen: ${error.message}`);
+    }
+
+    return alle.length;
+  },
 };
 
 // ---------------------------------------------------------------
@@ -106,6 +166,9 @@ const r2Storage: Storage = {
     return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${key}`;
   },
   async remove() {
+    throw new Error('R2 ist noch nicht eingerichtet.');
+  },
+  async removeAllUnder() {
     throw new Error('R2 ist noch nicht eingerichtet.');
   },
 };

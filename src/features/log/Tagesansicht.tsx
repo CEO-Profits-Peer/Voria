@@ -17,6 +17,7 @@ import type { Tag } from './queries';
 import { modusWechseln } from './actions';
 import { RuhigerModus } from './RuhigerModus';
 import { OpenSpace } from './OpenSpace';
+import { Tagestitel } from './Tagestitel';
 import { TagLeiste } from './TagLeiste';
 import { FotoWaehler } from './FotoWaehler';
 import { TeilenDialog } from './TeilenDialog';
@@ -83,11 +84,23 @@ export function Tagesansicht({
           aufFotoOeffnen={(i) => setVollansicht(i)}
         />
       ) : (
-        <OpenSpace
-          eintragId={tag.id}
-          bloecke={tag.bloecke}
-          aufFotoWaehlen={() => setFotoOffen(true)}
-        />
+        <>
+          {/*
+            Der Titel gehört dem Tag, nicht einem Modus — dieselbe
+            Lehre wie bei Foto und Sichtbarkeit. Auf der freien Fläche
+            steht er über dem Schuhkarton statt darin: Die Fläche
+            selbst fängt jeden Zeigerdruck ab, um Blöcke abzulegen,
+            und ein Eingabefeld mittendrin würde damit streiten.
+          */}
+          <div className="flaeche-titel">
+            <Tagestitel eintragId={tag.id} titel={tag.titel} dicht />
+          </div>
+          <OpenSpace
+            eintragId={tag.id}
+            bloecke={tag.bloecke}
+            aufFotoWaehlen={() => setFotoOffen(true)}
+          />
+        </>
       )}
       </div>
 
@@ -119,6 +132,12 @@ export function Tagesansicht({
       <style jsx>{`
         .tagblatt {
           min-height: 100%;
+        }
+        /* Der Titel über der freien Fläche. Sitzt an derselben Kante
+           wie die Blöcke darunter, damit er zum Schuhkarton gehört
+           und nicht darüber schwebt. */
+        .flaeche-titel {
+          padding: var(--space-8) var(--space-16) var(--space-12);
         }
         .kopf {
           display: flex;

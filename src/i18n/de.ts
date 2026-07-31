@@ -100,6 +100,7 @@ export const de = {
     modusFrei: 'Fläche',
     zurFreienFlaeche: 'Zur freien Fläche wechseln',
     zurRuhigenSeite: 'Zur ruhigen Seite wechseln',
+    titelPlatzhalter: 'Titel',
     titelDesTages: 'Titel des Tages',
     wasHeutePassiertIst: 'Was heute passiert ist',
     fotoWeg: 'Oder fang mit einem Foto an',
@@ -220,6 +221,42 @@ export const de = {
   },
 
   rechtliches: { datenschutz: 'Datenschutz' },
+
+  pro: {
+    titel: 'Voria PRO',
+    vorschauZeile:
+      'PRO ändert kein einziges Maß. Es ist dasselbe Blatt, nur feiner ausgeführt: eine Goldfolie am Ornament, ein dichteres Papier, eine Prägung am Titel.',
+    designTitel: 'Das Design',
+    designRegion: 'Deine Region',
+    designRegionZeile: 'Alles bleibt, wie es heute ist',
+    designNordlicht: 'Nordlicht & Polarnacht',
+    designNordlichtZeile: 'Schneekorn, kaltes Licht',
+    materialSchalter: 'Material von PRO',
+    materialZeile:
+      'Goldfolie, feineres Papier, Prägung. Wenn du es schlicht magst, schalte es aus — bezahlt hast du für mehr als das Aussehen.',
+    bewegungSchalter: 'Das Licht bewegen',
+    bewegungZeile:
+      'Sehr langsam, knapp eine Minute je Durchlauf. Standardmäßig aus, weil auf einer Schreibfläche nichts wandern muss.',
+    blattMeta: '12. April 2026 · Chefchaouen, Marokko',
+    blattTitel: 'Der Bus kam nicht',
+    blattText:
+      'Also blieben wir. Die Frau vom Kiosk brachte uns nach einer Stunde Tee, ohne zu fragen. Der Platz lag im Schatten, und irgendwann war es Abend.',
+  },
+
+  konto: {
+    titel: 'Konto',
+    loeschen: 'Konto löschen',
+    wasPassiert:
+      'Damit verschwinden alle Reisen, Tage, Fotos, geteilten Beiträge und Kommentare. Das lässt sich nicht rückgängig machen, und ich kann nichts davon zurückholen. Wenn du deine Einträge behalten willst, exportiere sie vorher.',
+    tippeNamen: 'Tippe {name}, um es zu bestätigen',
+    endgueltig: 'Endgültig löschen',
+    abbrechen: 'Doch nicht',
+    laeuft: 'Wird gelöscht …',
+    nameFalsch: 'Der Name stimmt nicht überein.',
+    dateienFehler:
+      'Deine Fotos ließen sich nicht löschen, deshalb ist auch das Konto geblieben. Bitte versuch es später noch einmal.',
+    fehler: 'Das hat nicht geklappt. Das Konto besteht weiter.',
+  },
 
   rueckmeldung: {
     titel: 'Rückmeldung',

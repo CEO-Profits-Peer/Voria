@@ -65,6 +65,13 @@ export default async function DuSeite() {
         </span>
       </Link>
 
+      {/* Unauffällig, neben dem Abmelden — eine Rückmeldung ist kein
+          Hauptweg durch die App, aber sie soll jeder finden, ohne
+          danach suchen zu müssen. */}
+      <Link href="/rueckmeldung" className="fusszeile-link">
+        {t.rueckmeldung.titel}
+      </Link>
+
       <form action={abmelden} className="abmelden">
         <button type="submit">{t.auth.abmelden}</button>
       </form>

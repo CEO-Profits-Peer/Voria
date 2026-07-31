@@ -16,10 +16,20 @@ import { useT } from '@/i18n/Sprachraum';
 import { SprachWahl } from './SprachWahl';
 import { HinweisSchalter, type SchalterStand } from '@/features/hinweise/HinweisSchalter';
 import { StartWahl } from '@/features/hinweise/StartWahl';
+import { KontoLoeschen } from './KontoLoeschen';
+import { ProWahl, type ProStand } from './ProWahl';
 
 type Modus = 'light' | 'dark' | 'system';
 
-export function Einstellungen({ hinweise }: { hinweise: SchalterStand }) {
+export function Einstellungen({
+  hinweise,
+  benutzername,
+  pro,
+}: {
+  hinweise: SchalterStand;
+  benutzername: string;
+  pro: ProStand;
+}) {
   const { t } = useT();
   const [modus, setModus] = useState<Modus>('system');
   const [vorschau, setVorschau] = useState<Region>('maghreb');
@@ -112,6 +122,19 @@ export function Einstellungen({ hinweise }: { hinweise: SchalterStand }) {
             <div className="ornament-divider" />
           </div>
         </div>
+      </section>
+
+      <section>
+        <h2>{t.pro.titel}</h2>
+        <ProWahl stand={pro} />
+      </section>
+
+      {/* Ganz unten und ohne Alarmfarbe. Löschen ist ein legitimer
+          Vorgang, kein Unfall, den es zu verhindern gilt — aber es
+          soll auch niemand versehentlich darüber stolpern. */}
+      <section>
+        <h2>{t.konto.titel}</h2>
+        <KontoLoeschen benutzername={benutzername} />
       </section>
 
       <style jsx>{`

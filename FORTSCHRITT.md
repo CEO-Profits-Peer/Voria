@@ -24,7 +24,7 @@ sichtbar wurde.
 
 ---
 
-## Behoben — 13 Fehler
+## Behoben — 14 Fehler
 
 | # | Fehler | Woran er sichtbar wurde |
 |---|---|---|
@@ -41,6 +41,7 @@ sichtbar wurde.
 | 11 | Sichtbarkeit nur im ruhigen Modus änderbar | Deine Meldung |
 | 12 | Foto-Knopf verschwand nach dem ersten Satz (`istLeer`) | Deine Meldung |
 | 13 | Doppelklick im Feed markierte die Bilder blau | Deine Meldung |
+| 14 | **Tage ließen sich nicht betiteln** — Feld unsichtbar, und in „Fläche" gar nicht vorhanden | Deine Meldung |
 
 Der teuerste war Nummer 4. Er hat mehrere andere Fehler vorgetäuscht:
 weil React nicht hydrierte, tat kein Klick etwas, und es sah aus, als
@@ -57,7 +58,7 @@ markieren.
 
 ---
 
-## Gebaut — 21 Funktionen
+## Gebaut — 25 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -126,10 +127,33 @@ markieren.
 21. **Impressum und Datenschutzerklärung** als Gerüst, öffentlich
     erreichbar, jede offene Stelle sichtbar in eckigen Klammern.
 
-Dazu 9 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+22. **Konto löschen** — Bestätigung durch Abtippen des eigenen
+    Benutzernamens, **serverseitig geprüft**. Erst die Dateien, dann
+    das Konto: andersherum wäre das Konto weg und die Fotos lägen für
+    immer im Speicher, ohne dass jemand wüsste, wem sie gehören.
+    Schlägt das Löschen der Dateien fehl, bricht der Vorgang ab.
+23. **`picsum.photos` aus `next.config.ts`** — solange der Eintrag
+    dort stand, konnte jeder beliebige Bilder von einem fremden Server
+    in Voria einbetten. Die Testdaten brauchen ihn; wer sie einspielt,
+    setzt ihn lokal ein und nimmt ihn danach wieder heraus.
+24. **Rückmeldung im Profil auffindbar** — die Seite gab es schon,
+    aber ohne i18n-Schlüssel und ohne Verweis dorthin. Beides nachgetragen.
+25. **Voria PRO: Materialschicht und Nordlicht & Polarnacht** — nach
+    dem Entwurf von Claude Design. Goldfolie, feineres Papier und
+    Prägung nehmen die Farbe der jeweiligen Region auf, statt sie zu
+    ersetzen — funktioniert dadurch in allen zwölf Regionen ohne
+    regionsspezifischen Code. Das erste von vier vorgeschlagenen
+    Designs ist gebaut, die anderen drei bewusst zurückgestellt. Die
+    im Entwurf vorgeschlagene Dauerbewegung des Lichts steht
+    standardmäßig aus, mit eigenem Schalter — Begründung in
+    `docs/ENTSCHEIDUNGEN.md`. Dabei eine Doppelung im eigenen Code
+    bemerkt und behoben: zwei fast identische Schalterzeilen wurden zu
+    `src/ui/Schalterzeile.tsx` zusammengelegt.
+
+Dazu 10 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,
-`0009` Startbereich und Rückmeldungen) und die Dokumente `START.md`
-und `DEPLOY.md`.
+`0009` Startbereich und Rückmeldungen, `0010` PRO-Design) und die
+Dokumente `START.md` und `DEPLOY.md`.
 
 ---
 

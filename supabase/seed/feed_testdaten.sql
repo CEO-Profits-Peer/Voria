@@ -15,6 +15,13 @@
 -- zwanzig Beiträge verteilen sich rundum auf alle vorhandenen Profile.
 -- Bei zwei Konten also zehn und zehn.
 --
+-- ACHTUNG: Diese Datei braucht picsum.photos in `next.config.ts`.
+-- Der Eintrag ist dort am 30.07. ENTFERNT worden (Sicherheitsgrund
+-- steht im Kommentar). Wer diese Testdaten benutzen will, setzt ihn
+-- lokal wieder ein und nimmt ihn danach wieder heraus. Ohne den
+-- Eintrag bleiben die Bilder der Beispielbeiträge leer — der Rest
+-- funktioniert.
+--
 -- BILDER kommen von picsum.photos. `photos.r2_key` nimmt vollständige
 -- Adressen an — `bildUrl()` lässt alles durch, was mit http beginnt.
 -- Dafür muss picsum in next.config.ts als Bildquelle erlaubt sein;

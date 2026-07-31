@@ -23,7 +23,12 @@ export default async function EinstellungenSeite() {
   const { data: profil, error } = user.user
     ? await supabase
         .from('profiles')
-        .select('hinweis_kommentar, hinweis_folger, hinweis_upload, stiller_modus, startbereich')
+        /* Eine einzige Zeichenkette, nicht zusammengesetzt: Supabase
+           leitet die Typen aus dem LITERAL ab. Sobald hier ein `+`
+           steht, ist es für TypeScript nur noch `string`, und die
+           Antwort verliert ihre Form. */
+        // prettier-ignore
+        .select('username, hinweis_kommentar, hinweis_folger, hinweis_upload, stiller_modus, startbereich, pro_design, pro_material, pro_bewegung')
         .eq('id', user.user.id)
         .maybeSingle()
     : { data: null, error: null };
@@ -37,7 +42,15 @@ export default async function EinstellungenSeite() {
         <ChevronLeft size={18} strokeWidth={1.5} aria-hidden /> {t.profil.du}
       </Link>
       <h1 className="gross">{t.einstellungen.titel}</h1>
-      <Einstellungen hinweise={profil ?? STANDARD} />
+      <Einstellungen
+        hinweise={profil ?? STANDARD}
+        benutzername={profil?.username ?? ''}
+        pro={{
+          pro_design: profil?.pro_design ?? null,
+          pro_material: profil?.pro_material ?? true,
+          pro_bewegung: profil?.pro_bewegung ?? false,
+        }}
+      />
     </div>
   );
 }

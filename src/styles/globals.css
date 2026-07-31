@@ -3,6 +3,9 @@
 
 @import './tokens.css';
 @import './regions.css';
+/* Nach regions.css: ein PRO-Design ersetzt die Region und muss
+   deshalb im Zweifel gewinnen. Siehe Kopf der Datei. */
+@import './pro-designs.css';
 @import './seiten.css';
 @import './huelle.css';
 @import './verweise.css';

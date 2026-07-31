@@ -15,7 +15,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ImagePlus } from 'lucide-react';
 import type { Block } from './queries';
-import { textSpeichern, titelSpeichern } from './actions';
+import { textSpeichern } from './actions';
+import { Tagestitel } from './Tagestitel';
 import { FotoBild } from './FotoBild';
 import { useT } from '@/i18n/Sprachraum';
 
@@ -42,7 +43,6 @@ export function RuhigerModus({
 }) {
   const { t, locale } = useT();
   const textBloecke = bloecke.filter((b) => b.art === 'text');
-  const [titel, setTitel] = useState(titelStart ?? '');
   const [text, setText] = useState(textBloecke.map((b) => b.text ?? '').join('\n\n'));
   const blockId = useRef<string | null>(textBloecke[0]?.id ?? null);
   const feld = useRef<HTMLTextAreaElement>(null);
@@ -58,12 +58,6 @@ export function RuhigerModus({
     return () => clearTimeout(uhr);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, eintragId]);
-
-  useEffect(() => {
-    if (titel === (titelStart ?? '')) return;
-    const uhr = setTimeout(() => titelSpeichern(eintragId, titel), 900);
-    return () => clearTimeout(uhr);
-  }, [titel, titelStart, eintragId]);
 
   // Mitwachsen ohne `field-sizing`, das noch nicht überall unterstützt wird.
   useLayoutEffect(() => {
@@ -82,13 +76,7 @@ export function RuhigerModus({
           {formatiereDatum(datum, locale)}
           {ort && <> · {ort}</>}
         </div>
-        <input
-          className="titel"
-          value={titel}
-          onChange={(e) => setTitel(e.target.value)}
-          placeholder=""
-          aria-label={t.log.titelDesTages}
-        />
+        <Tagestitel eintragId={eintragId} titel={titelStart} />
       </div>
 
       <textarea

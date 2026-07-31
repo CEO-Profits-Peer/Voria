@@ -101,6 +101,7 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 7. `0007_leute_unscharf.sql` — Personensuche mit Tippfehlertoleranz
 8. `0008_hinweise.sql` — Benachrichtigungen, Trigger, vier Schalter
 9. `0009_start_und_rueckmeldung.sql` — Startbereich und Rückmeldungen
+10. `0010_pro_design.sql` — Voria PRO: Design, Material, Bewegung
 
 **`0006` muss vor dem nächsten Deploy laufen.** Der Feed fragt
 `comments(count)` mit ab; fehlt die Tabelle, schlägt die ganze
@@ -167,7 +168,10 @@ Regionen-Vorschau · Startseite · Offline über Service Worker ·
 installierbar als App · Fehler-, Lade- und Offline-Seiten.
 
 **Fehlt:** Beiträge melden · Erwähnungen · Repost · gemeinsame Reisen ·
-Export · Offline-Schreiben · Fotobuch-Druck · Preismodell.
+Export · Offline-Schreiben · Fotobuch-Druck · Preisseite und
+Bezahlung. Voria PRO hat seit dem 31.07. eine erste Materialschicht
+und ein Design (Nordlicht & Polarnacht) — `istPro()` liefert aber
+weiterhin immer `false`, also ist noch niemand PRO.
 
 **Ungeprüft:** Der Code ist syntaktisch und strukturell geprüft, aber
 noch nie ausgeführt worden. Beim ersten `npm run dev` sind Nachbesserungen
