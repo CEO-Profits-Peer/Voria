@@ -247,6 +247,25 @@ export const de = {
       'Also blieben wir. Die Frau vom Kiosk brachte uns nach einer Stunde Tee, ohne zu fragen. Der Platz lag im Schatten, und irgendwann war es Abend.',
   },
 
+  export: {
+    titel: 'Alles mitnehmen',
+    warum:
+      'Voria soll der Ort sein, an dem du in zehn Jahren nachliest. Das ist nur ein ehrliches Versprechen, wenn deine Einträge jederzeit mitkommen können — ohne Konto, ohne Voria, ohne Netz.',
+    wasDrin:
+      'Du bekommst ein Archiv mit deinen Fotos, je einer lesbaren Textdatei pro Reise und allen Daten noch einmal vollständig als JSON. Das Zusammenstellen passiert auf deinem Gerät, nichts davon läuft über einen fremden Server.',
+    knopf: 'Archiv erstellen',
+    laeuft: 'Wird zusammengestellt …',
+    sammelt: 'Sammle deine Einträge …',
+    fortschritt: '{fertig} von {gesamt} Fotos',
+    fertig: 'Fertig. Das Archiv liegt in deinen Downloads.',
+    fertigMitLuecken:
+      'Fertig — {anzahl} Fotos ließen sich nicht laden und fehlen im Archiv. Alles andere ist vollständig.',
+    fehler: 'Das hat nicht geklappt. Versuch es bitte noch einmal.',
+    hinweisFotos:
+      'Die Fotos sind die Anzeigefassungen aus Voria, nicht die Originale deiner Kamera — die liegen weiter auf deinem Gerät.',
+    verweis: 'Alles mitnehmen',
+  },
+
   konto: {
     titel: 'Konto',
     loeschen: 'Konto löschen',

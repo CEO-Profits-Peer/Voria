@@ -69,6 +69,7 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Keine Scrollleiste | Feed betreten und wieder verlassen | Leiste im Feed weg, danach wieder da, **und die Seite ruckt seitlich nicht** |
 | Anderer Tag | Reiseseite, unter der Tagesliste | Datumsfeld öffnet sich, Sprung auf den gewählten Tag |
 | Suchtreffer | `/suche` → Tage | Gesuchtes Wort im Auszug farbig hinterlegt |
+| **Export** | `/du/export` → Archiv erstellen | Läuft der Zähler? Öffnet sich das ZIP? Sind die Fotos **wirklich drin** und nicht bloß verlinkt? |
 | **Titel** | Tag in **beiden** Modi | Sieht man, dass dort ein Titel hingehört? Wird er in „Fläche" gespeichert? Steht er danach in der Tagesliste? |
 | Textblöcke | Tag → Fläche → Plus → Text | Tippen, neu laden, verschieben, zweiter Block, löschen |
 | Profilbild | `/du/bearbeiten` | Hochladen, erscheint es in Feed, Suche, Seitenleiste? |
@@ -341,11 +342,10 @@ beim direkten Beitragseditor — ein Beitrag ist ein geteilter Tag.
 
 ## E. Vor dem ersten echten Nutzer
 
-* **Export.** Steht sonst nirgends und ist trotzdem das Wichtigste.
-  „Der Ort, an dem du in zehn Jahren nachliest" ist ein Versprechen
-  über zehn Jahre — glaubwürdig nur, wenn die Daten mitkommen können.
-  JSON plus Fotos als Vertrauensarbeit, gesetztes PDF als Pro-Merkmal
-  und Vorstufe zum Fotobuch-Druck.
+* ~~**Export**~~ — **gebaut, ungeprüft.** `/du/export`. Archiv mit
+  Fotos, je einer lesbaren Markdown-Datei pro Reise und allen Daten
+  als JSON. Frei, nicht Pro. Der gesetzte PDF-Satz baut darauf auf und
+  bleibt das Pro-Merkmal.
 * **Offline schreiben.** In der Gesamtbeschreibung steht, Voria
   funktioniere ohne Netz. Der Service Worker cached aber nur das
   Lesen — es gibt weder IndexedDB noch eine Warteschlange für

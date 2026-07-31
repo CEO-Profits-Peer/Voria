@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { Sun, Moon, Monitor, Download } from 'lucide-react';
 import { REGIONS, type Region } from '@/themes/regions';
 import { useT } from '@/i18n/Sprachraum';
 import { SprachWahl } from './SprachWahl';
@@ -131,10 +131,20 @@ export function Einstellungen({
 
       {/* Ganz unten und ohne Alarmfarbe. Löschen ist ein legitimer
           Vorgang, kein Unfall, den es zu verhindern gilt — aber es
-          soll auch niemand versehentlich darüber stolpern. */}
+          soll auch niemand versehentlich darüber stolpern.
+
+          Der Export steht direkt darüber, und zwar mit Absicht: Wer
+          hier landet, um zu gehen, soll den Weg zu seinen Daten
+          finden, bevor er den Löschknopf findet. */}
       <section>
         <h2>{t.konto.titel}</h2>
-        <KontoLoeschen benutzername={benutzername} />
+        <div className="konto-wege">
+          <Link href="/du/export" className="konto-export">
+            <Download size={16} strokeWidth={1.75} aria-hidden />
+            {t.export.verweis}
+          </Link>
+          <KontoLoeschen benutzername={benutzername} />
+        </div>
       </section>
 
       <style jsx>{`
@@ -171,6 +181,33 @@ export function Einstellungen({
           font-size: var(--size-24);
           letter-spacing: var(--tracking-tight);
           font-weight: var(--weight-medium);
+        }
+        .konto-wege {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-16);
+        }
+        /* :global(), weil styled-jsx <Link> nicht scopet —
+           gescopet über .konto-wege davor. */
+        .konto-wege :global(a.konto-export) {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          min-height: 44px;
+          padding: 0 var(--space-16) 0 var(--space-12);
+          border: 1px solid var(--border-default);
+          border-radius: 7px;
+          color: var(--content-secondary);
+          font-family: var(--font-ui);
+          font-size: var(--size-14);
+          font-weight: var(--weight-medium);
+          text-decoration: none;
+        }
+        .konto-wege :global(a.konto-export:hover) {
+          border-color: var(--border-strong);
+          color: var(--content-primary);
+          text-decoration: none;
         }
         .zeile {
           margin: calc(var(--space-8) * -1) 0 var(--space-24);

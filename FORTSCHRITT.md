@@ -179,6 +179,12 @@ Das ist die wichtigste Spalte in diesem Dokument.
 
 **Im Browser nachgewiesen:**
 
+* Der ZIP-Schreiber des Exports. Ein Probearchiv gebaut, mit
+  `Expand-Archive` unter Windows geöffnet und geprüft: Ordner stehen,
+  Umlaute im Dateinamen überleben (dafür ist das UTF-8-Bit im Kopf
+  nötig), Binärdaten byteweise identisch — CRC32 und das Ablegen ohne
+  Kompression stimmen also
+
 * Fehlende `jsx-`Klassen an `<Link>`-Elementen (Nummer 3)
 * Fehlende React-Schlüssel, und ihr Erscheinen nach dem Leeren der
   Service-Worker-Caches (Nummer 4)

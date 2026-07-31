@@ -245,6 +245,25 @@ export const en: Woerterbuch = {
       'So we stayed. After an hour the woman from the kiosk brought us tea without being asked. The square lay in shade, and at some point it was evening.',
   },
 
+  export: {
+    titel: 'Take everything with you',
+    warum:
+      'Voria is meant to be the place you read back in ten years. That is only an honest promise if your entries can leave with you at any time — no account, no Voria, no connection.',
+    wasDrin:
+      'You get an archive with your photos, one readable text file per trip, and all the data once more in full as JSON. It is assembled on your own device; none of it passes through someone else’s server.',
+    knopf: 'Create archive',
+    laeuft: 'Putting it together …',
+    sammelt: 'Collecting your entries …',
+    fortschritt: '{fertig} of {gesamt} photos',
+    fertig: 'Done. The archive is in your downloads.',
+    fertigMitLuecken:
+      'Done — {anzahl} photos could not be loaded and are missing from the archive. Everything else is complete.',
+    fehler: 'That did not work. Please try again.',
+    hinweisFotos:
+      'The photos are the display versions from Voria, not your camera originals — those are still on your device.',
+    verweis: 'Take everything with you',
+  },
+
   konto: {
     titel: 'Account',
     loeschen: 'Delete account',

@@ -668,6 +668,35 @@ h1.gross {
   min-height: 60dvh;
 }
 
+/* ---------- Export ------------------------------------------ */
+
+.export-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  max-width: 60ch;
+  margin-bottom: var(--space-32);
+}
+
+.export-text p {
+  margin: 0;
+  font-family: var(--font-text);
+  font-size: var(--size-18);
+  line-height: var(--leading-relaxed);
+  color: var(--content-primary);
+  text-wrap: pretty;
+}
+
+.export-fein {
+  max-width: 60ch;
+  margin: var(--space-32) 0 0;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: var(--leading-normal);
+  color: var(--content-muted);
+  text-wrap: pretty;
+}
+
 /* ---------- Scrollverhalten des Feeds ------------------------
    Gesetzt von FeedScrollen.tsx, nur solange der Feed offen ist.
    Begründung zu beidem steht dort im Kopf der Datei.
