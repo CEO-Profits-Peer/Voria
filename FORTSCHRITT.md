@@ -24,7 +24,7 @@ sichtbar wurde.
 
 ---
 
-## Behoben — 14 Fehler
+## Behoben — 15 Fehler
 
 | # | Fehler | Woran er sichtbar wurde |
 |---|---|---|
@@ -42,11 +42,27 @@ sichtbar wurde.
 | 12 | Foto-Knopf verschwand nach dem ersten Satz (`istLeer`) | Deine Meldung |
 | 13 | Doppelklick im Feed markierte die Bilder blau | Deine Meldung |
 | 14 | **Tage ließen sich nicht betiteln** — Feld unsichtbar, und in „Fläche" gar nicht vorhanden | Deine Meldung |
+| 15 | **Personensuche tot** — `RAISE` mit `%%` in `0007`, ganze Migration rollte zurück | Deine Meldung |
 
 Der teuerste war Nummer 4. Er hat mehrere andere Fehler vorgetäuscht:
 weil React nicht hydrierte, tat kein Klick etwas, und es sah aus, als
 sei „Übernehmen" kaputt. Funktionierte nur, was ohne JavaScript geht —
 also das nackte `<form action={…}>`.
+
+Nummer 15 ist die bislang teuerste Kleinigkeit. In der Schlussprüfung
+von `0007` stand `RAISE ... (%%)` — zwei Prozentzeichen sind ein
+**maskiertes** Prozent, also null Platzhalter bei einem Argument.
+Postgres brach mit „too many parameters specified for RAISE" ab.
+
+Der eigentliche Schaden entstand danach: Der Supabase-Editor führt ein
+Skript als **eine Transaktion** aus. Weil die Prüfung ganz am Ende
+scheiterte, rollte **alles** zurück — auch `create function
+leute_suchen`, das längst durchgelaufen war. In der Anwendung sah das
+so aus, als sei die Personensuche kaputt. Sie war es nicht; es gab sie
+nur nicht.
+
+Daraus die Regel in `CLAUDE.md`: Jede Migration muss wiederholbar sein.
+`0008` bis `0011` sind entsprechend nachgezogen.
 
 Nummer 13 ist lehrreich, weil die Ursache eine Ebene früher lag als der
 Fehler: Der Browser beginnt die Auswahl beim zweiten `mousedown`, also

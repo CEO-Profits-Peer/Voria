@@ -1,5 +1,12 @@
 -- ============================================================
 -- Wo die App startet, und ein Kanal für Rückmeldungen
+--
+-- WIEDERHOLBAR. Diese Datei darf mehrfach laufen, ohne zu brechen.
+-- Grund: Im Supabase-Editor läuft ein Skript als EINE Transaktion.
+-- Scheitert die Prüfung am Ende, wird alles zurückgerollt — nur die
+-- Typen nicht, denn `create type` überlebt in manchen Fassungen den
+-- Rücksprung. Beim zweiten Versuch stand dann „type already exists"
+-- und man kam nicht mehr weiter.
 -- ============================================================
 
 -- ---------- Startbereich ------------------------------------
@@ -7,23 +14,27 @@
 -- Voreinstellung ist der Feed: Wer die App öffnet, soll etwas
 -- vorfinden, nicht ein leeres Blatt. Der Log ist einen Griff weit weg.
 --
--- Der Stille Modus stellt das um — und zwar nach derselben Regel wie
--- bei den Hinweisen: Er ÜBERSCHREIBT diese Spalte, er schreibt sie
--- nicht um. Wer ihn wieder ausschaltet, startet wieder dort, wo er
--- vorher gestartet ist. Deshalb bleibt `startbereich` beim
--- Einschalten unangetastet.
+-- Der Stille Modus stellt das um — nach derselben Regel wie bei den
+-- Hinweisen: Er ÜBERSCHREIBT diese Spalte, er schreibt sie nicht um.
+-- Wer ihn ausschaltet, startet wieder dort, wo er vorher gestartet ist.
 
-create type startbereich_art as enum ('feed', 'log');
+do $$
+begin
+  if not exists (select 1 from pg_type where typname = 'startbereich_art') then
+    create type startbereich_art as enum ('feed', 'log');
+  end if;
+end;
+$$;
 
 alter table profiles
-  add column startbereich startbereich_art not null default 'feed';
+  add column if not exists startbereich startbereich_art not null default 'feed';
 
 -- ---------- Rückmeldungen -----------------------------------
 --
 -- Bewusst schlicht: eine Tabelle, kein Ticketsystem. Was ankommt,
 -- liest der Betreiber im Supabase-Dashboard.
 
-create table feedback (
+create table if not exists feedback (
   id         uuid primary key default uuid_generate_v4(),
   -- Nullable: eine Rückmeldung darf auch von einem gelöschten Konto
   -- übrig bleiben. Sie verliert dann ihren Absender, nicht ihren Inhalt.
@@ -35,7 +46,9 @@ create table feedback (
   created_at timestamptz not null default now()
 );
 
-create index on feedback (created_at desc);
+-- Benannt, damit `if not exists` greifen kann. Ohne Namen vergibt
+-- Postgres einen und legt bei jedem Lauf einen neuen an.
+create index if not exists feedback_created_idx on feedback (created_at desc);
 
 alter table feedback enable row level security;
 
@@ -51,6 +64,7 @@ alter table feedback enable row level security;
  * `with check` bindet die Zeile an den Absender: niemand kann eine
  * Rückmeldung unter fremdem Namen abgeben.
  */
+drop policy if exists feedback_write on feedback;
 create policy feedback_write on feedback for insert
   with check (user_id = auth.uid());
 

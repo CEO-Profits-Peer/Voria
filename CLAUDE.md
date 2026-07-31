@@ -102,11 +102,24 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 8. `0008_hinweise.sql` — Benachrichtigungen, Trigger, vier Schalter
 9. `0009_start_und_rueckmeldung.sql` — Startbereich und Rückmeldungen
 10. `0010_pro_design.sql` — Voria PRO: Design, Material, Bewegung
+11. `0011_gelesen.sql` — Gelesen-Merker und der Feed als Funktion
 
-**`0006` muss vor dem nächsten Deploy laufen.** Der Feed fragt
-`comments(count)` mit ab; fehlt die Tabelle, schlägt die ganze
-Feed-Abfrage fehl und der Feed ist leer. Der Fehler wird geloggt, aber
-sichtbar ist nur die leere Seite.
+**Jede Migration muss wiederholbar sein.** Der Supabase-Editor führt
+ein Skript als **eine Transaktion** aus: Scheitert die Prüfung am Ende,
+wird alles zurückgerollt — die Funktion, die Tabelle, die Regel. Nur
+`create type` überlebt das in manchen Fassungen. Beim zweiten Versuch
+stand dann „type already exists", und man kam gar nicht mehr weiter.
+
+Deshalb ohne Ausnahme: `if not exists` an Tabellen, Spalten und
+Indizes, `create or replace` an Funktionen, `drop … if exists` vor
+Regeln und Triggern, und Typen in einem `do`-Block mit Prüfung. Indizes
+brauchen dafür einen **Namen** — ohne den vergibt Postgres bei jedem
+Lauf einen neuen.
+
+**Zwei Migrationen legen den Feed lahm, wenn sie fehlen:** `0006`
+(der Feed fragt `comments(count)` mit ab) und `0011` (`ladeFeed` ruft
+die Funktion `feed_laden`). In beiden Fällen wird der Fehler geloggt,
+sichtbar ist nur eine leere Seite.
 
 ## Sprache
 

@@ -14,16 +14,23 @@
 -- `null` heißt: die Region entscheidet, so wie heute. Das ist die
 -- Voreinstellung, auch für zahlende Nutzer — niemand bekommt ein
 -- anderes Aussehen aufgedrängt, nur weil er bezahlt hat.
-create type pro_design_art as enum ('nordlicht');
+-- WIEDERHOLBAR — siehe Kopf von 0009_start_und_rueckmeldung.sql.
+do $$
+begin
+  if not exists (select 1 from pg_type where typname = 'pro_design_art') then
+    create type pro_design_art as enum ('nordlicht');
+  end if;
+end;
+$$;
 
 alter table profiles
-  add column pro_design    pro_design_art,
-  add column pro_material  boolean not null default true,
+  add column if not exists pro_design    pro_design_art,
+  add column if not exists pro_material  boolean not null default true,
   -- Bewegung des Nordlichts. Standard AUS: eine dauerhaft laufende
   -- Animation auf der Schreibfläche ist das eine, was Voria sich
   -- nicht leisten sollte — sie kostet auf dem Handy Strom und steht
   -- gegen „die App drängt nicht". Wer sie will, schaltet sie ein.
-  add column pro_bewegung  boolean not null default false;
+  add column if not exists pro_bewegung  boolean not null default false;
 
 /*
  * Weitere Designs kommen als eigene Werte dazu:

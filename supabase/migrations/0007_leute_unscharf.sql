@@ -72,9 +72,12 @@ begin
 
   -- Ähnlichkeit muss über der Schwelle liegen, sonst ist die ganze
   -- Migration wirkungslos und niemand merkt es.
+  -- Ein einzelnes %, nicht %%. Zwei davon wären ein maskiertes
+  -- Prozentzeichen, also null Platzhalter bei einem Argument —
+  -- und RAISE bricht dann mit „too many parameters" ab.
   if similarity('marrakesch', 'marakesh') <= 0.3 then
     raise exception
-      'pg_trgm findet den Tippfehler nicht — Schwelle prüfen (%%)',
+      'pg_trgm findet den Tippfehler nicht — Schwelle pruefen (%)',
       similarity('marrakesch', 'marakesh');
   end if;
 end;

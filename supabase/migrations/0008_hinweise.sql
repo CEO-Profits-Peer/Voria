@@ -17,9 +17,16 @@
 -- selbst Hinweise schreiben können, und erst recht keine fremden.
 -- ============================================================
 
-create type hinweis_art as enum ('kommentar', 'antwort', 'folger', 'upload');
+-- WIEDERHOLBAR — siehe Kopf von 0009_start_und_rueckmeldung.sql.
+do $wdh$
+begin
+  if not exists (select 1 from pg_type where typname = 'hinweis_art') then
+    create type hinweis_art as enum ('kommentar', 'antwort', 'folger', 'upload');
+  end if;
+end;
+$wdh$;
 
-create table notifications (
+create table if not exists notifications (
   id         uuid primary key default uuid_generate_v4(),
   -- Wer ihn bekommt.
   user_id    uuid not null references profiles on delete cascade,
@@ -33,7 +40,8 @@ create table notifications (
 );
 
 -- Die eine Abfrage, die es geben wird: meine ungelesenen, neueste zuerst.
-create index on notifications (user_id, read_at, created_at desc);
+create index if not exists notifications_offen_idx
+  on notifications (user_id, read_at, created_at desc);
 
 -- ---------- Einstellungen am Profil --------------------------
 --
@@ -44,22 +52,24 @@ create index on notifications (user_id, read_at, created_at desc);
 -- zwischen einem Modus und einem Rundumschlag.
 
 alter table profiles
-  add column hinweis_kommentar boolean not null default true,
-  add column hinweis_folger    boolean not null default true,
-  add column hinweis_upload    boolean not null default true,
-  add column stiller_modus     boolean not null default false;
+  add column if not exists hinweis_kommentar boolean not null default true,
+  add column if not exists hinweis_folger    boolean not null default true,
+  add column if not exists hinweis_upload    boolean not null default true,
+  add column if not exists stiller_modus     boolean not null default false;
 
 -- ---------- Zugriffsregeln ----------------------------------
 
 alter table notifications enable row level security;
 
 -- Nur die eigenen, und wirklich nur die eigenen.
+drop policy if exists notifications_read on notifications;
 create policy notifications_read on notifications for select
   using (user_id = auth.uid());
 
 -- Gelesen markieren darf man seine eigenen. Mehr nicht — und auch
 -- hier gilt: Spaltenrechte, weil RLS keine Spalten kennt. Ohne das
 -- ließe sich beim Markieren die `art` umschreiben.
+drop policy if exists notifications_update on notifications;
 create policy notifications_update on notifications for update
   using (user_id = auth.uid()) with check (user_id = auth.uid());
 
@@ -114,6 +124,7 @@ begin
   return null;
 end $$;
 
+drop trigger if exists comments_hinweis on comments;
 create trigger comments_hinweis
   after insert on comments
   for each row execute function hinweis_bei_kommentar();
@@ -134,6 +145,7 @@ begin
   return null;
 end $$;
 
+drop trigger if exists follows_hinweis on follows;
 create trigger follows_hinweis
   after insert on follows
   for each row execute function hinweis_bei_folgen();
@@ -161,6 +173,7 @@ begin
   return null;
 end $$;
 
+drop trigger if exists posts_hinweis on posts;
 create trigger posts_hinweis
   after insert on posts
   for each row execute function hinweis_bei_beitrag();

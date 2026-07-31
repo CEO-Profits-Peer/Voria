@@ -11,7 +11,7 @@
 -- deshalb nur ans Ende.
 -- ============================================================
 
-create table post_views (
+create table if not exists post_views (
   user_id  uuid not null references profiles on delete cascade,
   post_id  uuid not null references posts    on delete cascade,
   seen_at  timestamptz not null default now(),
@@ -19,7 +19,7 @@ create table post_views (
 );
 
 -- Die eine Frage, die gestellt wird: „was hat DIESER Nutzer gesehen".
-create index on post_views (user_id);
+create index if not exists post_views_nutzer_idx on post_views (user_id);
 
 alter table post_views enable row level security;
 
@@ -33,9 +33,11 @@ alter table post_views enable row level security;
  * Wer wessen Beitrag gesehen hat, ist eine heikle Information —
  * deshalb steht `user_id = auth.uid()` auch beim Lesen.
  */
+drop policy if exists post_views_read on post_views;
 create policy post_views_read on post_views for select
   using (user_id = auth.uid());
 
+drop policy if exists post_views_write on post_views;
 create policy post_views_write on post_views for insert
   with check (user_id = auth.uid());
 
