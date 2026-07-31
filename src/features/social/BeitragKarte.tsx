@@ -34,7 +34,12 @@ export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
   const [, starten] = useTransition();
 
   return (
-    <article className="beitrag region-surface eintritt-feed" data-region={beitrag.region}>
+    <article
+      className="beitrag region-surface eintritt-feed"
+      data-region={beitrag.region}
+      /* Woran der Gelesen-Merker die Karte erkennt. Siehe FeedStrom. */
+      data-beitrag={beitrag.id}
+    >
       {/*
         Der Kopf führt zum Profil. Vorher stand der Name als reiner Text
         da — man sah, wer geschrieben hat, kam aber nicht hin.

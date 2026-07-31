@@ -16,6 +16,39 @@ export async function mehrBeitraege(versatz: number, reiter: Reiter): Promise<Be
   return ladeFeed(versatz, SEITE, reiter);
 }
 
+/**
+ * Beiträge als gelesen vermerken.
+ *
+ * Gesammelt geschickt, nicht je Karte: Beim Scrollen kämen sonst
+ * zwanzig Anfragen in zehn Sekunden.
+ *
+ * `upsert` mit `ignoreDuplicates`, weil derselbe Beitrag zwangsläufig
+ * mehrfach gemeldet wird — beim zweiten Öffnen, beim Zurückscrollen.
+ * Ein Fehler daraus wäre lästig und bedeutungslos.
+ *
+ * KEIN `revalidatePath`. Der Vermerk soll die Reihenfolge NICHT sofort
+ * ändern — sonst rutschen die Karten unter dem Finger weg, während man
+ * sie liest. Er wirkt beim nächsten Öffnen, und genau das ist der Sinn.
+ */
+export async function alsGelesenMerken(beitragIds: string[]) {
+  if (beitragIds.length === 0) return;
+
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { error } = await supabase
+    .from('post_views')
+    .upsert(
+      beitragIds.map((post_id) => ({ user_id: user.id, post_id })),
+      { onConflict: 'user_id,post_id', ignoreDuplicates: true },
+    );
+
+  if (error) console.error('[alsGelesenMerken]', error);
+}
+
 /** Upvote setzen oder zurücknehmen. Der Zähler läuft per Trigger mit. */
 export async function voten(beitragId: string, gesetzt: boolean) {
   const supabase = await createServerClient();

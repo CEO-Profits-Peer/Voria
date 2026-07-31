@@ -30,7 +30,10 @@ npm run build
 2. `0007_leute_unscharf.sql` — **blockierend für die Personensuche.**
    `leuteSuchen` ruft jetzt die Datenbankfunktion `leute_suchen`; ohne
    sie findet der Reiter „Leute" niemanden mehr.
-3. `0008_hinweise.sql` — **blockierend für die Hülle.** Die Seitenleiste
+3. `0011_gelesen.sql` — **blockierend für den ganzen Feed.** `ladeFeed`
+   ruft jetzt die Datenbankfunktion `feed_laden`; ohne sie ist der Feed
+   leer. Der Fehler steht in der Serverkonsole.
+4. `0008_hinweise.sql` — **blockierend für die Hülle.** Die Seitenleiste
    zählt bei jedem Aufruf die ungelesenen Hinweise. Fehlt die Tabelle,
    steht der Fehler in der Serverkonsole und der Punkt fehlt einfach.
    Die Einstellungsseite liest vier neue Spalten aus `profiles`.
@@ -55,6 +58,9 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Kommentar-Stimme | Feed → Kommentar → Pfeil | Zähler zählt, und der Kommentar bekommt **kein** „bearbeitet" |
 | Bereich offen lassen | Feed → Kommentare auf → antworten | Bleibt der Bereich offen? `revalidatePath('/feed')` baut die Serverseite neu — größte offene Unsicherheit |
 | Doppelklick | Feed, in die Leere neben den Karten | Springt weich zum nächsten Beitrag, **ohne die Bilder blau zu markieren** |
+| **Wischbremse** | Feed, am Handy kräftig wischen | Überspringt ein Wisch **eine** Karte statt vieler? Fühlt sich Überfliegen noch frei an, oder rastet es zu hart? |
+| **Gelesen merken** | Feed durchscrollen, schließen, morgen öffnen | Steht oben etwas anderes als gestern? Rutschen die Karten **nicht** weg, während man liest? |
+| **Entdecken** | Feed → „Entdecken" (nur am Rechner sichtbar) | Nur Regionen, in denen du nicht warst? Am Handy verborgen, aber über die Adresse erreichbar? |
 | Feed-Reiter | Feed → „Folge ich" | Nur Gefolgte? Reiter im Adressfeld? Neu laden behält ihn? |
 | Reiterwechsel | Feed → nachladen → auf den anderen Reiter | Stehen dort wirklich **andere** Beiträge, nicht die alten? |
 | Niemandem folgen | Neues Konto → „Folge ich" | Hinweis statt leerer Fläche, und die Reiter bleiben bedienbar |

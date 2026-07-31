@@ -668,16 +668,30 @@ h1.gross {
   min-height: 60dvh;
 }
 
-/* ---------- Feed ohne Scrollleiste --------------------------
-   Gesetzt von OhneScrollleiste.tsx, nur solange der Feed offen ist.
+/* ---------- Scrollverhalten des Feeds ------------------------
+   Gesetzt von FeedScrollen.tsx, nur solange der Feed offen ist.
+   Begründung zu beidem steht dort im Kopf der Datei.
+
    `scrollbar-gutter: stable` steht global in globals.css: ohne das
    würde die Seite beim Betreten des Feeds um die Breite der Leiste
    springen, weil der Inhalt plötzlich breiter darf. */
 
-.ohne-scrollleiste {
+.feed-scrollen {
   scrollbar-width: none;
+  /* proximity, NICHT mandatory — siehe FeedScrollen.tsx. */
+  scroll-snap-type: y proximity;
 }
 
-.ohne-scrollleiste::-webkit-scrollbar {
+.feed-scrollen::-webkit-scrollbar {
   display: none;
+}
+
+/* Die Wischbremse. `always` verbietet, im Schwung über eine Karte
+   hinwegzufliegen — ein kräftiger Wisch überspringt dadurch eine
+   statt zwanzig. Ohne `scroll-margin-top` klebte die Karte am oberen
+   Rand, direkt unter der Reiterleiste. */
+.feed-scrollen .strom > [data-beitrag] {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  scroll-margin-top: var(--space-16);
 }

@@ -177,6 +177,10 @@ export const en: Woerterbuch = {
     einTag: 'A day',
     fuerDich: 'For you',
     folgeIch: 'Following',
+    entdecken: 'Discover',
+    nichtsNeues: 'Nothing unfamiliar right now',
+    nichtsNeuesZeile:
+      'This is where days from places you have not been show up. Nothing at the moment — come back later.',
     niemandGefolgt: 'You are not following anyone yet',
     niemandGefolgtZeile:
       'This is where the days of people you follow appear, in the order they were written. Search is where you find the first few.',

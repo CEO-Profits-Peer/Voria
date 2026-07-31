@@ -20,7 +20,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import type { Beitrag } from './queries';
 import { SEITE, type Reiter } from './konstanten';
-import { mehrBeitraege } from './actions';
+import { mehrBeitraege, alsGelesenMerken } from './actions';
 import { mitAnzeigen } from './werbung';
 import { BeitragKarte } from './BeitragKarte';
 import { AnzeigeKarte } from './AnzeigeKarte';
@@ -83,6 +83,55 @@ export function FeedStrom({
     beobachter.observe(ziel);
     return () => beobachter.disconnect();
   }, [beitraege.length, nochWelche, reiter]);
+
+  /*
+   * GELESEN MERKEN
+   *
+   * Was auf dem Schirm stand, gilt als gesehen. Gemeldet wird
+   * gesammelt und verzögert, nicht je Karte — beim Scrollen wären das
+   * sonst zwanzig Anfragen in zehn Sekunden.
+   *
+   * Der Vermerk ändert die Reihenfolge ABSICHTLICH nicht sofort. Sonst
+   * rutschten die Karten unter dem Finger weg, während man sie liest.
+   * Er wirkt beim nächsten Öffnen — und das ist der ganze Zweck.
+   */
+  const gesehen = useRef(new Set<string>());
+  const offen = useRef(new Set<string>());
+
+  useEffect(() => {
+    const beobachter = new IntersectionObserver(
+      (eintraege) => {
+        for (const e of eintraege) {
+          const id = (e.target as HTMLElement).dataset.beitrag;
+          if (!e.isIntersecting || !id || gesehen.current.has(id)) continue;
+          gesehen.current.add(id);
+          offen.current.add(id);
+        }
+      },
+      /* Mindestens die Hälfte der Karte, sonst zählt Vorbeischießen. */
+      { threshold: 0.5 },
+    );
+
+    /* Über das Merkmal statt über eine Klasse: `.strom` gehört
+       FeedFlaeche, und diese Komponente soll dessen Aufbau nicht
+       kennen müssen. */
+    document.querySelectorAll('[data-beitrag]').forEach((k) => beobachter.observe(k));
+
+    /* Alle fünf Sekunden nachreichen, was sich angesammelt hat. */
+    const uhr = setInterval(() => {
+      if (offen.current.size === 0) return;
+      const stapel = [...offen.current];
+      offen.current.clear();
+      alsGelesenMerken(stapel);
+    }, 5000);
+
+    return () => {
+      beobachter.disconnect();
+      clearInterval(uhr);
+      /* Beim Verlassen der Seite den Rest nachschicken. */
+      if (offen.current.size > 0) alsGelesenMerken([...offen.current]);
+    };
+  }, [beitraege.length]);
 
   const karten = werbung
     ? mitAnzeigen(beitraege)

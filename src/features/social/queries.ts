@@ -8,8 +8,8 @@
  */
 
 import { createServerClient } from '@/lib/supabase-server';
-import { regionForCountry, type RegionOrNeutral } from '@/themes/regions';
-import { SEITE, type Reiter } from './konstanten';
+import { regionForCountry, regionForTrip, type RegionOrNeutral } from '@/themes/regions';
+import { SEITE, ENTDECKEN_VORRAT, type Reiter } from './konstanten';
 
 export interface Beitrag {
   id: string;
@@ -36,29 +36,7 @@ export async function ladeFeed(
     data: { user },
   } = await supabase.auth.getUser();
 
-  /*
-   * „Folge ich": erst die Gefolgten holen, dann darauf einschränken.
-   *
-   * Ohne den Rückzieher bei leerer Liste baut PostgREST `in.()` — eine
-   * Bedingung ohne Inhalt, die je nach Fassung einen Fehler wirft oder
-   * ALLES durchlässt. Das zweite wäre schlimmer: der Reiter zeigte
-   * dann fremde Leute, obwohl man niemandem folgt.
-   */
-  let gefolgte: string[] | null = null;
-  if (reiter === 'folgeich') {
-    if (!user) return [];
-    const { data: f, error: fFehler } = await supabase
-      .from('follows')
-      .select('followee_id')
-      .eq('follower_id', user.id);
-
-    if (fFehler) {
-      console.error('[ladeFeed] Gefolgte konnten nicht geladen werden:', fFehler);
-      return [];
-    }
-    gefolgte = (f ?? []).map((x) => x.followee_id);
-    if (gefolgte.length === 0) return [];
-  }
+  if (reiter === 'folgeich' && !user) return [];
 
   /*
    * Die Kaltstart-Zählung nur im offenen Feed. „Folge ich" sortiert
@@ -69,6 +47,35 @@ export async function ladeFeed(
     const { count } = await supabase.from('posts').select('id', { count: 'exact', head: true });
     chronologisch = (count ?? 0) < SCHWELLE_FUER_ALGORITHMUS;
   }
+
+  /*
+   * SCHRITT 1: die Reihenfolge holen.
+   *
+   * Warum eine Datenbankfunktion und keine PostgREST-Abfrage mehr:
+   * „Ungelesenes zuerst" sortiert über eine Verknüpfung mit
+   * `post_views`, und `order` kennt nur Spalten der Haupttabelle.
+   * Dieselbe Lage wie bei `similarity()` in Migration 0007.
+   *
+   * Nebenbei entfällt damit der frühere Rückzieher für „folge ich mit
+   * leerer Liste" — `in.()` mit leerem Inhalt kann PostgREST nicht,
+   * `exists` in SQL schon.
+   */
+  const { data: reihenfolge, error: rFehler } = await supabase.rpc('feed_laden', {
+    versatz,
+    /* „Entdecken" filtert danach in TypeScript und braucht deshalb
+       Vorrat — siehe ENTDECKEN_VORRAT. */
+    hoechstens: reiter === 'entdecken' ? ENTDECKEN_VORRAT : anzahl,
+    nur_gefolgte: reiter === 'folgeich',
+    chronologisch,
+  });
+
+  if (rFehler) {
+    console.error('[ladeFeed] feed_laden fehlgeschlagen:', rFehler);
+    return [];
+  }
+
+  const ids = ((reihenfolge ?? []) as { id: string }[]).map((p) => p.id);
+  if (ids.length === 0) return [];
 
 /*
  * WARUM HIER DER FREMDSCHLÜSSEL AUSDRÜCKLICH DASTEHT
@@ -94,7 +101,8 @@ export async function ladeFeed(
  * oder `follows` ein zweites Mal auf `profiles` zeigt, muss der
  * Fremdschlüssel benannt werden.
  */
-  let abfrage = supabase
+  /* SCHRITT 2: die Einbettungen zu genau diesen Beiträgen. */
+  const { data, error } = await supabase
     .from('posts')
     .select(
       `id, entry_id, caption, vote_count, published_at, comments(count),
@@ -103,26 +111,24 @@ export async function ladeFeed(
                trips(region_override, trip_countries(country_code, days)),
                blocks(kind, position, photos(r2_key, width, height, blurhash)))`,
     )
-    .order(chronologisch ? 'published_at' : 'vote_count', { ascending: false })
-    /*
-     * Zweites Sortierfeld, sonst ist die Reihenfolge nicht eindeutig.
-     * Bei gleicher Stimmenzahl darf Postgres frei entscheiden — und
-     * über zwei Abfragen hinweg entscheidet es unterschiedlich. Dann
-     * erscheint derselbe Beitrag zweimal, während ein anderer nie
-     * auftaucht. Genau die Sorte Fehler, die niemand meldet.
-     */
-    .order('id', { ascending: false })
-    .range(versatz, versatz + anzahl - 1);
-
-  if (gefolgte) abfrage = abfrage.in('user_id', gefolgte);
-
-  const { data, error } = await abfrage;
+    .in('id', ids);
 
   if (error) {
     console.error('[ladeFeed] Feed-Abfrage fehlgeschlagen:', error);
     return [];
   }
   if (!data) return [];
+
+  /*
+   * SCHRITT 3: die Reihenfolge wiederherstellen.
+   *
+   * `in()` gibt KEINE bestimmte Reihenfolge zurück — Postgres liefert,
+   * wie es am günstigsten ist. Ohne diese Zeilen wäre die ganze
+   * Sortierung aus Schritt 1 verloren, und zwar lautlos: Die Liste
+   * sähe vollständig aus, stünde nur in beliebiger Folge.
+   */
+  const platz = new Map(ids.map((id, i) => [id, i]));
+  data.sort((a, b) => (platz.get(a.id) ?? 0) - (platz.get(b.id) ?? 0));
 
   let eigene = new Set<string>();
   if (user) {
@@ -131,7 +137,7 @@ export async function ladeFeed(
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  return (data as any[]).map((p) => {
+  const beitraege: Beitrag[] = (data as any[]).map((p) => {
     const eintrag = p.entries;
     const laender = eintrag?.trips?.trip_countries ?? [];
     const erstesFoto = (eintrag?.blocks ?? [])
@@ -169,4 +175,53 @@ export async function ladeFeed(
     };
   });
   /* eslint-enable @typescript-eslint/no-explicit-any */
+
+  if (reiter !== 'entdecken') return beitraege;
+
+  /*
+   * ENTDECKEN: nur Regionen, in denen der Leser noch nicht war.
+   *
+   * Gefiltert wird hier und nicht in SQL, weil `regionForTrip` aus den
+   * Ländern einer Reise rechnet — diese Zuordnung steht in
+   * src/themes/regions.ts und nicht in der Datenbank.
+   *
+   * Nicht angemeldet: dann war man nirgends, und alles ist neu.
+   */
+  const besucht = await besuchteRegionen(user?.id);
+  const fremd = beitraege.filter((b) => b.region !== 'neutral' && !besucht.has(b.region));
+
+  return fremd.slice(0, anzahl);
+}
+
+/** Die Regionen, in denen jemand schon war — aus seinen eigenen Reisen. */
+async function besuchteRegionen(userId: string | undefined): Promise<Set<string>> {
+  if (!userId) return new Set();
+
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('trips')
+    .select('region_override, trip_countries(country_code, days)')
+    .eq('user_id', userId);
+
+  if (error) {
+    console.error('[besuchteRegionen]', error);
+    /*
+     * Leere Menge heißt „nichts besucht", also zeigt Entdecken alles.
+     * Das ist der harmlosere Ausgang — die Alternative wäre ein leerer
+     * Reiter, und der sähe aus, als sei die Welt schon bereist.
+     */
+    return new Set();
+  }
+
+  const regionen = new Set<string>();
+  for (const t of data ?? []) {
+    const laender = (t.trip_countries ?? []) as { country_code: string; days: number }[];
+    regionen.add(
+      regionForTrip(
+        laender.map((l) => ({ code: l.country_code, days: l.days })),
+        t.region_override as RegionOrNeutral | null,
+      ),
+    );
+  }
+  return regionen;
 }

@@ -37,10 +37,12 @@ export function FeedReiter({
   aktiv,
   fuerDich,
   folgeIch,
+  entdecken,
 }: {
   aktiv: Reiter;
   fuerDich: string;
   folgeIch: string;
+  entdecken: string;
 }) {
   const [sichtbar, setSichtbar] = useState(true);
   const zuletzt = useRef(0);
@@ -63,9 +65,16 @@ export function FeedReiter({
     return () => window.removeEventListener('scroll', beimScrollen);
   }, []);
 
-  const reiter: { wert: Reiter; wort: string; ziel: string }[] = [
+  const reiter: { wert: Reiter; wort: string; ziel: string; nurBreit?: boolean }[] = [
     { wert: 'fuerdich', wort: fuerDich, ziel: '/feed' },
     { wert: 'folgeich', wort: folgeIch, ziel: '/feed?reiter=folgeich' },
+    /*
+     * Am Handy nur zwei Reiter. Drei nebeneinander wären dort je
+     * knapp über 100 px breit — treffbar, aber gedrängt, und die
+     * Leiste würde zum Balken statt zum Umschalter. „Entdecken"
+     * bleibt über die Adresse trotzdem erreichbar.
+     */
+    { wert: 'entdecken', wort: entdecken, ziel: '/feed?reiter=entdecken', nurBreit: true },
   ];
 
   return (
@@ -76,6 +85,10 @@ export function FeedReiter({
             key={r.wert}
             href={r.ziel}
             data-aktiv={aktiv === r.wert}
+            /* Nicht ausblenden, solange er der gewählte ist — sonst
+               stünde man am Handy in einem Reiter, den man nicht
+               sieht und nicht verlassen kann. */
+            data-nur-breit={r.nurBreit && aktiv !== r.wert ? 'true' : undefined}
             aria-current={aktiv === r.wert ? 'page' : undefined}
             /* Der Reiter ist eine Ansicht derselben Seite, kein neues
                Ziel — der Bildlauf soll oben stehen bleiben. */
@@ -158,6 +171,9 @@ export function FeedReiter({
           }
           .feed-reiter {
             width: 100%;
+          }
+          .feed-reiter :global(a[data-nur-breit='true']) {
+            display: none;
           }
         }
       `}</style>

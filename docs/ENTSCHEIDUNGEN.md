@@ -717,6 +717,67 @@ verschickt werden, solange man noch tippt.
 
 ---
 
+### 2026-07-31 · Scroll-Snap doch — aber `proximity`, nicht `mandatory`
+
+Teilweise Rücknahme der Entscheidung vom 30.07. („Kein Scroll-Snap im
+Feed"). Der Anlass: Ein kräftiger Wisch soll höchstens eine Karte
+überspringen, nicht zwanzig.
+
+Momentum-Scrolling lässt sich mit JavaScript nicht bremsen — die
+Trägheit läuft im Compositor, und jeder Versuch dagegenzuhalten ruckelt.
+Das einzige Mittel dafür ist `scroll-snap-stop: always`, und das setzt
+Snap voraus.
+
+**Die alte Begründung bleibt richtig, trifft aber nur `mandatory`:**
+„Snap zwingt jeden Bildlauf in ein Raster. Das setzt gleich hohe Karten
+voraus." Bei `proximity` wird nur gefangen, wer ohnehin fast auf einer
+Karte steht — Überfliegen und Stehenbleiben zwischen zwei Karten
+bleiben möglich. `scroll-snap-stop: always` wirkt trotzdem.
+
+Gilt ausschließlich auf der Feed-Seite, über eine Klasse am `<html>`.
+Wenn es sich im Browser falsch anfühlt: die Regel `.feed-scrollen` in
+`seiten.css` löschen, dann ist der alte Zustand zurück.
+
+### 2026-07-31 · Gelesenes rutscht nach hinten, es verschwindet nicht
+
+`post_views` merkt sich, was jemand gesehen hat. Ungelesenes steht
+danach zuerst.
+
+**Nicht ausgeblendet**, obwohl das naheliegt: Voria hat zwei Beiträge
+im Bestand. Verschwände Gelesenes, wäre der Feed nach dem ersten
+Durchgang leer — und ein leerer Feed ist genau das, was der Kaltstart
+nicht verträgt.
+
+**Der Vermerk ändert die Reihenfolge nicht sofort.** Kein
+`revalidatePath` beim Merken: sonst rutschen die Karten unter dem
+Finger weg, während man sie liest. Er wirkt beim nächsten Öffnen, und
+das ist der ganze Zweck.
+
+Als Nebenwirkung ist der Feed damit auf eine Datenbankfunktion
+umgestellt (`feed_laden`), weil „Ungelesenes zuerst" über eine
+Verknüpfung sortiert und PostgREST nur Spalten der Haupttabelle
+ordnen kann. Dieselbe Lage wie bei `similarity()` in Migration 0007.
+
+### 2026-07-31 · Dritter Reiter „Entdecken", nur am Rechner
+
+Beiträge aus Regionen, in denen der Leser noch nicht war. Nutzt das
+Einzige, was kein Wettbewerber hat — die zwölf Regionen —, hilft gegen
+den Kaltstart, und ist der einzige Ort in Voria, an dem eine Auswahl
+getroffen wird, ohne aufdringlich zu sein.
+
+Am Handy bleiben es zwei Reiter: drei nebeneinander wären dort je knapp
+über 100 px breit, treffbar, aber gedrängt. Über die Adresse ist
+„Entdecken" trotzdem erreichbar, und wer dort steht, sieht den Reiter
+auch am Handy — sonst käme man aus einem unsichtbaren Reiter nicht
+heraus.
+
+Gefiltert wird in TypeScript, nicht in SQL: Welche Region eine Reise
+trägt, rechnet `regionForTrip` aus ihren Ländern, und diese Zuordnung
+steht in `src/themes/regions.ts`. Bei größerem Bestand gehört sie als
+abgeleitete Spalte nach Postgres.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.

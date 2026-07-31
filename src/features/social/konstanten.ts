@@ -33,9 +33,21 @@ export const SEITE = 10;
  * dort ist die Auswahl schon getroffen, eine Gewichtung obendrauf
  * würde nur verbergen, was man ausdrücklich sehen wollte.
  */
-export type Reiter = 'fuerdich' | 'folgeich';
+export type Reiter = 'fuerdich' | 'folgeich' | 'entdecken';
 
 /** Aus dem Adressfeld, das dort alles stehen kann. */
 export function alsReiter(wert: string | undefined): Reiter {
-  return wert === 'folgeich' ? 'folgeich' : 'fuerdich';
+  return wert === 'folgeich' || wert === 'entdecken' ? wert : 'fuerdich';
 }
+
+/**
+ * „Entdecken" holt einen größeren Vorrat, weil danach in TypeScript
+ * gefiltert wird — welche Region ein Beitrag trägt, rechnet
+ * `regionForTrip` aus den Ländern seiner Reise aus, und das kann die
+ * Datenbankfunktion nicht.
+ *
+ * Bei einem größeren Bestand gehört diese Rechnung als abgeleitete
+ * Spalte nach Postgres. Solange es zweistellig viele Beiträge sind,
+ * wäre das Aufwand ohne Gegenwert.
+ */
+export const ENTDECKEN_VORRAT = 60;

@@ -3,7 +3,7 @@ import { alsReiter } from '@/features/social/konstanten';
 import { FeedFlaeche } from '@/features/social/FeedFlaeche';
 import { FeedStrom } from '@/features/social/FeedStrom';
 import { FeedReiter } from '@/features/social/FeedReiter';
-import { OhneScrollleiste } from '@/features/social/OhneScrollleiste';
+import { FeedScrollen } from '@/features/social/FeedScrollen';
 import { LeererBereich } from '@/ui/LeererBereich';
 import { Seitenkopf } from '@/ui/Bausteine';
 import { texte } from '@/i18n/server';
@@ -27,9 +27,14 @@ export default async function FeedSeite({
 
   const kopf = (
     <>
-      <OhneScrollleiste />
+      <FeedScrollen />
       <Seitenkopf titel={t.feed.titel} />
-      <FeedReiter aktiv={reiter} fuerDich={t.feed.fuerDich} folgeIch={t.feed.folgeIch} />
+      <FeedReiter
+        aktiv={reiter}
+        fuerDich={t.feed.fuerDich}
+        folgeIch={t.feed.folgeIch}
+        entdecken={t.feed.entdecken}
+      />
     </>
   );
 
@@ -42,8 +47,20 @@ export default async function FeedSeite({
       <div className="seite">
         {kopf}
         <LeererBereich
-          titel={reiter === 'folgeich' ? t.feed.niemandGefolgt : t.feed.stillHier}
-          zeile={reiter === 'folgeich' ? t.feed.niemandGefolgtZeile : t.feed.stillZeile}
+          titel={
+            reiter === 'folgeich'
+              ? t.feed.niemandGefolgt
+              : reiter === 'entdecken'
+                ? t.feed.nichtsNeues
+                : t.feed.stillHier
+          }
+          zeile={
+            reiter === 'folgeich'
+              ? t.feed.niemandGefolgtZeile
+              : reiter === 'entdecken'
+                ? t.feed.nichtsNeuesZeile
+                : t.feed.stillZeile
+          }
         />
       </div>
     );

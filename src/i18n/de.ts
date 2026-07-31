@@ -179,6 +179,10 @@ export const de = {
     einTag: 'Ein Tag',
     fuerDich: 'Für dich',
     folgeIch: 'Folge ich',
+    entdecken: 'Entdecken',
+    nichtsNeues: 'Nichts Fremdes gerade',
+    nichtsNeuesZeile:
+      'Hier stehen Tage aus Gegenden, in denen du noch nicht warst. Im Moment ist nichts dabei — schau später wieder vorbei.',
     niemandGefolgt: 'Du folgst noch niemandem',
     niemandGefolgtZeile:
       'Hier stehen die Tage der Leute, denen du folgst — in der Reihenfolge, in der sie geschrieben wurden. Über die Suche findest du die ersten.',
