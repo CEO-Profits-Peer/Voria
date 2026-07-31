@@ -8,6 +8,8 @@ import { LeererBereich } from '@/ui/LeererBereich';
 import { Seitenkopf } from '@/ui/Bausteine';
 import { texte } from '@/i18n/server';
 import { zeigtWerbung } from '@/lib/plan';
+import { darfStreifenErscheinen } from '@/features/pro/streifen';
+import { ProStreifen } from '@/features/pro/ProStreifen';
 
 export const metadata = { title: 'Feed · Voria' };
 
@@ -19,10 +21,16 @@ export default async function FeedSeite({
   const { reiter: roh } = await searchParams;
   const reiter = alsReiter(roh);
 
-  const [beitraege, { t }, werbung] = await Promise.all([
+  const [beitraege, { t }, werbung, streifen] = await Promise.all([
     ladeFeed(0, undefined, reiter),
     texte(),
     zeigtWerbung(),
+    /*
+     * Der PRO-Streifen steht NUR im Feed. Das ist keine Einstellung,
+     * sondern eine Frage des Ortes: Wer im Log schreibt, wird nicht
+     * gefragt. Der Feed ist der Teil, den man ohnehin ignorieren kann.
+     */
+    darfStreifenErscheinen(),
   ]);
 
   const kopf = (
@@ -96,6 +104,8 @@ export default async function FeedSeite({
           ende={t.feed.amEnde}
         />
       </FeedFlaeche>
+
+      {streifen.zeigen && <ProStreifen />}
     </div>
   );
 }

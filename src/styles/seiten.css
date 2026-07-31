@@ -785,6 +785,92 @@ h1.gross {
   text-decoration: none;
 }
 
+/* ---------- Der PRO-Streifen ---------------------------------
+   Unten am Rand, deckt nichts zu. Hier statt in <style jsx>, weil
+   er einen <Link> enthaelt — den scopet styled-jsx nicht. */
+
+.pro-streifen {
+  position: sticky;
+  bottom: var(--space-12);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  max-width: 620px;
+  margin: var(--space-24) auto 0;
+  padding: var(--space-12) var(--space-12) var(--space-12) var(--space-16);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+  color: var(--content-muted);
+  /* Der einzige Schatten in der Bedienoberflaeche — er hebt den
+     Streifen vom Feed ab, ohne ihn zu ueberdecken. */
+  box-shadow: 0 6px 20px rgb(21 19 17 / 0.1);
+}
+
+.ps-worte {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: var(--leading-snug);
+}
+
+.ps-worte strong {
+  font-size: var(--size-14);
+  font-weight: var(--weight-medium);
+  color: var(--content-primary);
+}
+
+.pro-streifen .ps-mehr {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--space-16);
+  border-radius: var(--radius-full);
+  background: var(--accent-soft);
+  color: var(--content-accent);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pro-streifen .ps-mehr:hover {
+  text-decoration: none;
+}
+
+.pro-streifen button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44 px: Wegwischen darf nicht schwerer sein als Ansehen. */
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--content-muted);
+  cursor: pointer;
+}
+
+.pro-streifen button:hover {
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+}
+
+@media (max-width: 560px) {
+  .pro-streifen .ps-mehr {
+    display: none;
+  }
+}
+
 /* ---------- Voria PRO, die Preisseite ------------------------ */
 
 .pro-seite {

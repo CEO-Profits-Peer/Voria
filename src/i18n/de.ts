@@ -229,6 +229,7 @@ export const de = {
   rechtliches: { datenschutz: 'Datenschutz' },
 
   pro: {
+    wegwischen: 'Wegwischen',
     einstieg: 'PRO werden',
     einstiegZeile: 'Ohne Werbung, ohne Fotogrenze, mit einem Material, das man sieht.',
     nochNicht: 'Du hast PRO nicht. Ausprobieren kannst du es trotzdem — die Vorschau unten zeigt, wie es aussähe.',

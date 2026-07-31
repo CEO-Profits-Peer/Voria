@@ -12,6 +12,8 @@ Reisetagebuch für Browser und App. Diese Datei zuerst lesen, dann gezielt weite
 | `src/features/log/` | Reisen, Tage, Blöcke, beide Schreibmodi, Fotos |
 | `src/features/social/` | Feed, Beiträge, Votes, Folgen, Kommentare |
 | `src/features/hinweise/` | Benachrichtigungen und der Stille Modus |
+| `src/features/pro/` | Der PRO-Streifen und seine Regeln |
+| `src/features/export/` | Archiv, lesbare Reisen, gesetzter Bogen |
 | `src/features/profile/` | Profil und Einstellungen mit Regionen-Vorschau |
 | `src/features/auth/` | Anmeldung, Registrierung, Sitzung |
 | `src/features/marketing/` | Öffentliche Startseite |
@@ -106,6 +108,7 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 12. `0012_stimmen_schuetzen.sql` — Spaltenrechte auf `posts`
 13. `0013_abos.sql` — Abonnements. **Keine Schreibregel**, nur der
     Webhook darf hinein
+14. `0014_pro_streifen.sql` — wann der PRO-Hinweis zuletzt stand
 
 **Row Level Security kennt keine Spalten.** Wer eine Zeile bearbeiten
 darf, darf jede Spalte darin bearbeiten — also auch einen Zähler, den

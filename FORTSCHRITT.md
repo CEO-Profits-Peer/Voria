@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 36 Funktionen
+## Gebaut — 37 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -225,10 +225,17 @@ markieren.
     Dokument statt eines Stapels Bilder — und dieselbe Vorlage kann
     später an eine Druckerei gehen.
 
-Dazu 13 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+37. **Der PRO-Streifen** — unten im Feed, zum Wegwischen, kein
+    modaler Dialog. Höchstens zweimal je Woche, nach dem dritten
+    Wegwischen drei Monate Ruhe. **Nirgends im Log:** Wer schreibt,
+    wird nicht gefragt — das ist keine Einstellung, sondern eine Frage
+    des Ortes. Migration `0014`.
+
+Dazu 14 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,
 `0009` Startbereich und Rückmeldungen, `0010` PRO-Design,
-`0011` Gelesen-Merker, `0012` Spaltenrechte auf posts, `0013` Abos)
+`0011` Gelesen-Merker, `0012` Spaltenrechte auf posts, `0013` Abos,
+`0014` PRO-Streifen)
 und die Dokumente `START.md` und `DEPLOY.md`.
 
 ---

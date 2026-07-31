@@ -227,6 +227,7 @@ export const en: Woerterbuch = {
   rechtliches: { datenschutz: 'Privacy' },
 
   pro: {
+    wegwischen: 'Dismiss',
     einstieg: 'Get PRO',
     einstiegZeile: 'No advertising, no photo limit, and a material you can see.',
     nochNicht: 'You do not have PRO. You can still try it — the preview below shows how it would look.',
