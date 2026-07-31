@@ -103,6 +103,14 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
 9. `0009_start_und_rueckmeldung.sql` — Startbereich und Rückmeldungen
 10. `0010_pro_design.sql` — Voria PRO: Design, Material, Bewegung
 11. `0011_gelesen.sql` — Gelesen-Merker und der Feed als Funktion
+12. `0012_stimmen_schuetzen.sql` — Spaltenrechte auf `posts`
+
+**Row Level Security kennt keine Spalten.** Wer eine Zeile bearbeiten
+darf, darf jede Spalte darin bearbeiten — also auch einen Zähler, den
+ein Trigger pflegt. Für jede Tabelle mit einem solchen Zähler gehört
+deshalb `revoke update … from authenticated` plus ein `grant update
+(spalte)` auf genau die inhaltlichen Felder dazu. Steht so bei
+`comments` (0006), `notifications` (0008) und `posts` (0012).
 
 **Jede Migration muss wiederholbar sein.** Der Supabase-Editor führt
 ein Skript als **eine Transaktion** aus: Scheitert die Prüfung am Ende,
