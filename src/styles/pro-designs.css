@@ -135,9 +135,16 @@
    Setzt genau die elf Slots. Die Spezifität ist mit Absicht hoch:
    `[data-region='x']` wiegt (0,1,0), die dunkle Fassung davon
    (0,2,0). Ein Design muss beide schlagen, deshalb `:root[…] […]`.
+
+   GILT NUR AUF INHALTSFLÄCHEN, NICHT AUF `:root`. Stünde es dort,
+   färbte ein PRO-Design auch Navigation und Knöpfe um — die liegen
+   außerhalb jeder Region und lesen die Vorgabe aus `tokens.css`.
+   Genau das war ausgeschlossen: Bedienelemente bleiben global gleich,
+   und die Markenfarbe bleibt sichtbar. Ein Theme ändert Atmosphäre,
+   nicht die Bedienung.
    ============================================================ */
 
-:root[data-pro-design='nordlicht'],
+:root[data-pro-design='nordlicht'] .region-surface,
 :root[data-pro-design='nordlicht'] [data-region] {
   --accent-primary: #3c6f7e;
   --accent-soft: #e7eff2;
@@ -156,7 +163,7 @@
   --font-display: var(--font-cormorant, Georgia), Georgia, serif;
 }
 
-:root[data-theme='dark'][data-pro-design='nordlicht'],
+:root[data-theme='dark'][data-pro-design='nordlicht'] .region-surface,
 :root[data-theme='dark'][data-pro-design='nordlicht'] [data-region] {
   --accent-primary: #6fb0c0;
   --accent-soft: #16262c;

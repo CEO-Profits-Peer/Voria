@@ -41,6 +41,36 @@
   --font-text: var(--font-literata, Georgia), Georgia, 'Times New Roman', serif;
   --font-display: var(--font-newsreader, Georgia), Georgia, serif;
 
+  /* ---------- DIE MARKE ----------------------------------------
+     KEIN THEME DARF DIESE WERTE ÜBERSCHREIBEN. Nicht die zwölf
+     Regionen, nicht die PRO-Designs, nicht der Dunkelmodus.
+
+     Der Grund ist ein Fehler, der lange unbemerkt dastand: Die
+     Wortmarke in der Seitenleiste nutzte `--font-display` — einen
+     Regionen-Slot. Mit einem aktiven PRO-Design wechselte „Voria"
+     von Newsreader zu Cormorant Garamond. Eine Marke, die ihre
+     Schrift ändert, je nachdem was der Nutzer eingestellt hat, ist
+     keine Marke.
+
+     Deshalb eigene Namen. Wer `--font-display` oder
+     `--accent-primary` an einer Stelle liest, an der die MARKE
+     steht, macht denselben Fehler noch einmal.
+
+     --marke-primaer  Der feste Wert. Steht so im Zeichen
+                      (public/icon.svg) und in der Manifestdatei.
+                      Ändert sich nie, auch nicht im Dunkeln.
+     --marke-sichtbar Derselbe Ton, aber für den Bildschirm
+                      aufgehellt, wo der Grund dunkel ist. Nur
+                      hell/dunkel unterscheidet ihn — keine Region.
+     --marke-signal   Der rote Punkt im Zeichen: die Ortsmarke auf
+                      der Buchseite. Sparsam einsetzen, er ist das
+                      einzige warme Zeichen im ganzen System.
+     -------------------------------------------------------------- */
+  --marke-primaer: #2f6060;
+  --marke-sichtbar: #2f6060;
+  --marke-signal: #c8402a;
+  --marke-schrift: var(--font-newsreader, Georgia), Georgia, serif;
+
   /* Der weiße Rand eines Sofortbilds im Open Space.
      Bewusst KEIN Regionen-Slot — er gehört zum Elementtyp Foto,
      nicht zur Region. Bleibt in hell und dunkel gleich. */
@@ -52,6 +82,13 @@
   --ui-zeile: 36px;
   --ui-zeile-gross: 40px;
   --ui-radius: 8px;
+}
+
+/* Nur hell/dunkel darf die sichtbare Fassung der Marke anfassen — und
+   auch das nur, weil #2f6060 auf #191613 nicht mehr lesbar wäre. Der
+   feste Markenwert `--marke-primaer` bleibt daneben unverändert. */
+:root[data-theme='dark'] {
+  --marke-sichtbar: #5e9494;
 }
 
 /* Regionen-Anzeigeschriften. Steht hier statt in regions.css,

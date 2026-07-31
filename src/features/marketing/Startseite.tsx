@@ -127,10 +127,23 @@ export function Startseite() {
           justify-content: space-between;
           padding: var(--space-8) 0 var(--space-64);
         }
+        /* --marke-schrift, nicht --font-display: die Marke steht fest,
+           auch wenn ein Theme die Anzeigeschrift wechselt.
+           Siehe globals.css. */
         .marke {
-          font-family: var(--font-display);
+          font-family: var(--marke-schrift);
           font-size: var(--size-24);
           letter-spacing: var(--tracking-tight);
+        }
+        .marke::after {
+          content: '';
+          display: inline-block;
+          width: 5px;
+          height: 5px;
+          margin-left: 4px;
+          vertical-align: 0.34em;
+          border-radius: 999px;
+          background: var(--marke-signal);
         }
         .kopf-rechts {
           display: flex;

@@ -8,12 +8,26 @@
   padding: var(--space-24);
 }
 
+/* --marke-schrift, nicht --font-display — siehe globals.css.
+   Ausgerechnet hier ist es am wichtigsten: Die Anmeldung ist für
+   viele der erste Blick auf Voria. */
 .marke {
-  font-family: var(--font-display);
+  font-family: var(--marke-schrift);
   font-size: var(--size-24);
   letter-spacing: var(--tracking-tight);
   color: var(--content-primary);
   text-decoration: none;
+}
+
+.marke::after {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 4px;
+  vertical-align: 0.34em;
+  border-radius: 999px;
+  background: var(--marke-signal);
 }
 
 .mitte {

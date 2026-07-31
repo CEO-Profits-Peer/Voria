@@ -778,6 +778,45 @@ abgeleitete Spalte nach Postgres.
 
 ---
 
+### 2026-07-31 · Die Marke liegt außerhalb des Theme-Systems
+
+Voria hat zwölf Regionen, die Farbe und Anzeigeschrift wechseln. Die
+Marke darf davon nichts mitmachen — sonst ist sie keine.
+
+Der Anlass war ein Fehler, der lange unbemerkt dastand: Die Wortmarke
+las `--font-display`, einen Regionen-Slot. Mit einem aktiven
+PRO-Design wechselte „Voria" von Newsreader zu Cormorant Garamond, je
+nach Einstellung des Nutzers. Dasselbe stand an drei Stellen —
+Seitenleiste, Startseite und Anmeldung.
+
+**Vier eigene Werte in `globals.css`, die kein Theme anfassen darf:**
+
+| | |
+|---|---|
+| `--marke-primaer` | `#2F6060`. Der feste Wert, so auch im Zeichen und in der Manifestdatei. Ändert sich nie |
+| `--marke-sichtbar` | Derselbe Ton, im Dunkeln aufgehellt. **Nur** hell/dunkel darf ihn ändern |
+| `--marke-signal` | `#C8402A`, der rote Punkt aus dem Zeichen — die Ortsmarke auf der Buchseite |
+| `--marke-schrift` | Newsreader, fest |
+
+Der Punkt taucht jetzt als kleine Ortsmarke hinter dem Wort auf. Er ist
+das einzige warme Zeichen im ganzen System und bleibt deshalb sparsam.
+
+**Mitgefunden und behoben:** Das PRO-Design setzte seine elf Slots auf
+`:root` und färbte damit Navigation und Knöpfe mit um. Es wirkt jetzt
+nur noch auf Inhaltsflächen. Damit bleibt die Markenfarbe in der
+Bedienoberfläche sichtbar, egal welches Theme läuft — und genau das
+war der Wunsch nach „einer klaren Farbe".
+
+**`npm run pruefe:marke`** bewacht beides. Das Skript hat beim ersten
+Lauf sofort eine dritte Stelle gefunden, die ich übersehen hatte.
+
+**Keine eigene Hausschrift.** Sie kostet vier- bis fünfstellig oder
+Monate, und der Ertrag steckt zu 90 % in einem einzigen Wort. Der Weg
+ist stattdessen eine gezeichnete Wortmarke als SVG — einmal gemacht,
+für immer stabil. Noch offen.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.

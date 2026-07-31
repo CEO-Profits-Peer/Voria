@@ -24,7 +24,7 @@ sichtbar wurde.
 
 ---
 
-## Behoben — 15 Fehler
+## Behoben — 17 Fehler
 
 | # | Fehler | Woran er sichtbar wurde |
 |---|---|---|
@@ -43,6 +43,8 @@ sichtbar wurde.
 | 13 | Doppelklick im Feed markierte die Bilder blau | Deine Meldung |
 | 14 | **Tage ließen sich nicht betiteln** — Feld unsichtbar, und in „Fläche" gar nicht vorhanden | Deine Meldung |
 | 15 | **Personensuche tot** — `RAISE` mit `%%` in `0007`, ganze Migration rollte zurück | Deine Meldung |
+| 16 | **Wortmarke wechselte die Schrift** je nach Theme, an drei Stellen | Der neue Wächter `pruefe:marke` |
+| 17 | PRO-Design färbte Navigation und Knöpfe mit um | Beim Festschreiben der Marke |
 
 Der teuerste war Nummer 4. Er hat mehrere andere Fehler vorgetäuscht:
 weil React nicht hydrierte, tat kein Klick etwas, und es sah aus, als
@@ -74,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 25 Funktionen
+## Gebaut — 30 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -86,8 +88,11 @@ markieren.
 5. **Teilen nach außen** — öffentliche Route `/b/<id>` mit Open-Graph,
    Systemblatt auf dem Handy, Kopieren am Rechner.
 6. **Tagesleiste** — Foto und Sichtbarkeit in beiden Modi erreichbar.
-7. **Wächterskript** `npm run pruefe:stile` — findet ungescopete
-   styled-jsx-Regeln, den Fehler aus Nummer 3.
+7. **Zwei Wächterskripte.** `npm run pruefe:stile` findet ungescopete
+   styled-jsx-Regeln (Fehler 3). `npm run pruefe:marke` findet
+   Wortmarken, die eine Regionen-Schrift lesen, und PRO-Designs, die
+   auf die Wurzel wirken (Fehler 16 und 17) — es fand beim allerersten
+   Lauf sofort eine Stelle, die ich übersehen hatte.
 8. **Deployment** auf Vercel, Adresse aus `VERCEL_URL` statt
    festverdrahtetem localhost.
 
@@ -166,10 +171,32 @@ markieren.
     bemerkt und behoben: zwei fast identische Schalterzeilen wurden zu
     `src/ui/Schalterzeile.tsx` zusammengelegt.
 
-Dazu 10 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+26. **Wischbremse im Feed** — `scroll-snap-type: proximity` plus
+    `scroll-snap-stop: always`, nur auf der Feed-Seite. Ein kräftiger
+    Wisch überspringt damit eine Karte statt zwanzig, ohne dass Snap
+    das Überfliegen in ein Raster zwingt. Teilweise Rücknahme der
+    Entscheidung vom 30.07. — die galt `mandatory`.
+27. **Gelesen merken** — `post_views`, Ungelesenes zuerst. Gelesenes
+    wird nach hinten sortiert statt ausgeblendet: bei zwei Beiträgen
+    im Bestand wäre der Feed sonst nach einem Durchgang leer. Der Feed
+    läuft dafür jetzt über die Datenbankfunktion `feed_laden`.
+28. **Reiter „Entdecken"** — Beiträge aus Regionen, in denen man noch
+    nicht war. Am Handy ausgeblendet, außer man steht darin.
+29. **Export** — Archiv mit Fotos, je einer lesbaren Textdatei pro
+    Reise und allen Daten als JSON. Zusammengebaut im **Browser**:
+    Auf Vercel müsste eine Funktion sonst alles gleichzeitig im
+    Speicher halten und in Sekunden ausliefern — das scheitert genau
+    bei dem, der viel gesammelt hat. Der ZIP-Schreiber kommt ohne
+    Bibliothek aus, weil AVIF und WebP sich nicht weiter komprimieren
+    lassen.
+30. **Die Marke festgeschrieben** — eigene Werte in `globals.css`, die
+    kein Theme anfassen darf, plus der Ortsmarken-Punkt hinter dem
+    Wort. Dazu der Wächter aus Nummer 7.
+
+Dazu 11 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,
-`0009` Startbereich und Rückmeldungen, `0010` PRO-Design) und die
-Dokumente `START.md` und `DEPLOY.md`.
+`0009` Startbereich und Rückmeldungen, `0010` PRO-Design,
+`0011` Gelesen-Merker) und die Dokumente `START.md` und `DEPLOY.md`.
 
 ---
 

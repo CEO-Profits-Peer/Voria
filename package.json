@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "pruefe:stile": "node scripts/pruefe-stile.mjs",
-    "pruefen": "npm run typecheck && npm run pruefe:stile"
+    "pruefe:marke": "node scripts/pruefe-marke.mjs",
+    "pruefen": "npm run typecheck && npm run pruefe:stile && npm run pruefe:marke"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

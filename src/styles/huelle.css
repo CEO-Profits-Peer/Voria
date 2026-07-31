@@ -55,14 +55,32 @@
   font-family: var(--font-ui);
 }
 
+/* `--marke-schrift`, NICHT `--font-display`.
+   Letzteres ist ein Regionen-Slot: Mit einem aktiven PRO-Design
+   wechselte die Wortmarke von Newsreader zu Cormorant Garamond, je
+   nach Einstellung des Nutzers. Siehe Kommentar in globals.css. */
 .vo-wortmarke {
   display: block;
   padding: 4px 8px 18px;
-  font-family: var(--font-display);
+  font-family: var(--marke-schrift);
   font-size: 20px;
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--content-primary);
+}
+
+/* Der Punkt hinter dem Namen — die Ortsmarke aus dem Zeichen, klein
+   und still. Er ist das einzige warme Zeichen in der Bedienoberfläche
+   und trägt deshalb `--marke-signal`, nicht den Regionenakzent. */
+.vo-wortmarke::after {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 3px;
+  vertical-align: 0.32em;
+  border-radius: 999px;
+  background: var(--marke-signal);
 }
 
 /* ---------- „Neue Reise" ------------------------------------ */
