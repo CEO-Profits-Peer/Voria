@@ -270,6 +270,9 @@ export const de = {
   },
 
   export: {
+    drucken: 'Als PDF speichern',
+    druckHinweis: 'Dein Browser macht daraus ein PDF: Beim Drucken als Ziel „Als PDF speichern“ wählen. Jede Reise beginnt auf einer neuen Seite.',
+    druckVerweis: 'Gesetzter Bogen',
     titel: 'Alles mitnehmen',
     warum:
       'Voria soll der Ort sein, an dem du in zehn Jahren nachliest. Das ist nur ein ehrliches Versprechen, wenn deine Einträge jederzeit mitkommen können — ohne Konto, ohne Voria, ohne Netz.',

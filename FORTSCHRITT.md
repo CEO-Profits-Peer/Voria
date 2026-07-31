@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 33 Funktionen
+## Gebaut — 36 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -209,6 +209,21 @@ markieren.
     Vergleichsraster mit Häkchen. Öffentlich erreichbar, damit man
     ohne Konto erfährt, was Voria kostet. Statt eines Kaufknopfes, der
     nichts tut, steht dort ein ehrlicher Satz.
+
+34. **Fotogrenze durchgesetzt** — serverseitig, mit sichtbarer
+    Meldung. Dabei die eigentliche Falle abgefangen: Der Aufrufer warf
+    den Rückgabewert weg, das Foto wäre still verschwunden.
+35. **Werbung mit Bild, plus Platz für ein Werbenetz.** Bilder liegen
+    unter `/public/werbung/` — niemals auf einem fremden Server, sonst
+    zählt jeder Werbetreibende die Aufrufe selbst mit. Der Platz für
+    ein Netz ist gebaut, aber leer: Was dort eingetragen werden darf,
+    steht im Kopf von `ExterneAnzeige.tsx`.
+36. **Der gesetzte Bogen** — `/du/export/druck`, das erste echte
+    PRO-Merkmal. Ein Druck-Stylesheet statt einer PDF-Bibliothek: Der
+    Browser kann „Als PDF speichern" besser, er kennt Schriften,
+    Silbentrennung und Papierformat. Ergebnis ist ein durchsuchbares
+    Dokument statt eines Stapels Bilder — und dieselbe Vorlage kann
+    später an eine Druckerei gehen.
 
 Dazu 13 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,

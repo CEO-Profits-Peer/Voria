@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, FileText } from 'lucide-react';
 import { ExportKnopf } from '@/features/export/ExportKnopf';
 import { texte } from '@/i18n/server';
 
@@ -23,6 +23,20 @@ export default async function ExportSeite() {
       <ExportKnopf />
 
       <p className="export-fein">{t.export.hinweisFotos}</p>
+
+      {/* Der gesetzte Bogen ist das PRO-Merkmal, die Daten oben sind
+          frei. Der Verweis steht trotzdem für alle da — wer ihn
+          öffnet, sieht dort, was er bekäme. */}
+      <div className="abschnitte" style={{ marginTop: 'var(--space-48)' }}>
+        <section>
+          <h2>{t.pro.pdfTitel}</h2>
+          <p className="unterseite-zeile">{t.pro.pdfText}</p>
+          <Link href="/du/export/druck" className="konto-weg">
+            <FileText size={16} strokeWidth={1.75} aria-hidden />
+            {t.export.druckVerweis}
+          </Link>
+        </section>
+      </div>
     </div>
   );
 }

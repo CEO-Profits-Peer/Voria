@@ -132,6 +132,18 @@
   object-fit: cover;
 }
 
+/* Platz für ein Werbenetz. Feste Mindesthöhe, damit der Feed nicht
+   springt, sobald das fremde Skript seine Karte einsetzt — ein Sprung
+   im Bildlauf ist das Unangenehmste, was Werbung anrichten kann. */
+.vo-anzeige-extern {
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-8);
+  background: var(--surface-sunken);
+}
+
 .vo-anzeige-titel {
   margin: 0;
   font-family: var(--font-ui);

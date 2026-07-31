@@ -268,6 +268,9 @@ export const en: Woerterbuch = {
   },
 
   export: {
+    drucken: 'Save as PDF',
+    druckHinweis: 'Your browser turns this into a PDF: choose “Save as PDF” as the destination when printing. Each journey starts on a new page.',
+    druckVerweis: 'Typeset sheet',
     titel: 'Take everything with you',
     warum:
       'Voria is meant to be the place you read back in ten years. That is only an honest promise if your entries can leave with you at any time — no account, no Voria, no connection.',

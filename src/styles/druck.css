@@ -1,0 +1,172 @@
+/* ============================================================
+   Der gesetzte Bogen — Voria auf Papier
+   ------------------------------------------------------------
+   Ein Druck-Stylesheet statt einer PDF-Bibliothek. Der Browser kann
+   „Als PDF speichern" seit Jahren und tut es besser: Er kennt die
+   Schriften, die Silbentrennung und das Papierformat des Nutzers.
+   Das Ergebnis ist ein durchsuchbares Dokument, kein Stapel Bilder.
+
+   Zugleich die Vorstufe zum gedruckten Fotobuch — dieselbe Vorlage
+   kann an eine Druckerei gehen.
+   ============================================================ */
+
+.druck {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: var(--space-32) var(--space-24) var(--space-64);
+}
+
+.druck-titelblatt {
+  margin-bottom: var(--space-48);
+}
+
+.druck-marke {
+  margin: 0 0 var(--space-8);
+  font-family: var(--marke-schrift);
+  font-size: var(--size-20);
+  letter-spacing: -0.02em;
+  color: var(--content-muted);
+}
+
+.druck-titelblatt h1 {
+  margin: 0 0 var(--space-8);
+  font-family: var(--font-display);
+  font-size: var(--size-48);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-regular);
+}
+
+.druck-spanne,
+.druck-meta {
+  margin: 0 0 var(--space-16);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}
+
+.druck-reise {
+  margin-bottom: var(--space-48);
+}
+
+.druck-reise > h2 {
+  margin: 0 0 var(--space-8);
+  font-family: var(--font-display);
+  font-size: var(--size-30);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-medium);
+}
+
+.druck-tag {
+  margin-bottom: var(--space-40);
+}
+
+.druck-tag h3 {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--size-24);
+  line-height: var(--leading-snug);
+  font-weight: var(--weight-medium);
+}
+
+.druck-text {
+  margin: 0 0 var(--space-16);
+  font-family: var(--font-text);
+  font-size: var(--size-18);
+  line-height: var(--leading-relaxed);
+  color: var(--content-primary);
+  text-wrap: pretty;
+  hyphens: auto;
+}
+
+.druck-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 var(--space-16);
+  border-radius: var(--radius-8);
+}
+
+/* ============================================================
+   Was auf Papier anders ist
+   ============================================================ */
+
+@media print {
+  /* Ränder wie ein Buch: außen mehr Luft, damit der Daumen Platz hat.
+     `mm`, weil Papier keine Pixel kennt. */
+  @page {
+    size: A4;
+    margin: 20mm 18mm 22mm;
+  }
+
+  /* Voria ist im Dunkeln warm — auf Papier wäre das ein
+     schwarzer Block und eine leere Patrone. Immer hell drucken. */
+  :root,
+  :root[data-theme='dark'] {
+    --surface-canvas: #ffffff;
+    --surface-raised: #ffffff;
+    --content-primary: #1a1a1a;
+    --content-secondary: #333333;
+    --content-muted: #666666;
+    --canvas-tint: transparent;
+    --raised-tint: transparent;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  /* Alles, was zur Bedienung gehört, hat auf Papier nichts verloren:
+     Navigation, Reiterleisten, der Druckknopf selbst. */
+  .vo-leiste,
+  .vo-unten,
+  .druck-nur-schirm,
+  .feed-reiter-halter {
+    display: none !important;
+  }
+
+  .vo-inhalt,
+  .druck {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Eine Reise beginnt auf einer neuen Seite. Ein Tag darf keinen
+     Umbruch mitten im ersten Satz bekommen. */
+  .druck-reise {
+    break-before: page;
+    margin-bottom: 0;
+  }
+
+  .druck-reise:first-of-type {
+    break-before: auto;
+  }
+
+  .druck-tag {
+    break-inside: avoid-page;
+  }
+
+  /* Überschriften bleiben bei ihrem Text — sonst steht eine Zeile
+     allein am Seitenfuß und der Absatz beginnt auf der nächsten. */
+  .druck-tag h3,
+  .druck-reise > h2 {
+    break-after: avoid-page;
+  }
+
+  .druck-text {
+    /* Weniger als zwei Zeilen allein sind hässlich, im Deutschen
+       ohnehin, weil die Wörter lang sind. */
+    orphans: 2;
+    widows: 2;
+  }
+
+  .druck-bild {
+    break-inside: avoid;
+    max-height: 60vh;
+    object-fit: contain;
+  }
+}
