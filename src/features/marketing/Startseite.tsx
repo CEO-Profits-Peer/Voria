@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Region } from '@/themes/regions';
 import { useT } from '@/i18n/Sprachraum';
+import { Ansichten } from './Ansichten';
 
 const REIHENFOLGE: Region[] = ['ostasien', 'maghreb', 'nordeuropa', 'anden'];
 
@@ -84,6 +85,10 @@ export function Startseite() {
           <span className="buehne-text">{t.regionen[jetzt.region]}</span>
         </div>
       </section>
+
+      {/* Direkt nach dem Aufmacher: Wer bis hier gescrollt hat, will
+          sehen, wie es aussieht — nicht lesen, was es kann. */}
+      <Ansichten />
 
       <section className="drei">
         <article>

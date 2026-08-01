@@ -344,6 +344,15 @@ export const de = {
     },
   },
 
+  wand: {
+    titel: 'Weiterlesen in Voria',
+    zeile:
+      'Voria ist ein Reisetagebuch. Was du hier gelesen hast, hat jemand für sich geschrieben und dann geteilt — das meiste bleibt privat. Ein Konto ist kostenlos, und dein Tagebuch gehört dir.',
+    anlegen: 'Konto anlegen',
+    spaeter: 'Nur diesen Tag lesen',
+    schliessen: 'Schließen',
+  },
+
   konto: {
     titel: 'Konto',
     loeschen: 'Konto löschen',
@@ -476,6 +485,17 @@ export const de = {
   },
 
   start: {
+    ansichtenTitel: 'So sieht es aus',
+    ansichtenZeile:
+      'Drei Blicke in die App. Kein Bildschirmfoto — das hier ist die echte Oberfläche, mit denselben Farben und Ornamenten, die du später vor dir hast.',
+    ansichtenFein:
+      'Beispieltexte. Wie es bei dir aussieht, hängt davon ab, wo du warst — jede der zwölf Regionen bringt ihr eigenes Material mit.',
+    blickSeite: 'Seite',
+    blickFlaeche: 'Fläche',
+    blickWelt: 'Deine Welt',
+    mockTitel: 'Der Bus kam nicht',
+    mockZettel1: 'Bahnhof, 6 Uhr. Niemand da außer einem Hund.',
+    mockZettel2: 'Tee mit zu viel Zucker.',
     anfangen: 'Anfangen',
     hero: 'Der Ort, an dem du in zehn Jahren nachliest, wie sich dein Leben angefühlt hat.',
     heroZeile:

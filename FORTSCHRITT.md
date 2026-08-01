@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 39 Funktionen
+## Gebaut — 41 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -246,6 +246,15 @@ markieren.
     regelmäßig, weil es zwei Ansichten je Tag und eine umziehende
     Navigation gibt —, wird der Schritt mittig erzählt statt auf
     etwas zu deuten, das nicht da ist. Migration `0015`.
+
+40. **Einladung hinter dem geteilten Beitrag** — auf `/b/<id>`,
+    aber erst wenn jemand über den Beitrag hinaus liest. Der Beitrag
+    bleibt ganz lesbar, die Einladung ist wegklickbar, und „nur diesen
+    Tag lesen" ist ein vollwertiger Weg.
+41. **Drei Ansichten auf der Startseite** — Seite, Fläche, Deine Welt.
+    Keine Bildschirmfotos, sondern die echte Oberfläche mit denselben
+    Klassen und Tokens: Ein Bild veraltet an dem Tag, an dem sich ein
+    Abstand ändert, und niemand merkt es.
 
 Dazu 15 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,

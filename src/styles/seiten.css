@@ -1255,3 +1255,397 @@ h1.gross {
     transition: none;
   }
 }
+
+/* ---------- Einladung hinter dem geteilten Beitrag -----------
+   Kein Nebel über dem Text: Der Beitrag bleibt ganz lesbar. Die
+   Einladung erscheint erst, wenn jemand über ihn hinaus liest.
+   Begründung im Kopf von AnmeldeWand.tsx. */
+
+.wand-wache {
+  height: 1px;
+  margin-top: var(--space-48);
+}
+
+.wand-grund {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--space-16);
+  background: var(--surface-scrim);
+  animation: wand-auf var(--motion-log) both;
+}
+
+@keyframes wand-auf {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 700px) {
+  .wand-grund {
+    align-items: center;
+  }
+}
+
+.wand-karte {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: min(460px, 100%);
+  padding: var(--space-32) var(--space-24) var(--space-24);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-14);
+  background: var(--surface-raised);
+}
+
+.wand-karte h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--size-24);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-medium);
+  color: var(--content-primary);
+}
+
+.wand-karte p {
+  margin: 0;
+  font-family: var(--font-text);
+  font-size: var(--size-16);
+  line-height: var(--leading-relaxed);
+  color: var(--content-secondary);
+  text-wrap: pretty;
+}
+
+.wand-knoepfe {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  flex-wrap: wrap;
+  margin-top: var(--space-8);
+}
+
+.wand-knoepfe a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-20);
+  border: 1px solid var(--border-default);
+  border-radius: 7px;
+  color: var(--content-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--size-14);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.wand-knoepfe .wand-haupt {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary);
+  color: var(--accent-contrast);
+}
+
+.wand-knoepfe a:hover {
+  text-decoration: none;
+}
+
+/* „Nur diesen Tag lesen" ist ein vollwertiger Weg, kein Kleingedrucktes
+   — aber er drängt sich nicht vor. */
+.wand-spaeter {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--content-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.wand-spaeter:hover {
+  color: var(--content-primary);
+}
+
+.wand-zu {
+  position: absolute;
+  top: var(--space-8);
+  right: var(--space-8);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--content-muted);
+  cursor: pointer;
+}
+
+.wand-zu:hover {
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+}
+
+/* ---------- Ansichten auf der Startseite ---------------------
+   Keine Bildschirmfotos: dieselben Klassen und Tokens wie die App.
+   Was sich dort ändert, ändert sich hier mit. Begründung im Kopf
+   von Ansichten.tsx. */
+
+.ansichten {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: var(--space-80) var(--space-24);
+}
+
+.ansichten h2 {
+  margin: 0 0 var(--space-12);
+  font-family: var(--font-display);
+  font-size: var(--size-36);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-regular);
+  color: var(--content-primary);
+}
+
+.ansichten-zeile {
+  max-width: 60ch;
+  margin: 0 0 var(--space-24);
+  font-family: var(--font-text);
+  font-size: var(--size-18);
+  line-height: var(--leading-relaxed);
+  color: var(--content-secondary);
+  text-wrap: pretty;
+}
+
+.ansicht-reiter {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: var(--space-20);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-8);
+  background: var(--surface-raised);
+}
+
+.ansicht-reiter button {
+  height: 38px;
+  padding: 0 var(--space-20);
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--content-muted);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background var(--motion-feed), color var(--motion-feed);
+}
+
+.ansicht-reiter button[data-aktiv='true'] {
+  background: var(--accent-soft);
+  color: var(--content-accent);
+  font-weight: var(--weight-semi);
+}
+
+/* Der Fensterrahmen. Macht aus der Fläche einen Ausschnitt statt
+   eines Kastens — ohne ein Betriebssystem nachzuahmen, das der
+   Betrachter vielleicht gar nicht benutzt. */
+.ansicht-rahmen {
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-14);
+  background: var(--surface-canvas);
+}
+
+.ansicht-leiste {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 var(--space-16);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-raised);
+}
+
+.ansicht-leiste span {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full);
+  background: var(--border-strong);
+  opacity: 0.5;
+}
+
+.ansicht-blatt,
+.ansicht-flaeche,
+.ansicht-welt {
+  position: relative;
+  min-height: 340px;
+}
+
+.ansicht-inhalt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  max-width: 62ch;
+  margin: 0 auto;
+  padding: var(--space-48) var(--space-32);
+}
+
+.ansicht-blatt .ornament-corner {
+  position: absolute;
+  top: var(--space-16);
+  right: var(--space-16);
+}
+
+.ansicht-meta {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}
+
+.ansicht-inhalt h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--size-30);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-medium);
+  color: var(--content-primary);
+}
+
+.ansicht-inhalt p {
+  margin: 0;
+  font-family: var(--font-text);
+  font-size: var(--size-18);
+  line-height: var(--leading-relaxed);
+  color: var(--content-primary);
+  text-wrap: pretty;
+}
+
+.ansicht-fuss {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--content-muted);
+}
+
+/* ---- Die freie Fläche ---- */
+
+.ansicht-flaeche {
+  padding: var(--space-32);
+}
+
+.zettel {
+  position: absolute;
+  max-width: 240px;
+  padding: var(--space-16);
+  transform: rotate(var(--dreh, 0deg));
+  background: var(--sofortbild-rand);
+  box-shadow: 0 2px 10px var(--sofortbild-schatten);
+  font-family: var(--font-text);
+  font-size: var(--size-16);
+  line-height: var(--leading-normal);
+  color: var(--content-primary);
+}
+
+.zettel:nth-of-type(1) {
+  top: 40px;
+  left: 6%;
+}
+
+.zettel.schmal {
+  top: 210px;
+  left: 34%;
+  max-width: 180px;
+}
+
+.sofortbild {
+  position: absolute;
+  top: 70px;
+  right: 10%;
+  padding: 10px 10px 34px;
+  transform: rotate(var(--dreh, 0deg));
+  background: var(--sofortbild-rand);
+  box-shadow: 0 3px 14px var(--sofortbild-schatten);
+}
+
+.sofortbild-flaeche {
+  display: block;
+  width: 190px;
+  height: 140px;
+  background: var(--accent-soft);
+}
+
+/* ---- Deine Welt ---- */
+
+.ansicht-welt {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-12);
+  padding: var(--space-32);
+}
+
+.welt-feld {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 84px;
+  padding: 0 var(--space-16);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-8);
+}
+
+.welt-punkt {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary);
+}
+
+.welt-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--content-primary);
+}
+
+/* Nicht jede Region ist bereist — genau das ist die Aussage. */
+.welt-blass {
+  opacity: 0.3;
+  background: var(--surface-sunken);
+}
+
+.ansicht-fein {
+  max-width: 60ch;
+  margin: var(--space-16) 0 0;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: var(--leading-normal);
+  color: var(--content-muted);
+  text-wrap: pretty;
+}
+
+@media (max-width: 700px) {
+  .zettel.schmal,
+  .sofortbild {
+    display: none;
+  }
+  .zettel:nth-of-type(1) {
+    left: 8%;
+    right: 8%;
+    max-width: none;
+  }
+}

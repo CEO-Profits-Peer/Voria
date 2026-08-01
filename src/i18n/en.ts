@@ -341,6 +341,15 @@ export const en: Woerterbuch = {
     },
   },
 
+  wand: {
+    titel: 'Read on in Voria',
+    zeile:
+      'Voria is a travel journal. What you just read was written for one person and then shared — most of it stays private. An account is free, and your journal is yours.',
+    anlegen: 'Create account',
+    spaeter: 'Just read this day',
+    schliessen: 'Close',
+  },
+
   konto: {
     titel: 'Account',
     loeschen: 'Delete account',
@@ -472,6 +481,17 @@ export const en: Woerterbuch = {
   },
 
   start: {
+    ansichtenTitel: 'What it looks like',
+    ansichtenZeile:
+      'Three glimpses into the app. Not a screenshot — this is the real interface, with the same colours and ornaments you will have in front of you.',
+    ansichtenFein:
+      'Example texts. How it looks for you depends on where you have been — each of the twelve regions brings its own material.',
+    blickSeite: 'Page',
+    blickFlaeche: 'Canvas',
+    blickWelt: 'Your world',
+    mockTitel: 'The bus never came',
+    mockZettel1: 'Station, 6 a.m. Nobody there but a dog.',
+    mockZettel2: 'Tea with too much sugar.',
     anfangen: 'Get started',
     hero: 'The place where, in ten years, you read back what your life felt like.',
     heroZeile:

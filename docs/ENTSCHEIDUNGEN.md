@@ -878,6 +878,68 @@ einem echten Konto.
 
 ---
 
+### 2026-07-31 · Voria wird Nebenprodukt, nicht Hauptprodukt
+
+Richtungsänderung, und die größte in diesem Dokument. Der Betreiber
+tritt künftig als Indie-Entwickler auf und bringt **Olympos** als
+Hauptprodukt heraus. Nexus Node, Nexus Arcade und Voria laufen
+nebenher — Voria ausdrücklich als **passives Einkommen mit wenig
+Werbung**.
+
+**Was das für Voria bedeutet, nüchtern:**
+
+Der Engpass war nie Geld, sondern der Kaltstart — es braucht grob
+tausend aktive Schreiber, bevor der soziale Teil sich selbst trägt.
+Diese tausend kommen bei einem Nebenprodukt **nicht durch Marketing**.
+Damit ändert sich, was sich zu bauen lohnt:
+
+| | |
+|---|---|
+| **Wichtiger** | Alles, was ohne Zutun wirkt: geteilte Beiträge als öffentliche Seiten, der Jahresrückblick als etwas, das man herzeigt, Suchmaschinen |
+| **Unverändert** | Der Log. Er ist auch mit fünf Nutzern ein gutes Produkt |
+| **Weniger dringend** | Alles, was Masse voraussetzt: Werbenetze, Feed-Gewichtung, Repost, Erwähnungen |
+
+**Die praktische Folge:** `/b/<id>` ist nicht mehr nur eine
+Visitenkarte, sondern der einzige Weg, auf dem Voria neue Leute
+erreicht. Deshalb steht dort seit heute eine Einladung — siehe unten.
+
+Nicht geändert wird die Preisstruktur: PRO bleibt, Werbung bleibt im
+Feed, und die eiserne Regel „niemals Werbung im Log" erst recht.
+
+### 2026-07-31 · Die Einladung hinter dem geteilten Beitrag
+
+Auf `/b/<id>` erscheint eine Einladung zum Anlegen eines Kontos —
+aber erst, wenn jemand über den Beitrag hinaus liest.
+
+**Das ist kein Widerspruch zu „die App drängt nicht".** Die Regel gilt
+der ANWENDUNG: Wer drin ist und schreibt, wird nicht angestupst.
+`/b/<id>` ist aber das Schaufenster, nicht die Anwendung.
+
+Drei Grenzen, damit es das bleibt:
+
+1. **Der Beitrag bleibt ganz lesbar.** Nichts wird abgeschnitten oder
+   hinter Nebel gelegt. Ein geteilter Link, der zur Falle wird, wird
+   nicht mehr geteilt — und dann ist der ganze Weg tot.
+2. **Erst nach dem Ende.** Nicht nach drei Sekunden, nicht beim
+   Verlassen der Seite. Nur wenn jemand tatsächlich weiterliest.
+3. **Einmal, und wegklickbar.** „Nur diesen Tag lesen" ist ein
+   vollwertiger Weg, kein Kleingedrucktes.
+
+### 2026-07-31 · Keine Bildschirmfotos auf der Startseite
+
+Die Startseite zeigt drei Ansichten der App — als **echte
+Oberfläche**, mit denselben Klassen und Tokens wie die Anwendung.
+
+Ein Bildschirmfoto veraltet an dem Tag, an dem sich ein Abstand
+ändert, und niemand merkt es: Eine PNG-Datei baut nicht mit. Bei zwölf
+Regionen in hell und dunkel wären es vierundzwanzig Bilder, die alle
+gleichzeitig veralten.
+
+Ehrlich bleibt es dadurch, dass darunter steht, was man sieht:
+Beispieltexte, kein echter Log.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.

@@ -32,6 +32,8 @@ import { notFound } from 'next/navigation';
 import { ladeBeitrag } from '@/features/social/profilQueries';
 import { Avatar } from '@/ui/Avatar';
 import { FotoBild } from '@/features/log/FotoBild';
+import { AnmeldeWand } from '@/features/marketing/AnmeldeWand';
+import { texte } from '@/i18n/server';
 import { seitenUrl } from '@/lib/site-url';
 import { bildUrl } from '@/lib/bild-url';
 
@@ -77,7 +79,7 @@ export default async function GeteilterBeitrag({
   params: Promise<{ beitragId: string }>;
 }) {
   const { beitragId } = await params;
-  const beitrag = await ladeBeitrag(beitragId);
+  const [beitrag, { t }] = await Promise.all([ladeBeitrag(beitragId), texte()]);
   if (!beitrag) notFound();
 
   const datum = new Date(beitrag.tag.datum).toLocaleDateString('de-DE', {
@@ -110,14 +112,25 @@ export default async function GeteilterBeitrag({
       </article>
 
       {/*
-        Kein „Jetzt anmelden", kein Zähler, kein Banner. Eine Zeile, die
-        sagt, woher das kommt — wer mehr will, klickt.
+        Die Zeile bleibt zurückhaltend — sie sagt nur, woher das kommt.
+        Die Einladung darunter erscheint erst, wenn jemand über den
+        Beitrag hinaus liest, also wenn er tatsächlich mehr will.
+        Begründung im Kopf von AnmeldeWand.tsx.
       */}
       <footer className="b-fuss">
         <Link href="/">
           Geschrieben in <strong>Voria</strong> — einem Reisetagebuch.
         </Link>
       </footer>
+
+      <AnmeldeWand
+        titel={t.wand.titel}
+        zeile={t.wand.zeile}
+        anlegen={t.wand.anlegen}
+        anmelden={t.auth.anmelden}
+        spaeter={t.wand.spaeter}
+        schliessen={t.wand.schliessen}
+      />
     </main>
   );
 }
