@@ -298,6 +298,12 @@ export async function sichtbarkeitSetzen(
   eintragId: string,
   stufe: 'private' | 'followers' | 'public',
   text: string,
+  /**
+   * Nur bei „öffentlich" von Bedeutung — ohne Beitrag gibt es nichts
+   * zu kommentieren. Voreinstellung offen, damit ein alter Aufrufer
+   * ohne dieses Argument dasselbe tut wie bisher.
+   */
+  kommentareOffen = true,
 ): Promise<TeilenErgebnis> {
   const supabase = await createServerClient();
   const {
@@ -318,7 +324,15 @@ export async function sichtbarkeitSetzen(
   if (stufe === 'public') {
     const { error } = await supabase
       .from('posts')
-      .upsert({ entry_id: eintragId, user_id: user.id, caption: text }, { onConflict: 'entry_id' });
+      .upsert(
+        {
+          entry_id: eintragId,
+          user_id: user.id,
+          caption: text,
+          kommentare_offen: kommentareOffen,
+        },
+        { onConflict: 'entry_id' },
+      );
 
     if (error) {
       /*

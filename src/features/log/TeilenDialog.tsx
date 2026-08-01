@@ -14,6 +14,7 @@
 import { useState, useTransition } from 'react';
 import { Lock, Users, Globe, X } from 'lucide-react';
 import { Knopf } from '@/ui/Knopf';
+import { Schalterzeile } from '@/ui/Schalterzeile';
 import { useT } from '@/i18n/Sprachraum';
 import { sichtbarkeitSetzen } from './actions';
 
@@ -25,13 +26,27 @@ export function TeilenDialog({
   eintragId,
   jetzt,
   aufSchliessen,
+  region = 'neutral',
+  verfasser,
+  titel,
+  ort,
+  auszug,
 }: {
   eintragId: string;
   jetzt: Stufe;
   aufSchliessen: () => void;
+  /** Damit die Vorschau dasselbe Material trägt wie später im Feed. */
+  region?: string;
+  verfasser: string;
+  titel: string | null;
+  ort: string | null;
+  /** Der Anfang des Tagestextes — steht in der Vorschau, wenn kein
+      Begleitsatz getippt ist. */
+  auszug: string | null;
 }) {
   const { t } = useT();
   const [stufe, setStufe] = useState<Stufe>(jetzt);
+  const [kommentare, setKommentare] = useState(true);
 
   const stufen = [
     { wert: 'private' as Stufe, Icon: Lock, name: t.teilen.privat, erklaerung: t.teilen.privatErklaerung },
@@ -51,7 +66,12 @@ export function TeilenDialog({
   const sichern = () =>
     starten(async () => {
       setFehler(null);
-      const ergebnis = await sichtbarkeitSetzen(eintragId, stufe, stufe === 'public' ? text : '');
+      const ergebnis = await sichtbarkeitSetzen(
+        eintragId,
+        stufe,
+        stufe === 'public' ? text : '',
+        kommentare,
+      );
       if (ergebnis?.fehler) {
         setFehler(ergebnis.fehler);
         return;
@@ -88,15 +108,67 @@ export function TeilenDialog({
         </div>
 
         {stufe === 'public' && (
-          <label className="dazu">
-            <span>{t.teilen.einSatzDazu}</span>
-            <textarea
-              rows={2}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder={t.teilen.optional}
+          <>
+            <label className="dazu">
+              <span>{t.teilen.einSatzDazu}</span>
+              <textarea
+                rows={2}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder={t.teilen.optional}
+              />
+            </label>
+
+            {/*
+              KOMMENTARE JE BEITRAG, nicht je Konto.
+
+              Dieselbe Begründung wie bei der Sichtbarkeit: Ein Tag über
+              einen gestorbenen Großvater und ein Tag über einen
+              verpassten Bus sind nicht dieselbe Sache. Wer für den
+              einen keine Kommentare will, will sie für den anderen
+              vielleicht schon.
+            */}
+            <Schalterzeile
+              wort={t.teilen.kommentareOffen}
+              zeile={t.teilen.kommentareOffenZeile}
+              an={kommentare}
+              beimUmlegen={setKommentare}
             />
-          </label>
+
+            {/*
+              DIE VORSCHAU.
+
+              Vorher stand hier nur eine Erklärung in Worten — „erscheint
+              im Feed und kann Zustimmung bekommen". Das beschreibt, was
+              passiert, zeigt es aber nicht. Wer zum ersten Mal etwas
+              teilt, will vor allem eines wissen: wie sieht das aus,
+              wenn Fremde es sehen?
+
+              Dieselbe Antwort wie bei PRO: zeigen schlägt aufzählen.
+            */}
+            <div className="vorschau">
+              <span className="vorschau-etikett">{t.teilen.soSiehtEsAus}</span>
+              <div className="region-surface vorschau-karte" data-region={region}>
+                <div className="vorschau-kopf">
+                  <span className="vorschau-avatar" aria-hidden />
+                  <span className="vorschau-wer">
+                    <strong>{verfasser}</strong>
+                    <span>
+                      {ort ?? t.feed.irgendwo} · {t.teilen.heute}
+                    </span>
+                  </span>
+                </div>
+                {titel && <h3>{titel}</h3>}
+                <p>{text.trim() || auszug || t.teilen.vorschauLeer}</p>
+                <div className="ornament-divider" />
+                <span className="vorschau-fuss">
+                  {t.feed.zustimmen}
+                  {kommentare ? ` · ${t.kommentar.knopf}` : ''}
+                  {` · ${t.feed.teilen}`}
+                </span>
+              </div>
+            </div>
+          </>
         )}
 
         {fehler && (
@@ -111,6 +183,80 @@ export function TeilenDialog({
       </div>
 
       <style jsx>{`
+        /* ---- Die Vorschau ---- */
+        .vorschau {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-8);
+        }
+        .vorschau-etikett {
+          font-family: var(--font-ui);
+          font-size: 11px;
+          font-weight: var(--weight-semi);
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: var(--content-muted);
+        }
+        .vorschau-karte {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-8);
+          padding: var(--space-16);
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-14);
+          background: var(--raised-tint, var(--surface-raised));
+        }
+        .vorschau-kopf {
+          display: flex;
+          align-items: center;
+          gap: var(--space-8);
+        }
+        .vorschau-avatar {
+          width: 28px;
+          height: 28px;
+          flex: none;
+          border-radius: var(--radius-full);
+          background: var(--accent-soft);
+        }
+        .vorschau-wer {
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          font-family: var(--font-ui);
+          font-size: 11px;
+          color: var(--content-muted);
+        }
+        .vorschau-wer strong {
+          font-size: 13px;
+          font-weight: var(--weight-medium);
+          color: var(--content-primary);
+        }
+        .vorschau-karte h3 {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: var(--size-20);
+          line-height: var(--leading-snug);
+          letter-spacing: var(--tracking-tight);
+          font-weight: var(--weight-medium);
+          color: var(--content-primary);
+        }
+        .vorschau-karte p {
+          margin: 0;
+          font-size: var(--size-14);
+          line-height: var(--leading-normal);
+          color: var(--content-secondary);
+          text-wrap: pretty;
+          /* Drei Zeilen genügen: Es ist eine Vorschau, kein Abzug. */
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .vorschau-fuss {
+          font-family: var(--font-ui);
+          font-size: 11px;
+          color: var(--content-muted);
+        }
         .teilen-fehler {
           margin: 0;
           padding: var(--space-12) var(--space-16);

@@ -18,6 +18,8 @@ export interface Beitrag {
   votes: number;
   selbstGevotet: boolean;
   kommentare: number;
+  /** Ob unter diesem Beitrag geschrieben werden darf. Siehe 0017. */
+  kommentareOffen: boolean;
   verfasser: { name: string; benutzername: string; bild: string | null };
   tag: { datum: string; titel: string | null; ort: string | null };
   region: RegionOrNeutral;
@@ -105,7 +107,7 @@ export async function ladeFeed(
   const { data, error } = await supabase
     .from('posts')
     .select(
-      `id, entry_id, caption, vote_count, published_at, comments(count),
+      `id, entry_id, caption, vote_count, published_at, kommentare_offen, comments(count),
        profiles!posts_user_id_fkey(username, display_name, avatar_url),
        entries(entry_date, title, place_name,
                trips(region_override, trip_countries(country_code, days)),
@@ -151,6 +153,9 @@ export async function ladeFeed(
       votes: p.vote_count ?? 0,
       selbstGevotet: eigene.has(p.id),
       kommentare: p.comments?.[0]?.count ?? 0,
+      /* Fehlt die Spalte (Migration 0017 nicht gelaufen), gilt offen —
+         also das Verhalten von vorher. */
+      kommentareOffen: p.kommentare_offen ?? true,
       verfasser: {
         name: p.profiles?.display_name || p.profiles?.username || 'Jemand',
         benutzername: p.profiles?.username ?? '',

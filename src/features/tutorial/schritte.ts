@@ -31,6 +31,7 @@ export interface Schritt {
     | 'modi'
     | 'fotos'
     | 'teilen'
+    | 'feed'
     | 'ende';
 }
 
@@ -58,6 +59,17 @@ export const SCHRITTE: Schritt[] = [
   {
     schluessel: 'teilen',
     ziel: '.tl-teilen',
+  },
+  {
+    /*
+     * Der Feed kommt NACH dem Teilen, und das ist kein Zufall: Erst
+     * versteht man, dass ein Beitrag ein geteilter Tag ist — danach
+     * ergibt der Feed überhaupt Sinn. Andersherum sähe er aus wie ein
+     * zweites, fremdes Ding in derselben App.
+     */
+    schluessel: 'feed',
+    ziel: '.vo-leiste a[href="/feed"]',
+    route: '/feed',
   },
   {
     schluessel: 'ende',

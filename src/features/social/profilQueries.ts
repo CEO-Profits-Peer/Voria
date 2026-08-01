@@ -33,7 +33,7 @@ import type { Beitrag } from './queries';
  * oder `follows` ein zweites Mal auf `profiles` zeigt, muss der
  * Fremdschlüssel benannt werden.
  */
-const AUSWAHL = `id, entry_id, caption, vote_count, published_at, comments(count),
+const AUSWAHL = `id, entry_id, caption, vote_count, published_at, kommentare_offen, comments(count),
   profiles!posts_user_id_fkey(username, display_name, avatar_url),
   entries(entry_date, title, place_name,
           trips(region_override, trip_countries(country_code, days)),
@@ -99,6 +99,8 @@ function formen(roh: any[], gevotet: Set<string>): Beitrag[] {
       votes: p.vote_count ?? 0,
       selbstGevotet: gevotet.has(p.id),
       kommentare: p.comments?.[0]?.count ?? 0,
+      /* Fehlt die Spalte (Migration 0017 nicht gelaufen), gilt offen. */
+      kommentareOffen: p.kommentare_offen ?? true,
       verfasser: {
         name: p.profiles?.display_name || p.profiles?.username || 'Jemand',
         benutzername: p.profiles?.username ?? '',

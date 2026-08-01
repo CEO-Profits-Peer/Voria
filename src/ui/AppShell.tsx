@@ -22,11 +22,23 @@ export function AppShell({
   children,
   nutzer,
   ungelesen = 0,
+  ueberlagerung,
 }: {
   children: React.ReactNode;
   nutzer?: { name: string; kuerzel: string; bild: string | null } | null;
   /** Zahl am Glockensymbol. 0 heißt: gar kein Punkt. */
   ungelesen?: number;
+  /**
+   * Was ÜBER der App liegt und einen Seitenwechsel überleben muss —
+   * heute die Führung für neue Nutzer.
+   *
+   * WARUM DAS EINE EIGENE STELLE BRAUCHT: `<main>` trägt `key={pfad}`
+   * und wird bei jedem Pfadwechsel vollständig neu aufgebaut. Alles
+   * darin verliert seinen Zustand. Die Führung lag zuerst dort — und
+   * fing bei jedem Schritt, der auf eine andere Seite führte, wieder
+   * mit der Begrüßung an. Sie gehört also daneben, nicht hinein.
+   */
+  ueberlagerung?: React.ReactNode;
 }) {
   const pfad = usePathname();
   const { t } = useT();
@@ -92,6 +104,10 @@ export function AppShell({
           </span>
         </Link>
       </nav>
+
+      {/* Außerhalb von <main>, also außerhalb des `key={pfad}` —
+          sonst beginnt sie bei jedem Seitenwechsel von vorn. */}
+      {ueberlagerung}
 
       <main className="vo-inhalt" key={pfad}>
         {children}

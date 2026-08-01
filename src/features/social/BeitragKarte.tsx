@@ -107,7 +107,9 @@ export function BeitragKarte({ beitrag }: { beitrag: Beitrag }) {
         </button>
       </footer>
 
-      {kommentareOffen && <Kommentare beitragId={beitrag.id} />}
+      {kommentareOffen && (
+        <Kommentare beitragId={beitrag.id} offen={beitrag.kommentareOffen} />
+      )}
 
       <style jsx>{`
         .beitrag {

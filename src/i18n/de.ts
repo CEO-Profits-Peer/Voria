@@ -126,6 +126,11 @@ export const de = {
   },
 
   teilen: {
+    kommentareOffen: 'Kommentare zulassen',
+    kommentareOffenZeile: 'Gilt nur für diesen Tag. Ein Tag über etwas Schweres verträgt vielleicht keine Antworten, ein anderer schon.',
+    soSiehtEsAus: 'So sehen es andere',
+    heute: 'heute',
+    vorschauLeer: 'Der Tag steht so im Feed, wie du ihn geschrieben hast.',
     titel: 'Wer soll das sehen?',
     teilen: 'Teilen',
     aendern: 'Ändern',
@@ -191,6 +196,7 @@ export const de = {
   },
 
   kommentar: {
+    geschlossen: 'Für diesen Tag sind Kommentare aus.',
     titel: 'Kommentare',
     knopf: 'Kommentare',
     schreiben: 'Etwas dazu schreiben',
@@ -335,6 +341,12 @@ export const de = {
         zeigt: 'Bis du hier etwas anderes einstellst. Teilen entscheidest du pro Tag, und du kannst es jederzeit zurücknehmen.',
         allein:
           'Jeder Tag ist privat, bis du ihn ausdrücklich teilst. Das entscheidest du pro Tag und kannst es jederzeit zurücknehmen.',
+      },
+      feed: {
+        titel: 'Der Feed',
+        zeigt: 'Hier stehen die Tage, die andere geteilt haben. Du musst nie etwas hineingeben — dein Tagebuch funktioniert vollständig ohne.',
+        allein:
+          'Im Feed stehen die Tage, die andere geteilt haben. Du musst nie etwas hineingeben — dein Tagebuch funktioniert vollständig ohne ihn.',
       },
       ende: {
         titel: 'Das war es schon',

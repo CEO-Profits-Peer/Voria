@@ -54,8 +54,18 @@ export function Tutorial({ startSchritt }: { startSchritt: number }) {
   const { t } = useT();
   const router = useRouter();
 
-  /* `frage` zuerst: Es wird gefragt, bevor irgendetwas passiert. */
-  const [phase, setPhase] = useState<'frage' | 'laeuft' | 'zu'>('frage');
+  /*
+   * Gefragt wird nur am Anfang.
+   *
+   * Wer schon bei Schritt zwei ist, hat die Frage längst beantwortet —
+   * ihn noch einmal zu fragen wäre absurd. Das ist auch die zweite
+   * Absicherung gegen einen unerwarteten Neuaufbau: Selbst wenn die
+   * Komponente neu entsteht, landet sie dann wieder mitten in der
+   * Führung und nicht bei der Begrüßung.
+   */
+  const [phase, setPhase] = useState<'frage' | 'laeuft' | 'zu'>(
+    startSchritt > 0 ? 'laeuft' : 'frage',
+  );
   const [nr, setNr] = useState(Math.min(startSchritt, SCHRITTE.length - 1));
   const [kasten, setKasten] = useState<Kasten | null>(null);
 

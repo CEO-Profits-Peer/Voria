@@ -126,6 +126,11 @@ export const en: Woerterbuch = {
   },
 
   teilen: {
+    kommentareOffen: 'Allow comments',
+    kommentareOffenZeile: 'Applies to this day only. A day about something heavy may not take replies well; another one might.',
+    soSiehtEsAus: 'How others will see it',
+    heute: 'today',
+    vorschauLeer: 'The day appears in the feed the way you wrote it.',
     titel: 'Who should see this?',
     teilen: 'Share',
     aendern: 'Change',
@@ -189,6 +194,7 @@ export const en: Woerterbuch = {
   },
 
   kommentar: {
+    geschlossen: 'Comments are off for this day.',
     titel: 'Comments',
     knopf: 'Comments',
     schreiben: 'Say something about this',
@@ -332,6 +338,12 @@ export const en: Woerterbuch = {
         zeigt: 'Until you say otherwise here. Sharing is a decision per day, and you can take it back at any time.',
         allein:
           'Every day is private until you explicitly share it. That is a decision per day, and you can take it back at any time.',
+      },
+      feed: {
+        titel: 'The feed',
+        zeigt: 'This is where days other people shared appear. You never have to put anything in — your journal works completely without it.',
+        allein:
+          'The feed holds the days other people shared. You never have to put anything in — your journal works completely without it.',
       },
       ende: {
         titel: 'That is all',

@@ -29,11 +29,14 @@ export function Tagesansicht({
   reiseId,
   region,
   istErsterTag,
+  verfasser,
 }: {
   tag: Tag;
   reiseId: string;
   region: string;
   istErsterTag: boolean;
+  /** Nur für die Vorschau im Teilen-Dialog. */
+  verfasser: string;
 }) {
   const { t } = useT();
   const [modus, setModus] = useState(tag.modus);
@@ -122,6 +125,15 @@ export function Tagesansicht({
           eintragId={tag.id}
           jetzt={tag.sichtbarkeit}
           aufSchliessen={() => setTeilenOffen(false)}
+          region={region}
+          verfasser={verfasser}
+          titel={tag.titel}
+          ort={tag.ort}
+          /* Der Anfang des ersten Textblocks — steht in der Vorschau,
+             solange kein Begleitsatz getippt ist. */
+          auszug={
+            tag.bloecke.find((b) => b.art === 'text' && b.text?.trim())?.text?.slice(0, 160) ?? null
+          }
         />
       )}
 

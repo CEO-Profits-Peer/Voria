@@ -32,23 +32,25 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <AppShell
       nutzer={name ? { name, kuerzel: name.slice(0, 2), bild: profil?.avatar_url ?? null } : null}
       ungelesen={ungelesen}
+      /*
+       * ÜBER die Hülle, nicht hinein: `<main>` trägt `key={pfad}` und
+       * wird bei jedem Seitenwechsel neu aufgebaut. Lag die Führung
+       * dort, fing sie bei jedem Schritt, der auf eine andere Seite
+       * führte, wieder mit der Begrüßung an.
+       *
+       * `profil === null` heißt hier NICHT „neuer Nutzer" — es heißt
+       * auch „Migration 0015 fehlt" oder „Abfrage schiefgegangen". In
+       * beiden Fällen wäre es falsch, jemandem ungefragt eine Führung
+       * vor die Nase zu setzen. Deshalb nur, wenn das Profil wirklich
+       * gelesen wurde und `tutorial_fertig` ausdrücklich falsch ist.
+       */
+      ueberlagerung={
+        profil && profil.tutorial_fertig === false ? (
+          <Tutorial startSchritt={profil.tutorial_schritt ?? 0} />
+        ) : null
+      }
     >
       {children}
-
-      {/*
-        Die Führung liegt in der Hülle, nicht auf einer Seite: Sie
-        soll über der ganzen App liegen können und beim Wechsel der
-        Seite nicht neu anfangen.
-
-        `profil === null` heißt hier NICHT „neuer Nutzer" — es heißt
-        auch „Migration 0015 fehlt" oder „Abfrage schiefgegangen". In
-        beiden Fällen wäre es falsch, jemandem ungefragt eine Führung
-        vor die Nase zu setzen. Deshalb nur, wenn das Profil wirklich
-        gelesen wurde und `tutorial_fertig` ausdrücklich falsch ist.
-      */}
-      {profil && profil.tutorial_fertig === false && (
-        <Tutorial startSchritt={profil.tutorial_schritt ?? 0} />
-      )}
     </AppShell>
   );
 }

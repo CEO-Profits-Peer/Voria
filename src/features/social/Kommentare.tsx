@@ -20,7 +20,21 @@ import { KommentarZeile } from './KommentarZeile';
 import { Schreibfeld } from './Schreibfeld';
 import { useT } from '@/i18n/Sprachraum';
 
-export function Kommentare({ beitragId }: { beitragId: string }) {
+export function Kommentare({
+  beitragId,
+  offen = true,
+}: {
+  beitragId: string;
+  /**
+   * Hat der Verfasser Kommentare zugelassen? Ist das falsch, bleiben
+   * die vorhandenen lesbar, aber es kommt keiner dazu.
+   *
+   * Die eigentliche Schranke steht in Postgres (`comments_write`,
+   * Migration 0017) — ohne diese Zeile hier stünde das Schreibfeld
+   * trotzdem da, das Absenden schlüge fehl, und niemand wüsste warum.
+   */
+  offen?: boolean;
+}) {
   const { t } = useT();
   const [liste, setListe] = useState<Kommentar[] | null>(null);
   const [laeuft, starten] = useTransition();
@@ -31,11 +45,15 @@ export function Kommentare({ beitragId }: { beitragId: string }) {
 
   return (
     <section className="bereich" aria-label={t.kommentar.titel}>
-      <Schreibfeld
-        platzhalter={t.kommentar.schreiben}
-        knopf={t.kommentar.senden}
-        beimAbsenden={async (text) => setListe(await kommentieren(beitragId, text, null))}
-      />
+      {!offen && <p className="zu-zeile">{t.kommentar.geschlossen}</p>}
+
+      {offen && (
+        <Schreibfeld
+          platzhalter={t.kommentar.schreiben}
+          knopf={t.kommentar.senden}
+          beimAbsenden={async (text) => setListe(await kommentieren(beitragId, text, null))}
+        />
+      )}
 
       {liste === null && laeuft && <p className="still-zeile">{t.zustand.laden}</p>}
 
