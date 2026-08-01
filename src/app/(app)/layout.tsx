@@ -1,6 +1,7 @@
 import { AppShell } from '@/ui/AppShell';
 import { createServerClient } from '@/lib/supabase-server';
 import { ungeleseneHinweise } from '@/features/hinweise/queries';
+import { Tutorial } from '@/features/tutorial/Tutorial';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createServerClient();
@@ -12,7 +13,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     user
       ? supabase
           .from('profiles')
-          .select('username, display_name, avatar_url')
+          // prettier-ignore
+          .select('username, display_name, avatar_url, tutorial_schritt, tutorial_fertig')
           .eq('id', user.id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
@@ -32,6 +34,21 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       ungelesen={ungelesen}
     >
       {children}
+
+      {/*
+        Die Führung liegt in der Hülle, nicht auf einer Seite: Sie
+        soll über der ganzen App liegen können und beim Wechsel der
+        Seite nicht neu anfangen.
+
+        `profil === null` heißt hier NICHT „neuer Nutzer" — es heißt
+        auch „Migration 0015 fehlt" oder „Abfrage schiefgegangen". In
+        beiden Fällen wäre es falsch, jemandem ungefragt eine Führung
+        vor die Nase zu setzen. Deshalb nur, wenn das Profil wirklich
+        gelesen wurde und `tutorial_fertig` ausdrücklich falsch ist.
+      */}
+      {profil && profil.tutorial_fertig === false && (
+        <Tutorial startSchritt={profil.tutorial_schritt ?? 0} />
+      )}
     </AppShell>
   );
 }

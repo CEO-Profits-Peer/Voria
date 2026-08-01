@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 38 Funktionen
+## Gebaut — 39 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -239,11 +239,19 @@ markieren.
     für den die App gebaut ist. Keine Synchronisierung zwischen zwei
     Geräten; die bleibt offen.
 
-Dazu 14 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+39. **Interaktive Führung für neue Nutzer** — sechs Schritte, und
+    **zuerst die Frage, ob überhaupt**. Der Kern ist die Robustheit:
+    Jeder Schritt trägt zwei Texte, einen der auf etwas zeigt und
+    einen der allein steht. Fehlt das Ziel — und in Voria fehlt es
+    regelmäßig, weil es zwei Ansichten je Tag und eine umziehende
+    Navigation gibt —, wird der Schritt mittig erzählt statt auf
+    etwas zu deuten, das nicht da ist. Migration `0015`.
+
+Dazu 15 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,
 `0009` Startbereich und Rückmeldungen, `0010` PRO-Design,
 `0011` Gelesen-Merker, `0012` Spaltenrechte auf posts, `0013` Abos,
-`0014` PRO-Streifen)
+`0014` PRO-Streifen, `0015` Führung)
 und die Dokumente `START.md` und `DEPLOY.md`.
 
 ---

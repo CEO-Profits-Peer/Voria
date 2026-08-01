@@ -290,6 +290,57 @@ export const en: Woerterbuch = {
     verweis: 'Take everything with you',
   },
 
+  tutorial: {
+    titel: 'A short tour',
+    frageTitel: 'Shall I show you around?',
+    frageZeile:
+      'Six short steps, less than a minute. You can stop any time — with Escape or the cross.',
+    jaZeigen: 'Yes, show me',
+    neinDanke: 'No, I will look myself',
+    spaeterHinweis: 'You can restart the tour later under Settings → Appearance.',
+    weiter: 'Next',
+    zurueck: 'Back',
+    fertig: 'Done',
+    beenden: 'End tour',
+    neuStarten: 'Restart the tour',
+    neuStartenZeile: 'Shows the six steps again.',
+    schritte: {
+      log: {
+        titel: 'The journal',
+        zeigt: 'Your journeys live here, day by day. This is the core — everything else you can ignore.',
+        allein: 'The journal is the core of Voria: your journeys, day by day. Everything else you can ignore.',
+      },
+      reise: {
+        titel: 'Start a journey',
+        zeigt: 'This is where everything begins. A name is enough; everything else can change later.',
+        allein: 'You create journeys in the journal. A name is enough; everything else can change later.',
+      },
+      modi: {
+        titel: 'Two views of the same day',
+        zeigt: '“Page” is a book page for writing. “Canvas” is a shoebox for arranging. Both show the same thing.',
+        allein:
+          'Every day has two views: “Page” for writing, “Canvas” for arranging. Both show the same content — switching loses nothing.',
+      },
+      fotos: {
+        titel: 'Photos',
+        zeigt: 'Throw pictures in. Voria reads the date and place from them — you type nothing.',
+        allein:
+          'You can add photos to any day. Voria reads the date and place from them, so you type nothing.',
+      },
+      teilen: {
+        titel: 'Everything stays private',
+        zeigt: 'Until you say otherwise here. Sharing is a decision per day, and you can take it back at any time.',
+        allein:
+          'Every day is private until you explicitly share it. That is a decision per day, and you can take it back at any time.',
+      },
+      ende: {
+        titel: 'That is all',
+        zeigt: 'The rest you will find while writing. Voria does not push.',
+        allein: 'The rest you will find while writing. Voria does not push.',
+      },
+    },
+  },
+
   konto: {
     titel: 'Account',
     loeschen: 'Delete account',

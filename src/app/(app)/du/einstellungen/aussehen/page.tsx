@@ -3,6 +3,7 @@ import { ChevronLeft } from 'lucide-react';
 import { Erscheinungsbild } from '@/features/profile/Erscheinungsbild';
 import { RegionenVorschau } from '@/features/profile/RegionenVorschau';
 import { SprachWahl } from '@/features/profile/SprachWahl';
+import { TutorialNeu } from '@/features/tutorial/TutorialNeu';
 import { texte } from '@/i18n/server';
 
 export const metadata = { title: 'Aussehen · Voria' };
@@ -24,6 +25,16 @@ export default async function AussehenSeite() {
         </section>
 
         <SprachWahl />
+
+        {/* „Nein danke" ist endgültig — deshalb braucht es einen Weg
+            zurück. Wer beim ersten Öffnen abgelehnt hat und später
+            doch wissen will, was „Fläche" bedeutet, soll nicht ein
+            neues Konto anlegen müssen. */}
+        <section>
+          <h2>{t.tutorial.titel}</h2>
+          <p className="unterseite-zeile">{t.tutorial.neuStartenZeile}</p>
+          <TutorialNeu />
+        </section>
 
         {/* Zuletzt, weil es das lange Schaufenster ist — was man
             einstellen WILL, soll nicht dahinter liegen. */}

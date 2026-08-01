@@ -292,6 +292,58 @@ export const de = {
     verweis: 'Alles mitnehmen',
   },
 
+  tutorial: {
+    titel: 'Kurze Führung',
+    frageTitel: 'Soll ich dir Voria kurz zeigen?',
+    frageZeile:
+      'Sechs kurze Schritte, keine Minute. Du kannst jederzeit abbrechen — mit Escape oder dem Kreuz.',
+    jaZeigen: 'Ja, zeig mir',
+    neinDanke: 'Nein, ich schaue selbst',
+    spaeterHinweis: 'Du kannst die Führung später unter Einstellungen → Aussehen neu starten.',
+    weiter: 'Weiter',
+    zurueck: 'Zurück',
+    fertig: 'Fertig',
+    beenden: 'Führung beenden',
+    neuStarten: 'Führung neu starten',
+    neuStartenZeile: 'Zeigt die sechs Schritte noch einmal.',
+    schritte: {
+      log: {
+        titel: 'Der Log',
+        zeigt: 'Hier liegen deine Reisen, Tag für Tag. Das ist der Kern — alles andere kannst du ignorieren.',
+        allein: 'Der Log ist der Kern von Voria: deine Reisen, Tag für Tag. Alles andere kannst du ignorieren.',
+      },
+      reise: {
+        titel: 'Eine Reise anlegen',
+        zeigt: 'Damit fängt alles an. Ein Name genügt, alles andere lässt sich später ändern.',
+        allein:
+          'Reisen legst du im Log an. Ein Name genügt, alles andere lässt sich später ändern.',
+      },
+      modi: {
+        titel: 'Zwei Ansichten für denselben Tag',
+        zeigt: '„Seite" ist eine Buchseite zum Schreiben. „Fläche" ist ein Schuhkarton zum Anordnen. Beide zeigen dasselbe.',
+        allein:
+          'Jeder Tag hat zwei Ansichten: „Seite" zum Schreiben, „Fläche" zum Anordnen. Beide zeigen dieselben Inhalte — der Wechsel verliert nichts.',
+      },
+      fotos: {
+        titel: 'Fotos',
+        zeigt: 'Wirf Bilder hinein. Datum und Ort liest Voria selbst heraus — du musst nichts abtippen.',
+        allein:
+          'Auf jedem Tag kannst du Fotos hinzufügen. Datum und Ort liest Voria aus den Bildern heraus, du musst nichts abtippen.',
+      },
+      teilen: {
+        titel: 'Alles bleibt privat',
+        zeigt: 'Bis du hier etwas anderes einstellst. Teilen entscheidest du pro Tag, und du kannst es jederzeit zurücknehmen.',
+        allein:
+          'Jeder Tag ist privat, bis du ihn ausdrücklich teilst. Das entscheidest du pro Tag und kannst es jederzeit zurücknehmen.',
+      },
+      ende: {
+        titel: 'Das war es schon',
+        zeigt: 'Der Rest findet sich beim Schreiben. Voria drängt nicht.',
+        allein: 'Der Rest findet sich beim Schreiben. Voria drängt nicht.',
+      },
+    },
+  },
+
   konto: {
     titel: 'Konto',
     loeschen: 'Konto löschen',
