@@ -76,7 +76,7 @@ markieren.
 
 ---
 
-## Gebaut — 41 Funktionen
+## Gebaut — 43 Funktionen
 
 1. **Freie Fläche: Textblöcke** — anlegen, schreiben, verschieben,
    drehen, löschen. Verzögertes Speichern mit einer Uhr pro Block.
@@ -256,11 +256,24 @@ markieren.
     Klassen und Tokens: Ein Bild veraltet an dem Tag, an dem sich ein
     Abstand ändert, und niemand merkt es.
 
-Dazu 15 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
+42. **Geteilte Beiträge tragen ihr Regionen-Theme** — stand seit
+    Tagen als „kosmetisch, aber falsch" in der Liste. Seit `/b/<id>`
+    der einzige Weg ist, auf dem Voria Fremde erreicht, ist es das
+    nicht mehr: Das Theme ist genau das, was Voria von einem
+    Notizzettel unterscheidet. Zwei zusätzliche Leseregeln in
+    Migration `0016`, die bestehenden bleiben unangetastet.
+43. **Sitemap und robots.txt** — Suchmaschinen finden die geteilten
+    Beiträge, aber nichts hinter der Anmeldung. Ohne die Sperre
+    landet ein Crawler auf der Anmeldeseite und nimmt die als Inhalt;
+    man fände Voria dann über „Anmelden" statt über einen Reisetag.
+    Die Sitemap erneuert sich stündlich — statisch erzeugt stünde
+    dort für immer der Stand vom letzten Deploy.
+
+Dazu 16 Migrationen (`0004` Profil-Trigger, `0005` Suchindizes,
 `0006` Kommentare, `0007` unscharfe Personensuche, `0008` Hinweise,
 `0009` Startbereich und Rückmeldungen, `0010` PRO-Design,
 `0011` Gelesen-Merker, `0012` Spaltenrechte auf posts, `0013` Abos,
-`0014` PRO-Streifen, `0015` Führung)
+`0014` PRO-Streifen, `0015` Führung, `0016` geteilte Region)
 und die Dokumente `START.md` und `DEPLOY.md`.
 
 ---

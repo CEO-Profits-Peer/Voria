@@ -106,13 +106,10 @@ hervorheben · Doppelklick markiert keine Bilder mehr · Konto löschen ·
 
 **Offen:**
 
-1. **Region auf geteilten Seiten** — `trip_countries_all` verlangt
-   `t.user_id = auth.uid()`. Nichtangemeldete sehen `/b/<id>` deshalb
-   ohne Regionen-Theme. Kosmetisch, aber falsch.
-2. **Zurück-Knopf auf fremden Profilen** — `/u/[name]` hat keinen. Man
+1. **Zurück-Knopf auf fremden Profilen** — `/u/[name]` hat keinen. Man
    kommt nur über die Browser-Taste zurück, und auf dem Handy als PWA
    gibt es die nicht sichtbar.
-3. **Kurzinfo beim Überfahren des Namens im Feed** — Follower, Anzahl
+2. **Kurzinfo beim Überfahren des Namens im Feed** — Follower, Anzahl
    Beiträge, Bio. Braucht eine eigene Abfrage; verzögert laden, sonst
    schickt jedes Überfahren eine Anfrage. Am Handy gibt es kein Hover —
    dort ersatzlos.

@@ -111,6 +111,7 @@ In dieser Reihenfolge im Supabase SQL Editor ausführen:
     Webhook darf hinein
 14. `0014_pro_streifen.sql` — wann der PRO-Hinweis zuletzt stand
 15. `0015_tutorial.sql` — Stand der Führung für neue Nutzer
+16. `0016_geteilte_region.sql` — geteilte Beiträge zeigen ihr Theme
 
 **Row Level Security kennt keine Spalten.** Wer eine Zeile bearbeiten
 darf, darf jede Spalte darin bearbeiten — also auch einen Zähler, den

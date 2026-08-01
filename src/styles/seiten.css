@@ -526,13 +526,24 @@ h1.gross {
 }
 
 .b-karte {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
   padding: var(--space-24);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-14);
-  background: var(--surface-raised);
+  /* `raised-tint` ist der Regionen-Slot, `surface-raised` der
+     Rückfall. Ohne Migration 0016 greift der Rückfall — dann sieht
+     die Karte schlicht aus, aber nicht kaputt. */
+  background: var(--raised-tint, var(--surface-raised));
+  overflow: hidden;
+}
+
+.b-karte > .ornament-corner {
+  position: absolute;
+  top: var(--space-12);
+  right: var(--space-12);
 }
 
 .b-kopf {

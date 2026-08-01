@@ -90,7 +90,16 @@ export default async function GeteilterBeitrag({
 
   return (
     <main className="b-seite">
-      <article className="b-karte">
+      {/*
+        Das Regionen-Theme steht hier, nicht nur im Feed. Es ist das,
+        was Voria von einem Notizzettel unterscheidet — ausgerechnet
+        dort wegzulassen, wo Fremde zum ersten Mal hinsehen, wäre
+        falsch. Möglich seit Migration `0016`; ohne sie fällt die
+        Region auf `neutral` zurück und die Karte sieht schlicht aus,
+        aber nicht kaputt.
+      */}
+      <article className="b-karte region-surface" data-region={beitrag.region}>
+        <span className="ornament-corner" aria-hidden />
         <header className="b-kopf">
           <Avatar bild={beitrag.verfasser.bild} name={beitrag.verfasser.name} groesse={40} />
           <span className="b-wer">
