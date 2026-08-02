@@ -41,8 +41,12 @@ export default async function LogSeite() {
             </Link>
             {/* Zwei Wege, und der Unterschied steht in den Worten:
                 eine REISE anlegen ist das Große, ein BEITRAG ist der
-                einzelne Tag von heute. */}
-            <BeitragStarten kompakt />
+                einzelne Tag von heute.
+
+                `erklaerung`: das Fragezeichen daneben, das sagt, was
+                dabei entsteht. Hier ja, im Feed nicht — dort will man
+                los, hier hat man Ruhe. */}
+            <BeitragStarten kompakt erklaerung />
             <Link href="/log/neu" className="anlegen">
               <Plus size={18} strokeWidth={1.5} aria-hidden /> {t.log.neueReise}
             </Link>

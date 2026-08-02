@@ -1098,9 +1098,8 @@ h1.gross {
 /* DER SEITENANFANG IST AUCH EIN FANGPUNKT.
 
    Ohne diese Regel war er keiner: Nur die Karten fingen, und wer ganz
-   nach oben scrollte, wurde zur ersten Karte zurückgezogen. Der Kopf
-   mit Titel und Reitern ließ sich dann nicht mehr in Ruhe ansehen —
-   die Seite rutschte immer wieder weg.
+   nach oben scrollte, wurde zur ersten Karte zurückgezogen. Der Anfang
+   ließ sich dann nicht in Ruhe ansehen — die Seite rutschte weg.
 
    Eine Zeile, und „ganz oben" ist wieder eine gültige Ruhelage. */
 .feed-scrollen .seite {
@@ -1112,9 +1111,24 @@ h1.gross {
    statt zwanzig. Ohne `scroll-margin-top` klebte die Karte am oberen
    Rand, direkt unter der Reiterleiste. */
 .feed-scrollen .strom > [data-beitrag] {
-  scroll-snap-align: start;
   scroll-snap-stop: always;
   scroll-margin-top: var(--space-16);
+}
+
+/* DIE ERSTE KARTE FÄNGT NICHT — SONST SPÜRT MAN EIN „OBEN".
+
+   Zwei Fangpunkte wenige Dutzend Pixel voneinander entfernt (der
+   Seitenanfang und die erste Karte) ergeben oben ein Ziehen: Man
+   wischt nach oben und wird ein Stück zurückgezogen. Genau das soll
+   sich nicht anfühlen wie eine Kante.
+
+   Also fängt oben nur der Seitenanfang. `[data-beitrag] ~
+   [data-beitrag]` heißt „jede Karte, vor der schon eine steht" — das
+   trifft alle außer der ersten, unabhängig davon, ob dazwischen noch
+   Werbung oder die Nachlade-Wache sitzt. `:first-child` täte das
+   nicht: Das erste Kind von `.strom` ist oft die Wache. */
+.feed-scrollen .strom > [data-beitrag] ~ [data-beitrag] {
+  scroll-snap-align: start;
 }
 
 /* ---------- Die Führung für neue Nutzer ----------------------

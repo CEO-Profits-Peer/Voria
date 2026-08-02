@@ -71,11 +71,17 @@ export function TagLeiste({
         Knopfes lesen und rückwärts schließen.
 
         Jetzt sagt die Zeile links, was ist. Der Knopf daneben führt
-        in den Beitrags-Editor und heißt immer gleich.
+        in den Beitrags-Editor.
+
+        „Beitrag erstellen", nicht „Beitrag": Der Knopf ÖFFNET nur den
+        Editor. Ein Knopf, der bloß „Beitrag" heißt, sieht aus, als
+        veröffentliche er sofort — und wer das befürchtet, drückt ihn
+        nicht. Gepostet wird erst im Editor, und dort heißt der Knopf
+        dann „Posten".
       */}
       <button type="button" className="tl-beitrag" onClick={aufTeilen}>
         <Share2 size={15} strokeWidth={1.75} aria-hidden />
-        {sichtbarkeit === 'public' ? t.beitrag.bearbeiten : t.beitrag.knopf}
+        {sichtbarkeit === 'public' ? t.beitrag.bearbeiten : t.beitrag.neu}
       </button>
 
       <style jsx>{`

@@ -92,6 +92,13 @@ Danach im Browser durchgehen, in dieser Reihenfolge:
 | Teilen | Feed → Teilen | Link in einem privaten Fenster öffnen — ohne Anmeldung sichtbar? |
 | Tagesleiste | Tag, beide Modi | Foto und Sichtbarkeit in **Seite** und **Fläche** erreichbar? |
 | Werbung | Feed | Erst ab Beitrag 7, nie zwei hintereinander, nie zuletzt |
+| **Kein „Oben" im Feed** | Feed, kräftig nach oben wischen | Landet man ruhig ganz oben, **ohne zurückgezogen zu werden**? Keine Überschrift „Feed" mehr, direkt die Reiter |
+| **Posten in einem Schritt** | Feed → „Beitrag erstellen" | Geht es **ohne Zwischendialog** direkt in den Tag von heute? |
+| Fragezeichen | `/log` → neben „Beitrag erstellen" | Ist es da, öffnet es die Erklärung — und liegt der Kasten **über** der Seite statt mittendrin? |
+| Ohne Reise | Neues Konto → „Beitrag erstellen" | Kommt die Meldung samt Knopf „Neue Reise" statt eines toten Klicks? |
+| **Vorgewählt öffentlich** | Tag → „Beitrag erstellen" | Steht „Im Feed" schon an? Bei einem Tag auf „Wer dir folgt": **bleibt** er dort? |
+| Nichts ungewollt geteilt | Editor öffnen, wegklicken | Der Tag muss danach **immer noch privat** sein |
+| Knopf im Feed am Handy | Feed unter 560 px | Nur das Stiftsymbol, Reiter noch lesbar, Trefferfläche ≥ 44 px |
 
 Kommt beim Bauen etwas hoch, ist es meins.
 
@@ -267,6 +274,11 @@ warum er nicht im Log steht.
 Mein Vorschlag bleibt: der Editor sieht aus wie Instagram, legt innen
 aber still einen Tag mit heutigem Datum an. Modell bleibt heil.
 Kategorien gehen unabhängig davon über `posts.category`.
+
+**Stand 02.08.: gebaut, bis auf die Kategorien.** „Beitrag erstellen"
+steht im Log und im Feed, geht ohne Zwischenschritt in den heutigen Tag,
+und der Editor ist auf „Im Feed" vorgewählt. Offen bleibt hier nur noch
+`posts.category`.
 
 ### Orte suchen — und die Grundlage für Karte v2
 

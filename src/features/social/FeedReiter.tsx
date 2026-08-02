@@ -21,8 +21,19 @@
  *    kleinsten Ruckeln des Zeigefingers auf und ab.
  * 2. Ganz oben ist sie immer da. Sonst bliebe sie beim Seitenanfang
  *    versteckt, obwohl dort gar nichts zu verstecken ist.
+ *
+ * DIESE LEISTE IST DER GANZE KOPF DES FEEDS.
+ *
+ * Vorher stand darüber noch eine Seitenüberschrift mit dem Wort
+ * „Feed". Die machte den Anfang zu einer Wand: Wer nach oben wischte,
+ * stieß auf eine Titelzeile, die ihm sagte, wo er ohnehin war — die
+ * Navigation sagt es schon. Ein Strom soll oben keine Kante haben.
+ * Deshalb trägt die Leiste jetzt auch „Beitrag erstellen": Sie ist das
+ * Einzige, was über den Karten steht, und sie verschwindet beim Lesen
+ * mit.
  */
 
+import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { Reiter } from './konstanten';
@@ -38,11 +49,14 @@ export function FeedReiter({
   fuerDich,
   folgeIch,
   entdecken,
+  aktion,
 }: {
   aktiv: Reiter;
   fuerDich: string;
   folgeIch: string;
   entdecken: string;
+  /** „Beitrag erstellen". Rechts am Rechner, darunter am Handy. */
+  aktion?: ReactNode;
 }) {
   const [sichtbar, setSichtbar] = useState(true);
   const zuletzt = useRef(0);
@@ -99,13 +113,17 @@ export function FeedReiter({
         ))}
       </nav>
 
+      {aktion && <span className="feed-aktion">{aktion}</span>}
+
       <style jsx>{`
         .feed-reiter-halter {
           position: sticky;
           top: 0;
           z-index: 20;
           display: flex;
+          align-items: center;
           justify-content: center;
+          gap: var(--space-8);
           padding: var(--space-8) 0 var(--space-16);
           /* Die Karten dürfen nicht unter der Leiste durchscheinen. */
           background: var(--surface-canvas);
@@ -122,6 +140,24 @@ export function FeedReiter({
         @media (prefers-reduced-motion: reduce) {
           .feed-reiter-halter {
             transition: none;
+          }
+        }
+
+        /* Am Rechner hängt die Aktion rechts am Rand, damit die Reiter
+           in der Mitte der Seite stehen bleiben — sie sind das, wonach
+           das Auge dort sucht. Am Handy gibt es keine Ränder zu
+           verschenken, dort steht sie einfach daneben.
+
+           Der Halter ist sticky positioniert und damit ein gültiger
+           Bezugspunkt für absolute. */
+        .feed-aktion {
+          position: absolute;
+          right: var(--space-24);
+          display: inline-flex;
+        }
+        @media (max-width: 700px) {
+          .feed-aktion {
+            position: static;
           }
         }
 
@@ -170,7 +206,11 @@ export function FeedReiter({
             padding: 0 var(--space-16);
           }
           .feed-reiter {
-            width: 100%;
+            /* Mitwachsen statt volle Breite: Die Leiste teilt sich die
+               Zeile jetzt mit dem Knopf. Mit voller Breite drückte sie
+               ihn aus dem Bild. */
+            flex: 1;
+            min-width: 0;
           }
           .feed-reiter :global(a[data-nur-breit='true']) {
             display: none;

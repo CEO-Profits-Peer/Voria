@@ -940,6 +940,67 @@ Beispieltexte, kein echter Log.
 
 ---
 
+### 2026-08-02 · Der Beitrags-Editor ist auf „Im Feed" vorgewählt
+
+Wer „Beitrag erstellen" drückt, will posten. Ihn dann zuerst „Nur für
+dich" abwählen zu lassen, ist eine Frage nach etwas, das er gerade
+beantwortet hat.
+
+**Die eiserne Regel bleibt unberührt.** Sie lautet: Jeder Tag ist
+privat, bis man ihn ausdrücklich teilt. Der Tag draußen bleibt privat —
+im Editor wird nichts gesichert, solange niemand den Knopf drückt. Wer
+den Dialog wegklickt, hat nichts geteilt. Geändert hat sich nur die
+Vorauswahl in einem Dialog, den man absichtlich geöffnet hat.
+
+Eine **bestehende** Wahl wird nie überschrieben: Steht ein Tag auf „Wer
+dir folgt", bleibt er dort. Vorgewählt wird nur, wo noch nichts
+entschieden war.
+
+Dazu die Beschriftungen, damit der Unterschied zwischen Öffnen und
+Veröffentlichen sichtbar bleibt: Der Knopf am Tag heißt **„Beitrag
+erstellen"** (er öffnet nur), der Knopf im Editor heißt **„Posten"** (er
+veröffentlicht).
+
+### 2026-08-02 · Der Feed hat keinen Kopf mehr
+
+Über dem Feed stand eine Seitenüberschrift mit dem Wort „Feed". Sie
+sagte nichts, was die Navigation nicht schon sagt, und machte den Anfang
+zu einer Kante: Wer nach oben wischte, stieß auf eine Wand statt auf
+Beiträge.
+
+Ein Strom soll oben kein spürbares Ende haben. Geblieben ist die
+Reiterleiste — sie trägt jetzt auch „Beitrag erstellen" und blendet sich
+beim Lesen mit aus.
+
+Dazu fängt die **erste** Karte nicht mehr per Scroll-Snap. Zwei
+Fangpunkte wenige Dutzend Pixel auseinander (Seitenanfang und erste
+Karte) ergaben oben ein Ziehen — genau das Gefühl von „hier ist oben",
+das weg sollte. Alle übrigen Karten fangen weiter, die Wischbremse
+bleibt.
+
+### 2026-08-02 · Erklärungen sind abrufbar, nicht aufgedrängt
+
+Zwischen „Beitrag erstellen" und dem Editor stand ein Dialog, der
+erklärte, dass dabei ein Tag mit heutigem Datum entsteht. Gut gemeint,
+falsche Stelle: Eine Erklärung, die man jedes Mal wegklicken muss, wird
+nach dem zweiten Mal nicht mehr gelesen — sie ist dann nur noch ein
+Klick.
+
+Der Text ist nicht verschwunden, sondern hinter einem Fragezeichen
+neben dem Knopf — **im Log, nicht im Feed**. Im Feed will man los.
+
+Ein Dialog bleibt für einen Fall: wenn es nicht geht. Ohne Reise kann
+kein Tag entstehen; das muss man erfahren, statt auf einen Knopf zu
+drücken, der nichts tut.
+
+Nebenbei aufgefallen: Der alte Dialog trug die Klassen `.grund`,
+`.blatt` und `.zu` — **die es nirgends gibt**. `.dialog-grund` und
+`.dialog-blatt` aus `bewegung.css` liefern nur die Animation, keine Lage
+und keinen Hintergrund. Der Kasten stand also mitten im Seitenfluss,
+ohne dass Build oder Konsole etwas gemeldet hätten.
+
+---
+
 ## Noch offen
 
 - **Repost.** Kommt (30.07. bestätigt) — man muss ihn nicht nutzen.

@@ -126,11 +126,11 @@ export const en: Woerterbuch = {
   },
 
   beitrag: {
-    losGehts: 'Create the day and write',
     brauchtReise: 'You need a journey first — a day always belongs to one. Create one and you can continue.',
     knopf: 'Post',
     bearbeiten: 'Edit post',
     neu: 'Create post',
+    wasPassiert: 'What this does',
     neuZeile: 'Creates a day with today’s date and opens it. In Voria a post is always a shared day — it will also appear in your journal.',
     titelFeld: 'Title',
     textFeld: 'What you want to say about it',
@@ -139,7 +139,7 @@ export const en: Woerterbuch = {
     keineBilder: 'No images in this day yet.',
     bildDazu: 'Add images',
     werSieht: 'Who sees this',
-    veroeffentlichen: 'Publish',
+    veroeffentlichen: 'Post',
     aktualisieren: 'Save',
     zurueckziehen: 'Stop sharing',
   },

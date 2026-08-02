@@ -51,7 +51,26 @@ export function TeilenDialog({
   aufFotoWaehlen: () => void;
 }) {
   const { t } = useT();
-  const [stufe, setStufe] = useState<Stufe>(jetzt);
+
+  /*
+   * VORGEWÄHLT IST „IM FEED" — und das widerspricht der eisernen Regel
+   * NICHT.
+   *
+   * Die Regel lautet: Jeder Tag ist privat, bis man ihn ausdrücklich
+   * teilt. Das gilt weiter. Der Tag DRAUSSEN bleibt privat; hier drin
+   * wird nichts gesichert, solange niemand den Knopf drückt. Wer den
+   * Dialog wegklickt, hat nichts geteilt.
+   *
+   * Was sich ändert, ist nur die Vorauswahl in einem Dialog, den man
+   * über „Beitrag erstellen" absichtlich geöffnet hat. Wer hierher
+   * kommt, will posten — ihn zuerst „Nur für dich" abwählen zu lassen,
+   * ist eine Frage nach etwas, das er gerade beantwortet hat.
+   *
+   * Eine BESTEHENDE Wahl wird dabei nie überschrieben: Steht der Tag
+   * schon auf „Wer dir folgt", bleibt er dort. Vorgewählt wird nur,
+   * wenn noch gar nichts entschieden wurde.
+   */
+  const [stufe, setStufe] = useState<Stufe>(jetzt === 'private' ? 'public' : jetzt);
   const [kommentare, setKommentare] = useState(true);
   const [titelJetzt, setTitelJetzt] = useState(titel ?? '');
 

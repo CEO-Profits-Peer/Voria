@@ -6,7 +6,6 @@ import { FeedReiter } from '@/features/social/FeedReiter';
 import { FeedScrollen } from '@/features/social/FeedScrollen';
 import { BeitragStarten } from '@/features/social/BeitragStarten';
 import { LeererBereich } from '@/ui/LeererBereich';
-import { Seitenkopf } from '@/ui/Bausteine';
 import { texte } from '@/i18n/server';
 import { zeigtWerbung } from '@/lib/plan';
 import { darfStreifenErscheinen } from '@/features/pro/streifen';
@@ -34,15 +33,28 @@ export default async function FeedSeite({
     darfStreifenErscheinen(),
   ]);
 
+  /*
+   * KEINE SEITENÜBERSCHRIFT.
+   *
+   * Hier stand „Feed" als Titelzeile. Sie sagte nichts, was die
+   * Navigation nicht schon sagt, und machte den Anfang zu einer Kante:
+   * Wer nach oben wischte, stieß auf eine Wand statt auf Beiträge. Ein
+   * Strom soll oben kein spürbares Ende haben.
+   *
+   * „Beitrag erstellen" bleibt selbstverständlich — es sitzt jetzt in
+   * der Reiterleiste und blendet sich beim Lesen mit ihr aus.
+   * `erklaerung` fehlt hier absichtlich: Der Erklärtext gehört ins
+   * Log, nicht in den Feed.
+   */
   const kopf = (
     <>
       <FeedScrollen />
-      <Seitenkopf titel={t.feed.titel} aktion={<BeitragStarten kompakt />} />
       <FeedReiter
         aktiv={reiter}
         fuerDich={t.feed.fuerDich}
         folgeIch={t.feed.folgeIch}
         entdecken={t.feed.entdecken}
+        aktion={<BeitragStarten kompakt symbolAmHandy />}
       />
     </>
   );
