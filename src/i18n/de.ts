@@ -484,6 +484,12 @@ export const de = {
   },
 
   rueckblick: {
+    ausVoria: 'Entstanden in',
+    teilen: 'Rückblick teilen',
+    teilenZeile: 'Erzeugt einen Link, der nur Zahlen und Länder zeigt — keine Titel, keine Orte, keine Texte, keine Fotos.',
+    linkKopiert: 'Link kopiert',
+    zurueckziehen: 'Link zurückziehen',
+    geteiltSeit: 'Dieser Rückblick ist über einen Link erreichbar.',
     titel: 'Rückblick',
     zeile: 'Ein Jahr, auf einer Seite.',
     keinJahr: 'Für dieses Jahr gibt es noch nichts.',

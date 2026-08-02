@@ -17,6 +17,15 @@ import { seitenUrl } from '@/lib/site-url';
  *
  * `/api/` ebenfalls gesperrt: Der Paddle-Webhook hat in keinem Index
  * etwas verloren.
+ *
+ * `/rueckblick` ist gesperrt, `/r/` NICHT — das sind zwei
+ * verschiedene Dinge. Ersteres ist der eigene Rückblick hinter der
+ * Anmeldung, Letzteres die geteilte Fassung mit einer Kennung im
+ * Pfad. Die enthält nur Zahlen und Länder und soll gefunden werden.
+ *
+ * Die Kennungen stehen NICHT in der Sitemap: Ein geteilter Rückblick
+ * ist für die gedacht, denen man den Link gibt. Wer ihn hat, darf
+ * sehen — aber niemand soll ihn über eine Liste finden.
  */
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -1690,3 +1690,107 @@ h1.gross {
   height: 44px;
   padding: 0 var(--space-20);
 }
+
+
+/* ---------- Geteilter Jahresrückblick (/r/<kennung>) ---------
+   Eine Seite, ein Blatt. Kein Navigationsgerüst — sie ist eine
+   Visitenkarte, keine halbe App. Dieselbe Haltung wie /b/<id>. */
+
+.r-seite {
+  max-width: 52ch;
+  margin: 0 auto;
+  padding: var(--space-48) var(--space-24) var(--space-64);
+}
+
+.r-blatt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding: var(--space-48) var(--space-32);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-22);
+  overflow: hidden;
+}
+
+.r-blatt .ornament-corner {
+  position: absolute;
+  top: var(--space-16);
+  right: var(--space-16);
+}
+
+.r-klein {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}
+
+.r-blatt h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--size-64);
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-regular);
+  color: var(--content-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.r-zahlen {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-24);
+  margin: 0;
+}
+
+.r-zahlen dt {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--content-muted);
+}
+
+.r-zahlen dd {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--size-30);
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.r-regionen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.r-region {
+  padding: 5px var(--space-12);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--content-primary);
+}
+
+.r-fuss {
+  margin-top: var(--space-32);
+  text-align: center;
+}
+
+.r-fuss a {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--content-muted);
+  text-decoration: none;
+}
+
+.r-fuss a:hover {
+  color: var(--content-primary);
+}

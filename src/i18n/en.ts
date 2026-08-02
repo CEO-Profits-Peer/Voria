@@ -481,6 +481,12 @@ export const en: Woerterbuch = {
   },
 
   rueckblick: {
+    ausVoria: 'Made in',
+    teilen: 'Share this review',
+    teilenZeile: 'Creates a link that shows only numbers and countries — no titles, no places, no texts, no photos.',
+    linkKopiert: 'Link copied',
+    zurueckziehen: 'Withdraw link',
+    geteiltSeit: 'This review is reachable through a link.',
     titel: 'Year in review',
     zeile: 'One year, on a single page.',
     keinJahr: 'Nothing for this year yet.',
