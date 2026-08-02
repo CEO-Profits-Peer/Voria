@@ -125,6 +125,25 @@ export const de = {
     ],
   },
 
+  beitrag: {
+    losGehts: 'Tag anlegen und schreiben',
+    brauchtReise: 'Dafür brauchst du zuerst eine Reise — ein Tag hängt immer an einer. Leg eine an, dann geht es weiter.',
+    knopf: 'Beitrag',
+    bearbeiten: 'Beitrag bearbeiten',
+    neu: 'Beitrag erstellen',
+    neuZeile: 'Legt einen Tag mit dem heutigen Datum an und öffnet ihn. Ein Beitrag ist in Voria immer ein geteilter Tag — er steht danach auch in deinem Log.',
+    titelFeld: 'Titel',
+    textFeld: 'Was du dazu sagen willst',
+    bilder: 'Bilder',
+    bilderZeile: 'Das erste Bild steht im Feed ganz oben.',
+    keineBilder: 'Noch keine Bilder in diesem Tag.',
+    bildDazu: 'Bilder hinzufügen',
+    werSieht: 'Wer sieht das',
+    veroeffentlichen: 'Veröffentlichen',
+    aktualisieren: 'Übernehmen',
+    zurueckziehen: 'Nicht mehr teilen',
+  },
+
   teilen: {
     kommentareOffen: 'Kommentare zulassen',
     kommentareOffenZeile: 'Gilt nur für diesen Tag. Ein Tag über etwas Schweres verträgt vielleicht keine Antworten, ein anderer schon.',

@@ -3,6 +3,7 @@ import { Plus, Search } from 'lucide-react';
 import { ladeReisen, type Reise } from '@/features/log/queries';
 import { Karte, Seitenkopf, Trenner } from '@/ui/Bausteine';
 import { LeererBereich } from '@/ui/LeererBereich';
+import { BeitragStarten } from '@/features/social/BeitragStarten';
 import { texte } from '@/i18n/server';
 
 export const metadata = { title: 'Log · Voria' };
@@ -38,6 +39,10 @@ export default async function LogSeite() {
             <Link href="/suche" className="rund" aria-label={t.nav.suchen}>
               <Search size={20} strokeWidth={1.5} aria-hidden />
             </Link>
+            {/* Zwei Wege, und der Unterschied steht in den Worten:
+                eine REISE anlegen ist das Große, ein BEITRAG ist der
+                einzelne Tag von heute. */}
+            <BeitragStarten kompakt />
             <Link href="/log/neu" className="anlegen">
               <Plus size={18} strokeWidth={1.5} aria-hidden /> {t.log.neueReise}
             </Link>

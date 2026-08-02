@@ -125,6 +125,25 @@ export const en: Woerterbuch = {
     ],
   },
 
+  beitrag: {
+    losGehts: 'Create the day and write',
+    brauchtReise: 'You need a journey first — a day always belongs to one. Create one and you can continue.',
+    knopf: 'Post',
+    bearbeiten: 'Edit post',
+    neu: 'Create post',
+    neuZeile: 'Creates a day with today’s date and opens it. In Voria a post is always a shared day — it will also appear in your journal.',
+    titelFeld: 'Title',
+    textFeld: 'What you want to say about it',
+    bilder: 'Images',
+    bilderZeile: 'The first image appears at the top in the feed.',
+    keineBilder: 'No images in this day yet.',
+    bildDazu: 'Add images',
+    werSieht: 'Who sees this',
+    veroeffentlichen: 'Publish',
+    aktualisieren: 'Save',
+    zurueckziehen: 'Stop sharing',
+  },
+
   teilen: {
     kommentareOffen: 'Allow comments',
     kommentareOffenZeile: 'Applies to this day only. A day about something heavy may not take replies well; another one might.',

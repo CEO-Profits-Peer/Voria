@@ -1660,3 +1660,33 @@ h1.gross {
     max-width: none;
   }
 }
+
+
+/* ---------- Beitrags-Editor ----------------------------------
+   Der Dialog nutzt am Rechner die Breite, die dort ohnehin
+   ungenutzt herumliegt — aber nur, wenn es zwei Spalten gibt.
+   Bei „nur für dich" wäre die zweite leer, und ein breiter Kasten
+   mit einer leeren Hälfte sieht kaputt aus. */
+
+@media (min-width: 860px) {
+  .beitrag-blatt[data-weit='true'] {
+    max-width: 980px;
+  }
+}
+
+/* Der Erklärtext im „Beitrag erstellen"-Dialog. */
+.beitrag-erklaerung {
+  margin: 0;
+  max-width: 52ch;
+  font-family: var(--font-text);
+  font-size: var(--size-16);
+  line-height: var(--leading-relaxed);
+  color: var(--content-secondary);
+  text-wrap: pretty;
+}
+
+.beitrag-los {
+  align-self: flex-start;
+  height: 44px;
+  padding: 0 var(--space-20);
+}

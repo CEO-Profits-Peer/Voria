@@ -4,6 +4,7 @@ import { FeedFlaeche } from '@/features/social/FeedFlaeche';
 import { FeedStrom } from '@/features/social/FeedStrom';
 import { FeedReiter } from '@/features/social/FeedReiter';
 import { FeedScrollen } from '@/features/social/FeedScrollen';
+import { BeitragStarten } from '@/features/social/BeitragStarten';
 import { LeererBereich } from '@/ui/LeererBereich';
 import { Seitenkopf } from '@/ui/Bausteine';
 import { texte } from '@/i18n/server';
@@ -36,7 +37,7 @@ export default async function FeedSeite({
   const kopf = (
     <>
       <FeedScrollen />
-      <Seitenkopf titel={t.feed.titel} />
+      <Seitenkopf titel={t.feed.titel} aktion={<BeitragStarten kompakt />} />
       <FeedReiter
         aktiv={reiter}
         fuerDich={t.feed.fuerDich}

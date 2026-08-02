@@ -64,9 +64,18 @@ export function TagLeiste({
         )}
       </span>
 
-      <button type="button" className="tl-teilen" onClick={aufTeilen}>
-        <Share2 size={14} strokeWidth={1.5} aria-hidden />
-        {sichtbarkeit === 'private' ? t.teilen.teilen : t.teilen.aendern}
+      {/*
+        Der Status STEHT, der Knopf HANDELT — vorher tat der Knopf
+        beides und hieß mal „Teilen", mal „Ändern". Wer wissen wollte,
+        wie der Tag gerade steht, musste die Beschriftung eines
+        Knopfes lesen und rückwärts schließen.
+
+        Jetzt sagt die Zeile links, was ist. Der Knopf daneben führt
+        in den Beitrags-Editor und heißt immer gleich.
+      */}
+      <button type="button" className="tl-beitrag" onClick={aufTeilen}>
+        <Share2 size={15} strokeWidth={1.75} aria-hidden />
+        {sichtbarkeit === 'public' ? t.beitrag.bearbeiten : t.beitrag.knopf}
       </button>
 
       <style jsx>{`
@@ -116,6 +125,18 @@ export function TagLeiste({
         }
         .tl-foto {
           margin-left: calc(var(--space-12) * -1);
+        }
+        /* Der einzige gefüllte Knopf der Leiste. Er ist die Handlung,
+           alles andere daneben ist Zustand oder Zugabe. */
+        .tl-beitrag {
+          border-color: var(--accent-primary);
+          background: var(--accent-primary);
+          color: var(--accent-contrast);
+        }
+        .tl-beitrag:hover {
+          background: var(--accent-hover);
+          border-color: var(--accent-hover);
+          color: var(--accent-contrast);
         }
       `}</style>
     </div>

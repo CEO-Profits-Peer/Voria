@@ -134,6 +134,12 @@ export function Tagesansicht({
           auszug={
             tag.bloecke.find((b) => b.art === 'text' && b.text?.trim())?.text?.slice(0, 160) ?? null
           }
+          /* Dieselbe Reihenfolge wie im Eintrag — das erste Bild ist
+             auch im Feed das erste. */
+          bilder={tag.bloecke
+            .filter((b) => b.art === 'photo' && b.foto)
+            .map((b) => ({ id: b.id, pfad: b.foto!.pfad }))}
+          aufFotoWaehlen={() => setFotoOffen(true)}
         />
       )}
 

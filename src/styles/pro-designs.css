@@ -188,7 +188,19 @@
 :root[data-pro-design='nordlicht'] .region-surface::after {
   content: '';
   position: absolute;
-  inset: -20% -10%;
+  /*
+   * `inset: 0`, NICHT negativ.
+   *
+   * Vorher stand hier `-20% -10%`, damit das Licht weicher über die
+   * Kante lief. Das tat es auch — nur eben über JEDE Kante: Eine
+   * `.region-surface` ohne Beschnitt (etwa das Tagesblatt) ließ das
+   * Licht nach außen laufen, bis in die Seitenleiste.
+   *
+   * Die Weichheit kommt jetzt allein aus den Verläufen; die sind mit
+   * 130 bis 150 Prozent ohnehin größer als die Fläche und laufen
+   * innerhalb davon aus.
+   */
+  inset: 0;
   z-index: -1;
   pointer-events: none;
   background-image:
